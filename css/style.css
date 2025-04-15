@@ -1,0 +1,179 @@
+@charset "UTF-8";
+/* CSS Reset */
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* base styling */
+body {
+  background: #e5d8ca;
+}
+
+/* Header styling */
+header {
+  padding: 20px 40px;
+  background: #e5d8ca;
+}
+header a {
+  text-decoration: none;
+  color: #333;
+}
+header a:visited {
+  color: #333;
+}
+header a:hover {
+  color: #000;
+}
+header h1 {
+  font-size: 300%;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+}
+
+/* Breadcrumbs styling */
+#breadcrumbs {
+  background: #c6baae;
+}
+#breadcrumbs ul {
+  padding: 10px 40px;
+  list-style: none;
+}
+#breadcrumbs ul li {
+  display: inline;
+  font-size: 18px;
+}
+#breadcrumbs ul li + li:before {
+  padding: 8px;
+  color: black;
+  content: "/ ";
+}
+#breadcrumbs ul a {
+  color: #333;
+  text-decoration: none;
+}
+#breadcrumbs ul a:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+/* main body styling */
+main {
+  background: #eee;
+  color: #222;
+  padding: 20px 40px;
+}
+main p {
+  margin: 10px 0;
+}
+main ul {
+  list-style: disc;
+  list-style-position: inside;
+}
+main ul li {
+  margin: 10px 0;
+}
+main a {
+  color: #333;
+}
+main h2,
+main h3 {
+  font-weight: bold;
+}
+main h2 {
+  font-size: 200%;
+  margin: 30px 0 10px;
+}
+main h3 {
+  font-size: 160%;
+  margin: 24px 0 8px;
+}
+
+/* File Link */
+.fileLink {
+  display: flex;
+  margin: 10px 10px 0 0;
+}
+.fileLink .thumbnail {
+  width: 130px;
+  height: 130px;
+  background: #ccc;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.fileLink .thumbnail a {
+  align-self: center;
+}
+.fileLink .thumbnail img {
+  max-height: 110px;
+  max-width: 110px;
+  filter: drop-shadow(3px 3px 5px #000000);
+}
+.fileLink .details {
+  padding: 10px;
+  background: #ddd;
+  width: 420px;
+  height: 130px;
+}
+
+.files .fileList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.content {
+  width: 720px;
+}
+
+/* footer styling */
+footer {
+  background: #e5d8ca;
+  padding: 40px 40px;
+}
+footer li {
+  padding: 5px 0;
+}
+footer li a {
+  text-decoration: none;
+  color: #333;
+}
+footer li a:visited {
+  color: #333;
+}
+footer li a:hover {
+  color: #000;
+  text-decoration: underline;
+}
