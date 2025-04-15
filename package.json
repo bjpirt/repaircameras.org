@@ -1,0 +1,23 @@
+{
+  "name": "repaircameras.org",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx @11ty/eleventy",
+    "start": "npx @11ty/eleventy --serve --incremental"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GFDL",
+  "dependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy-img": "^6.0.2",
+    "jsx-async-runtime": "^1.0.0",
+    "prettier": "^3.5.3",
+    "sass": "^1.86.3",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  }
+}

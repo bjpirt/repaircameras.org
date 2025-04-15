@@ -1,0 +1,203 @@
+/* CSS Reset */
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* base styling */
+body {
+  background: #e5d8ca;
+}
+
+/* Header styling */
+header {
+  padding: 20px 40px;
+  background: #e5d8ca;
+
+  a {
+    text-decoration: none;
+    color: #333;
+
+    &:visited {
+      color: #333;
+    }
+    &:hover {
+      color: #000;
+    }
+  }
+
+  h1 {
+    font-size: 300%;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+  }
+}
+
+/* Breadcrumbs styling */
+#breadcrumbs {
+  background: #c6baae;
+
+  ul {
+    padding: 10px 40px;
+    list-style: none;
+
+    li {
+      display: inline;
+      font-size: 18px;
+    }
+
+    li + li:before {
+      padding: 8px;
+      color: black;
+      content: "/\00a0";
+    }
+
+    a {
+      color: #333;
+      text-decoration: none;
+
+      &:hover {
+        color: #000;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/* main body styling */
+main {
+  background: #eee;
+  color: #222;
+  padding: 20px 40px;
+
+  p {
+    margin: 10px 0;
+  }
+
+  ul {
+    list-style: disc;
+    list-style-position: inside;
+
+    li {
+      margin: 10px 0;
+    }
+  }
+
+  a {
+    color: #333;
+  }
+
+  h2,
+  h3 {
+    font-weight: bold;
+  }
+
+  h2 {
+    font-size: 200%;
+    margin: 30px 0 10px;
+  }
+
+  h3 {
+    font-size: 160%;
+    margin: 24px 0 8px;
+  }
+}
+
+/* File Link */
+
+.fileLink {
+  display: flex;
+  margin: 10px 10px 0 0;
+
+  .thumbnail {
+    width: 130px;
+    height: 130px;
+    background: #ccc;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+
+    a {
+      align-self: center;
+    }
+
+    img {
+      max-height: 110px;
+      max-width: 110px;
+      filter: drop-shadow(3px 3px 5px #000000);
+    }
+  }
+
+  .details {
+    padding: 10px;
+    background: #ddd;
+    width: 420px;
+    height: 130px;
+  }
+}
+
+.files {
+  .fileList {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.content {
+  width: 720px;
+}
+
+/* footer styling */
+footer {
+  background: #e5d8ca;
+  padding: 40px 40px;
+
+  li {
+    padding: 5px 0;
+
+    a {
+      text-decoration: none;
+      color: #333;
+
+      &:visited {
+        color: #333;
+      }
+      &:hover {
+        color: #000;
+        text-decoration: underline;
+      }
+    }
+  }
+}

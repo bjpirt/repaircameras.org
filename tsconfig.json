@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "jsx-async-runtime",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "paths": {
+      "@components/*": ["./components/*"]
+    },
+    "skipLibCheck": true,
+    "target": "ESNext"
+  },
+  "include": ["_layouts", "components", "site", "tests"],
+  "exclude": ["node_modules", "_site"]
+}
