@@ -19,6 +19,10 @@ export function MainTemplate({
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <meta
+          name="description"
+          content="A repository of useful manuals and resources to help you repair your camera"
+        />
         <title>{title ? `Repair Cameras | ${title}` : "Repair Cameras"}</title>
         <link rel="stylesheet" href="/css/style.css" />
       </head>
