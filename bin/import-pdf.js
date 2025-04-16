@@ -114,7 +114,7 @@ layout: item.11ty.tsx
 tags:
   - cameras
 manufacturer: ${capitalise(manufacturer)}
-model: ${name}
+model: ${capitalise(name)}
 relatedFiles:
   - ${fileId}
 relatedLinks:
