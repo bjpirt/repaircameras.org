@@ -26,7 +26,6 @@ export function index({
         {collections.cameras
           .filter((camera) => camera.data.manufacturer === manufacturer)
           .sort((a, b) => (a.model > b.model ? 1 : b.model > a.model ? -1 : 0))
-          .reverse()
           .map((camera) => (
             <li>
               <a href={camera.url}>{camera.data.model}</a>
