@@ -138,7 +138,7 @@ const createCameraPage = async (id, manufacturer) => {
     case "n":
       return;
     case "o":
-      const a2 = ask("Enter camera name: ");
+      const a2 = await ask("Enter camera name: ");
       cameraName = a2.trim();
       break;
   }
