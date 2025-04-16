@@ -35,10 +35,7 @@ export async function eleventySetup(eleventyConfig) {
   });
 
   eleventyConfig.addPassthroughCopy("site/files/*.pdf");
-  eleventyConfig.addPassthroughCopy({
-    "site/files/*.png": "img",
-    "site/files/*.jpg": "img",
-  });
+  eleventyConfig.addPassthroughCopy("site/static/img/*");
 
   return {
     dir: {

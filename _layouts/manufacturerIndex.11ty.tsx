@@ -22,7 +22,7 @@ export function index({
     <MainTemplate title={manufacturer} page={page} allPages={allPages}>
       <h3>{manufacturer} Camera Models</h3>
       {content}
-      <ul>
+      <ul class="linkList">
         {collections.cameras
           .filter((camera) => camera.data.manufacturer === manufacturer)
           .sort((a, b) => (a.model > b.model ? 1 : b.model > a.model ? -1 : 0))

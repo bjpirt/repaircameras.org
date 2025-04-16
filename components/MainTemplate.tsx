@@ -4,6 +4,7 @@ type Props = {
   title: string;
   page: any;
   allPages: any[];
+  preMain?: JSX.Element;
   children?: JSX.Children;
 };
 
@@ -12,6 +13,7 @@ export function MainTemplate({
   title,
   page,
   allPages,
+  preMain,
 }: Props): JSX.Element {
   return (
     <html lang="en">
@@ -24,7 +26,7 @@ export function MainTemplate({
           content="A repository of useful manuals and resources to help you repair your camera"
         />
         <title>{title ? `Repair Cameras | ${title}` : "Repair Cameras"}</title>
-        <link rel="stylesheet" href="/css/style.css" />
+        <link rel="stylesheet" href="/static/style.css" />
       </head>
       <body>
         <header>
@@ -37,6 +39,7 @@ export function MainTemplate({
             <Breadcrumbs page={page} allPages={allPages} />
           ) : undefined}
         </div>
+        {preMain ? preMain : undefined}
         <main>{children}</main>
         <footer>
           <ul>

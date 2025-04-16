@@ -179,6 +179,52 @@ main {
   width: 720px;
 }
 
+/* banner */
+
+#banner {
+  text-align: center;
+  padding: 100px 0;
+  background-image: url("/static/img/home-bg.jpg");
+  background-size: cover;
+  background-position: center;
+
+  h2 {
+    font-size: 200%;
+    margin-bottom: 30px;
+    padding: 15px;
+    font-weight: bold;
+    background: #fff;
+    display: inline-block;
+
+    &.sub {
+      font-size: 180%;
+    }
+  }
+}
+
+/* linkList */
+
+.linkList {
+  ul {
+    display: flex;
+  }
+  li {
+    list-style-type: none;
+    display: inline-flex;
+    margin: 0 20px 20px 0;
+
+    a {
+      background: #333;
+      font-weight: bold;
+      padding: 20px;
+      font-size: 200%;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+  }
+}
+
 /* footer styling */
 footer {
   background: #e5d8ca;
