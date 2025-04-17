@@ -6,6 +6,7 @@ manufacturer: Bronica
 model: ETR
 relatedFiles:
   - bronica-etr-repair-manual
+  - bronica-etr-ae-finder-e-repair-manual
 relatedLinks:
 ---
 
