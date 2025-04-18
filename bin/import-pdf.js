@@ -15,7 +15,7 @@ if (!filePath) {
   process.exit(1);
 }
 
-const fileId = Path.parse(filePath).name;
+const fileId = Path.parse(filePath).name.toLowerCase();
 
 function capitalise(s) {
   return s && String(s[0]).toUpperCase() + String(s).slice(1);
@@ -26,6 +26,13 @@ function ask(question) {
     rl.question(question, (input) => resolve(input));
   });
 }
+
+const renameFile = (filePath) => {
+  const originalName = Path.parse(filePath).name;
+  const lowerName = originalName.toLowerCase();
+  const newFilePath = filePath.replace(originalName, lowerName);
+  fs.renameSync(filePath, newFilePath);
+};
 
 const createThumbnail = (id) => {
   if (
@@ -120,7 +127,10 @@ relatedFiles:
 relatedLinks:
 ---
 `;
-  fs.writeFileSync(`site/cameras/${manufacturer}/${name}.md`, content);
+  fs.writeFileSync(
+    `site/cameras/${manufacturer}/${name.toLowerCase().replace(" ", "-")}.md`,
+    content
+  );
 };
 
 const createCameraPage = async (id, manufacturer) => {
@@ -145,6 +155,7 @@ const createCameraPage = async (id, manufacturer) => {
   _createCameraPage(cameraName, manufacturer, id);
 };
 
+renameFile(filePath);
 createThumbnail(fileId);
 createDataFile(fileId);
 const manufacturer = await createManufacturerIndex(fileId);
