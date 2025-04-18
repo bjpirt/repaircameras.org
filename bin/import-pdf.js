@@ -8,15 +8,6 @@ import { stdin, stdout } from "node:process";
 
 const rl = readline.createInterface({ input: stdin, output: stdout });
 
-const filePath = process.argv[2];
-
-if (!filePath) {
-  console.log("Usage: import-pdf.js <file>");
-  process.exit(1);
-}
-
-const fileId = Path.parse(filePath).name.toLowerCase();
-
 function capitalise(s) {
   return s && String(s[0]).toUpperCase() + String(s).slice(1);
 }
@@ -35,7 +26,7 @@ const renameFile = (filePath) => {
   return newFilePath;
 };
 
-const createThumbnail = (id) => {
+const createThumbnail = (id, filePath) => {
   if (
     fs.existsSync(`site/_data/files/${id}.jpg`) ||
     fs.existsSync(`site/_data/files/${id}.jpg`)
@@ -76,7 +67,7 @@ const createDataFile = (id) => {
   const title = splitId.map(capitalise).join(" ");
   const fileType = capitalise(splitId.slice(2).join(" "));
   const description = `${fileType} for the ${capitalise(splitId[0])} ${capitalise(splitId[1])}`;
-  fs.writeFileSync(dataFile, JSON.stringify({ title, description }));
+  fs.writeFileSync(dataFile, JSON.stringify({ title, description }, null, 2));
 };
 
 const _createManufacturerIndex = (name) => {
@@ -168,12 +159,33 @@ const checkCompression = async (fileName) => {
   );
 };
 
-const newFile = renameFile(filePath);
-createThumbnail(fileId);
-createDataFile(fileId);
-const manufacturer = await createManufacturerIndex(fileId);
-console.log(manufacturer);
-await createCameraPage(fileId, manufacturer);
-await checkCompression(newFile);
+const createFileId = (filePath) => Path.parse(filePath).name.toLowerCase();
+
+const getUnprocessedFiles = () => {
+  const files = fs.readdirSync("site/files/");
+  const dataFiles = fs.readdirSync("site/_data/files");
+
+  return files
+    .filter(
+      (f) =>
+        f.endsWith(".pdf") &&
+        !dataFiles.find((df) => df.includes(createFileId(f)))
+    )
+    .map((f) => `site/files/${f}`);
+};
+
+const processFile = async (filePath) => {
+  const fileId = createFileId(filePath);
+  const newFile = renameFile(filePath);
+  createThumbnail(fileId, newFile);
+  createDataFile(fileId);
+  const manufacturer = await createManufacturerIndex(fileId);
+  await createCameraPage(fileId, manufacturer);
+  await checkCompression(newFile);
+};
+
+for (const file of getUnprocessedFiles()) {
+  await processFile(file);
+}
 
 rl.close();
