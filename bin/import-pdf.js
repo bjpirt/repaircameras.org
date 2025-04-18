@@ -55,6 +55,7 @@ const createThumbnail = (id) => {
   );
   if (newThumbnails.length !== 1) {
     console.log("Error: multiple thumbnails created");
+    return;
   }
   const newFileEnding = newThumbnails[0].split(".").slice(-1)[0];
   fs.renameSync(
