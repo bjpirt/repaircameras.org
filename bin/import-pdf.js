@@ -32,6 +32,7 @@ const renameFile = (filePath) => {
   const lowerName = originalName.toLowerCase();
   const newFilePath = filePath.replace(originalName, lowerName);
   fs.renameSync(filePath, newFilePath);
+  return newFilePath;
 };
 
 const createThumbnail = (id) => {
@@ -156,11 +157,23 @@ const createCameraPage = async (id, manufacturer) => {
   _createCameraPage(cameraName, manufacturer, id);
 };
 
-renameFile(filePath);
+const checkCompression = async (fileName) => {
+  const cmd = `pdfimages -list ${fileName}`;
+  const output = execSync(cmd).toString();
+  var imageCount = (output.match(/image/g) || []).length;
+  var jpegCount = (output.match(/jpeg/g) || []).length;
+  var ccittCount = (output.match(/ccitt/g) || []).length;
+  console.log(
+    `images: ${imageCount} | ccitt: ${ccittCount} | jpeg: ${jpegCount}`
+  );
+};
+
+const newFile = renameFile(filePath);
 createThumbnail(fileId);
 createDataFile(fileId);
 const manufacturer = await createManufacturerIndex(fileId);
 console.log(manufacturer);
 await createCameraPage(fileId, manufacturer);
+await checkCompression(newFile);
 
 rl.close();
