@@ -7,6 +7,7 @@ model: KX
 relatedFiles:
   - pentax-kx-parts-diagram
   - pentax-k1000-service-manual
+  - pentax-spotmatic-meter
 relatedLinks:
 ---
 
