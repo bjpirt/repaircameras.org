@@ -6,7 +6,7 @@ import Image from "@11ty/eleventy-img";
 
 const exists = async (file) =>
   fs.promises
-    .access("_site/img/thumbnails/", fs.constants.F_OK)
+    .access(file, fs.constants.F_OK)
     .then(() => true)
     .catch(() => false);
 
@@ -15,11 +15,11 @@ const images = async () => {
     .filter((f) => f.endsWith(".pdf"))
     .map((i) => `site/files/${i}`);
 
-  const thumbnailDirExists = exists("_site/img/thumbnails/");
+  const thumbnailDirExists = await exists("_site/img/thumbnails/");
 
   if (!thumbnailDirExists) {
     console.log("Creating thumbnails dir");
-    await fs.promises.mkdir("_site/img/thumbnails/", true);
+    await fs.promises.mkdir("_site/img/thumbnails/", { recursive: true });
   }
   const output = {};
 
