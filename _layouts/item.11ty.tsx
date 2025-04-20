@@ -71,7 +71,6 @@ export function item({
   page,
   collections: { all: allPages },
 }: ViewProps): JSX.Element {
-  console.log(links);
   return (
     <MainTemplate title={title} page={page} allPages={allPages}>
       <h2>{`${manufacturer} ${model}`}</h2>

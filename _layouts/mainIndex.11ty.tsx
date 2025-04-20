@@ -19,7 +19,6 @@ export function index({
   files,
   links,
 }: ViewProps): JSX.Element {
-  // console.log(rest);
   const resourceCount = Object.keys(files).length + Object.keys(links).length;
   const preMain =
     page.url === "/" ? (
