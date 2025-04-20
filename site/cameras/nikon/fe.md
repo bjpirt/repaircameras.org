@@ -6,6 +6,7 @@ manufacturer: Nikon
 model: FE
 relatedFiles:
   - nikon-fe-wiring-diagram
+  - nikon-fe-exploded-diagrams
 relatedLinks:
 ---
 
