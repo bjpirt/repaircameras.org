@@ -5,27 +5,29 @@ type Props = {
   id: string;
   url: string;
   file: File;
-  images: Record<string, ImageCollection>;
 };
 
 const getImageUrl = (
   id: string,
   width: number,
-  images: Record<string, ImageCollection>
+  images: ImageCollection
 ): string => {
-  const image = images[id]?.webp.find((i) => i.width === width);
+  const image = images.webp.find((i) => i.width === width);
   if (!image) {
     return "/img/default-file-thumbnail.webp";
   }
   return image.url;
 };
 
-export function ResourceLink({ id, url, file, images }: Props) {
+export function ResourceLink({ id, url, file }: Props) {
   return (
     <div class="fileLink">
       <div class="thumbnail">
         <a href={url} target="_blank">
-          <img src={getImageUrl(id, 110, images)} alt="Document thumbnail" />
+          <img
+            src={getImageUrl(id, 110, file.thumbnail)}
+            alt="Document thumbnail"
+          />
         </a>
       </div>
       <div class="details">

@@ -15,17 +15,12 @@ type ViewProps = {
   relatedFiles: string[];
   relatedLinks: string[];
   page: Page;
-  allImages: Record<string, ImageCollection>;
   collections: {
     all: PageMetadata[];
   };
 };
 
-const filesSection = (
-  relatedFiles: string[],
-  files: Record<string, File>,
-  images: Record<string, ImageCollection>
-) => {
+const filesSection = (relatedFiles: string[], files: Record<string, File>) => {
   return (
     <div class="files">
       <h3>Files</h3>
@@ -33,14 +28,7 @@ const filesSection = (
         {relatedFiles.map((file) => {
           if (files[file]) {
             const url = `/files/${file}.pdf`;
-            return (
-              <ResourceLink
-                id={file}
-                url={url}
-                file={files[file]}
-                images={images}
-              />
-            );
+            return <ResourceLink id={file} url={url} file={files[file]} />;
           }
           throw new Error(`File not found: ${file}`);
         })}
@@ -49,11 +37,7 @@ const filesSection = (
   );
 };
 
-const linksSection = (
-  relatedLinks: string[],
-  links: Record<string, Link>,
-  images: Record<string, ImageCollection>
-) => {
+const linksSection = (relatedLinks: string[], links: Record<string, Link>) => {
   return (
     <div class="files">
       <h3>Other Resources</h3>
@@ -65,7 +49,6 @@ const linksSection = (
                 id={link}
                 url={links[link].url}
                 file={links[link]}
-                images={images}
               />
             );
           }
@@ -87,20 +70,16 @@ export function item({
   relatedLinks,
   page,
   collections: { all: allPages },
-  allImages,
 }: ViewProps): JSX.Element {
+  console.log(links);
   return (
     <MainTemplate title={title} page={page} allPages={allPages}>
       <h2>{`${manufacturer} ${model}`}</h2>
       {content}
 
-      {relatedFiles?.length > 0
-        ? filesSection(relatedFiles, files, allImages)
-        : undefined}
+      {relatedFiles?.length > 0 ? filesSection(relatedFiles, files) : undefined}
 
-      {relatedLinks?.length > 0
-        ? linksSection(relatedLinks, links, allImages)
-        : undefined}
+      {relatedLinks?.length > 0 ? linksSection(relatedLinks, links) : undefined}
     </MainTemplate>
   );
 }

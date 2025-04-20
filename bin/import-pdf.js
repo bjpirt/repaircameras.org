@@ -5,6 +5,7 @@ import fs from "fs";
 import { execSync } from "child_process";
 import readline from "node:readline";
 import { stdin, stdout } from "node:process";
+import thumbnail from "pdf-thumbnail";
 
 const rl = readline.createInterface({ input: stdin, output: stdout });
 
@@ -26,34 +27,26 @@ const renameFile = (filePath) => {
   return newFilePath;
 };
 
-const createThumbnail = (id, filePath) => {
+const createThumbnail = async (id, filePath) => {
   if (
     fs.existsSync(`site/_data/files/${id}.jpg`) ||
-    fs.existsSync(`site/_data/files/${id}.jpg`)
+    fs.existsSync(`site/_data/files/${id}.png`)
   ) {
     return;
   }
 
   console.log("Creating thumbnail");
 
-  const outputFile = `site/_data/files/${id}`;
-  const cmd = `pdfimages -f 1 -l 1 -png -j ${filePath} ${outputFile}`;
-  execSync(cmd);
+  const outputFile = `site/_data/files/${id}.jpg`;
 
-  const files = fs.readdirSync("site/_data/files/");
-  const thumbnailRegex = new RegExp(`${id}-\\d+\.(jpg|png)`);
-  const newThumbnails = files.filter(
-    (f) => (f.endsWith(".jpg") || f.endsWith(".png")) && thumbnailRegex.test(f)
-  );
-  if (newThumbnails.length !== 1) {
-    console.log("Error: multiple thumbnails created");
-    return;
-  }
-  const newFileEnding = newThumbnails[0].split(".").slice(-1)[0];
-  fs.renameSync(
-    `site/_data/files/${newThumbnails[0]}`,
-    `site/_data/files/${id}.${newFileEnding}`
-  );
+  await thumbnail(fs.createReadStream(filePath), {
+    resize: {
+      width: 800,
+      height: 800,
+    },
+  })
+    .then((data) => data.pipe(fs.createWriteStream(outputFile)))
+    .catch((err) => console.error(err));
 };
 
 const createDataFile = (id) => {
@@ -177,7 +170,7 @@ const getUnprocessedFiles = () => {
 const processFile = async (filePath) => {
   const fileId = createFileId(filePath);
   const newFile = renameFile(filePath);
-  createThumbnail(fileId, newFile);
+  await createThumbnail(fileId, newFile);
   createDataFile(fileId);
   const manufacturer = await createManufacturerIndex(fileId);
   await createCameraPage(fileId, manufacturer);

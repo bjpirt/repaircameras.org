@@ -15,6 +15,8 @@
     "@11ty/eleventy": "^3.0.0",
     "@11ty/eleventy-img": "^6.0.2",
     "jsx-async-runtime": "^1.0.0",
+    "pdf-lib": "^1.17.1",
+    "pdf-thumbnail": "^1.0.6",
     "prettier": "^3.5.3",
     "sass": "^1.86.3",
     "tsx": "^4.19.3",
