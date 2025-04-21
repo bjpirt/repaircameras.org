@@ -3,9 +3,8 @@ layout: item.11ty.tsx
 tags:
   - cameras
 manufacturer: Pentax
-model: Spotmatic SP F
+model: SV
 relatedFiles:
-  - pentax-spotmatic-meter
-  - pentax-spotmatic-exploded-diagram
+  - pentax-sv-exploded-diagram
 relatedLinks:
 ---
