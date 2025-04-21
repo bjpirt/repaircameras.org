@@ -5,7 +5,7 @@ import fs from "fs";
 import { execSync } from "child_process";
 import readline from "node:readline";
 import { stdin, stdout } from "node:process";
-import thumbnail from "pdf-thumbnail";
+import { PDFDocument } from "pdf-lib";
 
 const rl = readline.createInterface({ input: stdin, output: stdout });
 
@@ -27,119 +27,108 @@ const renameFile = (filePath) => {
   return newFilePath;
 };
 
-const createThumbnail = async (id, filePath) => {
-  if (
-    fs.existsSync(`site/_data/files/${id}.jpg`) ||
-    fs.existsSync(`site/_data/files/${id}.png`)
-  ) {
+const getDescription = (fileId, manufacturer, model) => {
+  if (fileId.includes("service")) {
+    return `Service manual for the ${manufacturer} ${model}`;
+  }
+  if (fileId.includes("repair")) {
+    return `Repair manual for the ${manufacturer} ${model}`;
+  }
+  if (fileId.includes("explode")) {
+    return `Exploded diagrams for the ${manufacturer} ${model}`;
+  }
+  if (fileId.includes("parts")) {
+    return `Parts list for the ${manufacturer} ${model}`;
+  }
+  return `Document for the ${manufacturer} ${model}`;
+};
+
+const updateMetadata = async (fileId, manufacturer, model) => {
+  const pdfFile = `site/files/${fileId}.pdf`;
+
+  const pdfData = fs.readFileSync(pdfFile);
+  const pdfDoc = await PDFDocument.load(pdfData);
+
+  const title = fileId.split("-").map(capitalise).join(" ");
+  pdfDoc.setTitle(title, { showInWindowTitleBar: true });
+  pdfDoc.setSubject(
+    getDescription(fileId, capitalise(manufacturer), capitalise(model))
+  );
+  pdfDoc.setCreator("");
+  pdfDoc.setProducer("https://repaircameras.org");
+
+  const dataOut = await pdfDoc.save();
+  fs.writeFileSync(pdfFile, dataOut);
+};
+
+const createManufacturerIndex = (name) => {
+  const pageSlug = name.toLowerCase().replace(" ", "-");
+
+  if (fs.existsSync(`site/cameras/${pageSlug}/index.md`)) {
     return;
   }
 
-  console.log("Creating thumbnail");
-
-  const outputFile = `site/_data/files/${id}.jpg`;
-
-  await thumbnail(fs.createReadStream(filePath), {
-    resize: {
-      width: 800,
-      height: 800,
-    },
-  })
-    .then((data) => data.pipe(fs.createWriteStream(outputFile)))
-    .catch((err) => console.error(err));
-};
-
-const createDataFile = (id) => {
-  const dataFile = `site/_data/files/${id}.json`;
-  if (fs.existsSync(dataFile)) {
-    return;
-  }
-  console.log("Creating data file");
-
-  const splitId = id.split("-");
-  const title = splitId.map(capitalise).join(" ");
-  const fileType = capitalise(splitId.slice(2).join(" "));
-  const description = `${fileType} for the ${capitalise(splitId[0])} ${capitalise(splitId[1])}`;
-  fs.writeFileSync(dataFile, JSON.stringify({ title, description }, null, 2));
-};
-
-const _createManufacturerIndex = (name) => {
   console.log(`Creating manufacturer index for ${name}`);
   const content = `---
 tags: manufacturers
 layout: manufacturerIndex.11ty.tsx
-manufacturer: ${capitalise(name)}
+manufacturer: ${name}
 ---
 `;
-  if (!fs.existsSync(`site/cameras/${name}/`)) {
-    fs.mkdirSync(`site/cameras/${name}`);
+
+  if (!fs.existsSync(`site/cameras/${pageSlug}/`)) {
+    fs.mkdirSync(`site/cameras/${pageSlug}`);
   }
-  fs.writeFileSync(`site/cameras/${name}/index.md`, content);
+  fs.writeFileSync(`site/cameras/${pageSlug}/index.md`, content);
 };
 
-const createManufacturerIndex = async (id) => {
-  const splitId = id.split("-");
-  let manufacturer = splitId[0];
-  const indexFile = `site/cameras/${manufacturer}/index.md`;
-  if (fs.existsSync(indexFile)) {
-    return manufacturer;
+const createCameraPage = (model, manufacturer, fileId) => {
+  const manPageSlug = manufacturer.toLowerCase().replace(" ", "-");
+  const modelPageSlug = model.toLowerCase().replace(" ", "-");
+  const pageName = `site/cameras/${manPageSlug}/${modelPageSlug}.md`;
+  if (fs.existsSync(pageName)) {
+    return;
   }
-  const a1 = await ask(
-    `Create manufacturer index file (${manufacturer}) [y/n/o] ? `
-  );
-  switch (a1.trim()) {
-    case "y":
-      break;
-    case "n":
-      return manufacturer;
-    case "o":
-      const a2 = ask("Enter manufacturer name: ");
-      manufacturer = a2.trim();
-      break;
-  }
-  _createManufacturerIndex(manufacturer);
-  return manufacturer;
-};
-const _createCameraPage = (name, manufacturer, fileId) => {
-  console.log(`Creating camera page for ${name}`);
+  console.log(`Creating camera page for ${model}`);
+
   const content = `---
 layout: item.11ty.tsx
 tags:
   - cameras
-manufacturer: ${capitalise(manufacturer)}
-model: ${capitalise(name)}
+manufacturer: ${manufacturer}
+model: ${model}
 relatedFiles:
   - ${fileId}
 relatedLinks:
 ---
 `;
-  fs.writeFileSync(
-    `site/cameras/${manufacturer}/${name.toLowerCase().replace(" ", "-")}.md`,
-    content
-  );
+
+  fs.writeFileSync(pageName, content);
 };
 
-const createCameraPage = async (id, manufacturer) => {
-  const splitId = id.split("-");
-  let cameraName = splitId[1];
-  const pageFile = `site/cameras/${manufacturer}/${cameraName}.md`;
+// const createCameraPage = async (id, manufacturer, cameraName) => {
+//   const splitId = id.split("-");
+//   let cameraName = splitId[1];
+//   const pageFile = `site/cameras/${manufacturer}/${cameraName}.md`;
 
-  if (fs.existsSync(pageFile)) {
-    return;
-  }
-  const a1 = await ask(`Create camera page file (${cameraName}) [y/n/o] ? `);
-  switch (a1.trim()) {
-    case "y":
-      break;
-    case "n":
-      return;
-    case "o":
-      const a2 = await ask("Enter camera name: ");
-      cameraName = a2.trim();
-      break;
-  }
-  _createCameraPage(cameraName, manufacturer, id);
-};
+//   if (fs.existsSync(pageFile)) {
+//     return cameraName;
+//   }
+//   const a1 = await ask(`Create camera page file (${cameraName}) [y/n/o] ? `);
+//   switch (a1.trim()) {
+//     case "y":
+//       break;
+//     case "n":
+//       return;
+//     case "o":
+//       const a2 = await ask("Enter camera name: ");
+//       cameraName = a2.trim();
+//       break;
+//   }
+//   _createCameraPage(cameraName, manufacturer, id);
+
+//   return cameraName;
+// };
 
 const checkCompression = async (fileName) => {
   const cmd = `pdfimages -list ${fileName}`;
@@ -154,31 +143,70 @@ const checkCompression = async (fileName) => {
 
 const createFileId = (filePath) => Path.parse(filePath).name.toLowerCase();
 
-const getUnprocessedFiles = () => {
+const getPdfProducer = async (filePath) => {
+  const pdfData = fs.readFileSync(filePath);
+  const pdfDoc = await PDFDocument.load(pdfData);
+
+  return pdfDoc.getProducer();
+};
+
+const getNames = async (fileId) => {
+  let manufacturer = capitalise(fileId.split("-")[0]);
+  const a1 = await ask(`Manufacturer name (${manufacturer}) [y/n] ? `);
+  switch (a1.trim()) {
+    case "y":
+    case "":
+      break;
+    case "n":
+      const a2 = ask("Enter manufacturer name: ");
+      manufacturer = a2.trim();
+      break;
+  }
+
+  let model = capitalise(fileId.split("-")[1]);
+  const a3 = await ask(`Camera model (${model}) [y/n] ? `);
+  switch (a3.trim()) {
+    case "y":
+    case "":
+      break;
+    case "n":
+      const a4 = await ask("Enter camera model name: ");
+      model = a4.trim();
+      break;
+  }
+
+  return { manufacturer, model };
+};
+
+const getUnprocessedFiles = async () => {
   const files = fs.readdirSync("site/files/");
-  const dataFiles = fs.readdirSync("site/_data/files");
 
   return files
+    .map((f) => `site/files/${f}`)
+    .filter((f) => f.endsWith(".pdf"))
     .filter(
-      (f) =>
-        f.endsWith(".pdf") &&
-        !dataFiles.find((df) => df.includes(createFileId(f)))
-    )
-    .map((f) => `site/files/${f}`);
+      async (f) => (await getPdfProducer(f)) !== "https://repaircameras.org"
+    );
 };
 
 const processFile = async (filePath) => {
   const fileId = createFileId(filePath);
   const newFile = renameFile(filePath);
-  await createThumbnail(fileId, newFile);
-  createDataFile(fileId);
-  const manufacturer = await createManufacturerIndex(fileId);
-  await createCameraPage(fileId, manufacturer);
+  const { manufacturer, model } = await getNames(fileId);
+  await createManufacturerIndex(manufacturer);
+  await createCameraPage(model, manufacturer, fileId);
+  updateMetadata(fileId, manufacturer, model);
   await checkCompression(newFile);
 };
 
-for (const file of getUnprocessedFiles()) {
-  await processFile(file);
-}
+// for (const file of await getUnprocessedFiles()) {
+//   console.log(file);
+//   console.log(await getPdfProducer(file));
+//   // await processFile(file);
+// }
+
+const newFile = process.argv[2];
+
+await processFile(newFile);
 
 rl.close();
