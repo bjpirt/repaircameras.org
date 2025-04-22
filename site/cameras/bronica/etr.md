@@ -7,6 +7,7 @@ model: ETR
 relatedFiles:
   - bronica-etr-repair-manual
   - bronica-etr-ae-finder-e-repair-manual
+  - bronica-etrsi-film-back-repair-manual
 relatedLinks:
 ---
 

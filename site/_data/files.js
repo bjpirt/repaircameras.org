@@ -25,6 +25,7 @@ const images = async () => {
 
   for (const file of allFiles) {
     const id = Path.parse(file).name;
+    console.log(id);
 
     const screenshotPath = `_site/img/thumbnails/${id}-full.jpg`;
 

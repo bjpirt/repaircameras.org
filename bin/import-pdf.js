@@ -158,7 +158,7 @@ const getNames = async (fileId) => {
     case "":
       break;
     case "n":
-      const a2 = ask("Enter manufacturer name: ");
+      const a2 = await ask("Enter manufacturer name: ");
       manufacturer = a2.trim();
       break;
   }
