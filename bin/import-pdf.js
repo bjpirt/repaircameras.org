@@ -62,7 +62,7 @@ const updateMetadata = async (fileId, manufacturer, model) => {
 };
 
 const createManufacturerIndex = (name) => {
-  const pageSlug = name.toLowerCase().replace(" ", "-");
+  const pageSlug = name.toLowerCase().replace(/ /g, "-");
 
   if (fs.existsSync(`site/cameras/${pageSlug}/index.md`)) {
     return;
@@ -83,8 +83,8 @@ manufacturer: ${name}
 };
 
 const createCameraPage = (model, manufacturer, fileId) => {
-  const manPageSlug = manufacturer.toLowerCase().replace(" ", "-");
-  const modelPageSlug = model.toLowerCase().replace(" ", "-");
+  const manPageSlug = manufacturer.toLowerCase().replace(/ /g, "-");
+  const modelPageSlug = model.toLowerCase().replace(/ /g, "-");
   const pageName = `site/cameras/${manPageSlug}/${modelPageSlug}.md`;
   if (fs.existsSync(pageName)) {
     return;
