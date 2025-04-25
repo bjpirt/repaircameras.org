@@ -50,7 +50,7 @@ export function MainTemplate({
               <a href="/contributing/">Contributing</a>
             </li>
             <li>
-              <a href="/">Github</a>
+              <a href="https://github.com/bjpirt/repaircameras.org/">Github</a>
             </li>
             <li>
               <a href="/open-source/">Open Source</a>
