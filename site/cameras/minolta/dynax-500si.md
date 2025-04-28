@@ -3,8 +3,8 @@ layout: item.11ty.tsx
 tags:
   - cameras
 manufacturer: Minolta
-model: X500
+model: Dynax 500si
 relatedFiles:
-  - minolta-x500-service-manual
+  - minolta-dynax-500si-service-manual
 relatedLinks:
 ---
