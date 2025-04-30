@@ -31,6 +31,9 @@ const getDescription = (fileId, manufacturer, model) => {
   if (fileId.includes("service")) {
     return `Service manual for the ${manufacturer} ${model}`;
   }
+  if (fileId.includes("repair-guide")) {
+    return `Repair guide for the ${manufacturer} ${model}`;
+  }
   if (fileId.includes("repair")) {
     return `Repair manual for the ${manufacturer} ${model}`;
   }
