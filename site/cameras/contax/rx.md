@@ -6,6 +6,7 @@ manufacturer: Contax
 model: RX
 relatedFiles:
   - contax-rx-service-manual
+  - contax-rx-exploded-diagrams
 relatedLinks:
 ---
 

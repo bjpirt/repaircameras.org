@@ -5,6 +5,7 @@ tags:
 manufacturer: Graflex
 model: Super Graphic
 relatedFiles:
+  - graflex-super-graphic-service-manual
   - graflex-super-graphic-parts-list
 relatedLinks:
 ---

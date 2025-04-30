@@ -7,6 +7,7 @@ model: FE
 relatedFiles:
   - nikon-fe-wiring-diagram
   - nikon-fe-exploded-diagrams
+  - nikon-fe-fe2-service-manual
 relatedLinks:
 ---
 
