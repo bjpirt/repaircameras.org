@@ -6,5 +6,6 @@ manufacturer: Contax
 model: RTS-II
 relatedFiles:
   - contax-rts-ii-repair-manual
+  - contax-rts-ii-exploded-diagrams
 relatedLinks:
 ---

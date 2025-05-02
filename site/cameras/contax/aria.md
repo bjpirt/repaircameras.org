@@ -6,5 +6,6 @@ manufacturer: Contax
 model: Aria
 relatedFiles:
   - contax-aria-repair-manual
+  - contax-aria-exploded-diagrams
 relatedLinks:
 ---
