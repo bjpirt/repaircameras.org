@@ -43,6 +43,9 @@ const getDescription = (fileId, manufacturer, model) => {
   if (fileId.includes("parts")) {
     return `Parts list for the ${manufacturer} ${model}`;
   }
+  if (fileId.includes("ccm-article")) {
+    return `Camera Craftsman Magazine article on the ${manufacturer} ${model}`;
+  }
   return `Document for the ${manufacturer} ${model}`;
 };
 
