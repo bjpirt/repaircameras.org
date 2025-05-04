@@ -34,6 +34,9 @@ const getDescription = (fileId, manufacturer, model) => {
   if (fileId.includes("repair-guide")) {
     return `Repair guide for the ${manufacturer} ${model}`;
   }
+  if (fileId.includes("national-camera-service-manual")) {
+    return `Service manual for the ${manufacturer} ${model} from National Camera`;
+  }
   if (fileId.includes("repair")) {
     return `Repair manual for the ${manufacturer} ${model}`;
   }
@@ -45,6 +48,9 @@ const getDescription = (fileId, manufacturer, model) => {
   }
   if (fileId.includes("ccm-article")) {
     return `Camera Craftsman Magazine article on the ${manufacturer} ${model}`;
+  }
+  if (fileId.includes("article")) {
+    return `Article on the ${manufacturer} ${model}`;
   }
   return `Document for the ${manufacturer} ${model}`;
 };
