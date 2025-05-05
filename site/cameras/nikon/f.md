@@ -6,5 +6,6 @@ manufacturer: Nikon
 model: F
 relatedFiles:
   - nikon-f-service-manual
+  - nikon-f-photomic-ftn-meter-adjustmment
 relatedLinks:
 ---

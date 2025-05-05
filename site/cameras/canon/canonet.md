@@ -6,5 +6,6 @@ manufacturer: Canon
 model: Canonet
 relatedFiles:
   - canon-canonet-service-manual
+  - canon-canonet-full-service-manual
 relatedLinks:
 ---
