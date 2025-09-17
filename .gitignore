@@ -1,3 +1,5 @@
 _site
 node_modules
 _local
+incoming-camera-manuals
+.claude
