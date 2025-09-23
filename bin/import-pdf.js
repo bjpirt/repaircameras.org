@@ -27,7 +27,7 @@ const renameFile = (filePath) => {
   return newFilePath;
 };
 
-const getDescription = (fileId, manufacturer, model) => {
+const getDefaultDescription = (fileId, manufacturer, model) => {
   if (fileId.includes("service")) {
     return `Service manual for the ${manufacturer} ${model}`;
   }
@@ -55,7 +55,22 @@ const getDescription = (fileId, manufacturer, model) => {
   return `Document for the ${manufacturer} ${model}`;
 };
 
-const updateMetadata = async (fileId, manufacturer, model) => {
+const getDescription = async (fileId, manufacturer, model) => {
+  let description = getDefaultDescription(fileId, manufacturer, model);
+  const a1 = await ask(`Description (${description}) [y/n] ? `);
+  switch (a1.trim()) {
+    case "y":
+    case "":
+      break;
+    case "n":
+      const a2 = await ask("Enter description: ");
+      description = a2.trim();
+      break;
+  }
+  return description;
+};
+
+const updateMetadata = async (fileId, manufacturer, model, description) => {
   const pdfFile = `site/files/${fileId}.pdf`;
 
   const pdfData = fs.readFileSync(pdfFile);
@@ -63,9 +78,7 @@ const updateMetadata = async (fileId, manufacturer, model) => {
 
   const title = fileId.split("-").map(capitalise).join(" ");
   pdfDoc.setTitle(title, { showInWindowTitleBar: true });
-  pdfDoc.setSubject(
-    getDescription(fileId, capitalise(manufacturer), capitalise(model))
-  );
+  pdfDoc.setSubject(description);
   pdfDoc.setCreator("");
   pdfDoc.setProducer("https://repaircameras.org");
 
@@ -117,30 +130,6 @@ relatedLinks:
 
   fs.writeFileSync(pageName, content);
 };
-
-// const createCameraPage = async (id, manufacturer, cameraName) => {
-//   const splitId = id.split("-");
-//   let cameraName = splitId[1];
-//   const pageFile = `site/cameras/${manufacturer}/${cameraName}.md`;
-
-//   if (fs.existsSync(pageFile)) {
-//     return cameraName;
-//   }
-//   const a1 = await ask(`Create camera page file (${cameraName}) [y/n/o] ? `);
-//   switch (a1.trim()) {
-//     case "y":
-//       break;
-//     case "n":
-//       return;
-//     case "o":
-//       const a2 = await ask("Enter camera name: ");
-//       cameraName = a2.trim();
-//       break;
-//   }
-//   _createCameraPage(cameraName, manufacturer, id);
-
-//   return cameraName;
-// };
 
 const checkCompression = async (fileName) => {
   const cmd = `pdfimages -list ${fileName}`;
@@ -205,9 +194,14 @@ const processFile = async (filePath) => {
   const fileId = createFileId(filePath);
   const newFile = renameFile(filePath);
   const { manufacturer, model } = await getNames(fileId);
+  const description = await getDescription(
+    fileId,
+    capitalise(manufacturer),
+    capitalise(model)
+  );
   await createManufacturerIndex(manufacturer);
   await createCameraPage(model, manufacturer, fileId);
-  updateMetadata(fileId, manufacturer, model);
+  updateMetadata(fileId, manufacturer, model, description);
   await checkCompression(newFile);
 };
 
