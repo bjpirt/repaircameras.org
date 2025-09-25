@@ -9,5 +9,8 @@ relatedFiles:
   - graflex-super-graphic-parts-list
   - graflex-pacemaker-crown-service-manual
   - graflex-speed-graphic-45-service-manual
+  - graflex-pacemaker-speed-crown-graphic-23-parts-list
+  - graflex-pacemaker-speed-crown-graphic-34-parts-list
+  - graflex-speed-graphic-45-service-instructions
 relatedLinks:
 ---
