@@ -3,7 +3,7 @@ layout: item.11ty.tsx
 tags:
   - cameras
 manufacturer: Pentax
-model: Spotmatic SP
+model: Spotmatic SP 1000
 relatedFiles:
   - pentax-spotmatic-service-manual
   - pentax-spotmatic-exploded-diagram
