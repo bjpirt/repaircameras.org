@@ -7,6 +7,7 @@ model: iiig
 relatedFiles:
   - leica-iiig-service-manual
   - leica-iiig-rangefinder-adjustments
+  - leica-shutter-national-camera-manual
 relatedLinks:
 ---
 

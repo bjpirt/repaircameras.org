@@ -6,6 +6,8 @@ manufacturer: Leica
 model: iiif
 relatedFiles:
   - leica-iiif-service-manual
+  - leica-iiif-national-camera-manual
+  - leica-shutter-national-camera-manual
 relatedLinks:
 ---
 

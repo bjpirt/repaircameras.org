@@ -6,6 +6,7 @@ manufacturer: Leica
 model: CL
 relatedFiles:
   - leica-cl-service-manual
+  - leica-shutter-national-camera-manual
 relatedLinks:
 ---
 
