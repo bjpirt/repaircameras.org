@@ -5,7 +5,7 @@ tags:
 manufacturer: Yashica
 model: FR II
 relatedFiles:
-  - yashica-fr-i-exploded-diagram
   - yashica-fr-i-fr-ii-repair-manual
+  - yashica-fr-ii-exploded-diagram
 relatedLinks:
 ---
