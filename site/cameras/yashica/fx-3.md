@@ -6,5 +6,6 @@ manufacturer: Yashica
 model: FX-3
 relatedFiles:
   - yashica-fx-3-fx-7-exploded-diagram
+  - yashica-fx-3-fx-7-repair-manual
 relatedLinks:
 ---
