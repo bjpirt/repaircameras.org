@@ -522,19 +522,39 @@ const processFile = async (filename) => {
   // Ask for manufacturer confirmation
   let manufacturer = detectedManufacturer;
   if (detectedManufacturer) {
-    const mfrAnswer = await ask(`Manufacturer [${detectedManufacturer}]: `);
-    if (mfrAnswer.trim()) {
-      manufacturer = mfrAnswer.trim();
+    const mfrAnswer = await ask(`Manufacturer [${detectedManufacturer}] (or 'm' for menu): `);
+    const trimmedAnswer = mfrAnswer.trim();
+
+    // Check if user wants the menu
+    if (trimmedAnswer.toLowerCase() === 'm') {
+      return await showMenu(filename, '', '', '');
+    }
+
+    if (trimmedAnswer) {
+      manufacturer = trimmedAnswer;
     }
   } else {
-    const mfrAnswer = await ask('Manufacturer: ');
-    manufacturer = mfrAnswer.trim();
+    const mfrAnswer = await ask('Manufacturer (or \'m\' for menu): ');
+    const trimmedAnswer = mfrAnswer.trim();
+
+    // Check if user wants the menu
+    if (trimmedAnswer.toLowerCase() === 'm') {
+      return await showMenu(filename, '', '', '');
+    }
+
+    manufacturer = trimmedAnswer;
   }
 
   if (!manufacturer) {
     console.log('Manufacturer is required. Skipping file.\n');
-    const answer = await ask('Press [n] for next file, [q] to quit: ');
-    return answer.trim().toLowerCase();
+    const answer = await ask('Press [n] for next file, [m] for menu, [q] to quit: ');
+    const action = answer.trim().toLowerCase();
+
+    if (action === 'm') {
+      return await showMenu(filename, '', '', '');
+    }
+
+    return action;
   }
 
   // Extract model
