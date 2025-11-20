@@ -4,3 +4,5 @@ _local
 incoming-camera-manuals
 .claude
 files_comp
+import
+.DS_Store

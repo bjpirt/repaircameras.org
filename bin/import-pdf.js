@@ -7,6 +7,10 @@ import readline from "node:readline";
 import { stdin, stdout } from "node:process";
 import { PDFDocument } from "pdf-lib";
 
+const INCOMING_DIR = "import/incoming";
+const FILES_DIR = "site/files";
+const CAMERAS_DIR = "site/cameras";
+
 const rl = readline.createInterface({ input: stdin, output: stdout });
 
 function capitalise(s) {
