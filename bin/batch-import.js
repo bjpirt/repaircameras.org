@@ -346,9 +346,22 @@ const importFile = async (filename, manufacturer, model, documentType) => {
   const sourcePath = path.join('import/incoming', filename);
 
   // Generate target filename and fileId
-  const manSlug = manufacturer.toLowerCase().replace(/\s+/g, '-');
-  const modelSlug = model.toLowerCase().replace(/\s+/g, '-');
-  const fileId = `${manSlug}-${modelSlug}-${documentType}`;
+  let manSlug = manufacturer.toLowerCase().replace(/\s+/g, '-');
+  let modelSlug = model.toLowerCase().replace(/\s+/g, '-');
+  let fileId = `${manSlug}-${modelSlug}-${documentType}`;
+
+  // Show and allow editing of the target filename
+  console.log('\n' + '='.repeat(60));
+  console.log('Import Preview');
+  console.log('='.repeat(60));
+  console.log(`Source file:  ${filename}`);
+  console.log('');
+
+  const newFileId = await ask(`Target filename (without .pdf) [${fileId}]: `);
+  if (newFileId.trim()) {
+    fileId = newFileId.trim();
+  }
+
   const targetPath = path.join('site/files', `${fileId}.pdf`);
 
   // Check if file already exists
@@ -360,13 +373,23 @@ const importFile = async (filename, manufacturer, model, documentType) => {
 
   // Get and confirm description
   const defaultDescription = getDefaultDescription(fileId, manufacturer, model);
-  console.log(`\nSuggested description: ${defaultDescription}`);
-  const descAnswer = await ask('Use this description? [y/n]: ');
+  const customDesc = await ask(`Description [${defaultDescription}]: `);
 
-  let description = defaultDescription;
-  if (descAnswer.trim().toLowerCase() === 'n') {
-    const customDesc = await ask('Enter description: ');
-    description = customDesc.trim() || defaultDescription;
+  let description = customDesc.trim() || defaultDescription;
+
+  // Show final import details
+  console.log('\n' + '-'.repeat(60));
+  console.log('Final Import Details:');
+  console.log('-'.repeat(60));
+  console.log(`Filename:     ${fileId}.pdf`);
+  console.log(`Title:        ${fileId.split("-").map(capitalise).join(" ")}`);
+  console.log(`Description:  ${description}`);
+  console.log('-'.repeat(60));
+
+  const confirmAnswer = await ask('\nProceed with import? [y/n]: ');
+  if (confirmAnswer.trim().toLowerCase() !== 'y') {
+    console.log('\nImport cancelled.\n');
+    return false;
   }
 
   console.log('\nImporting file...');
@@ -391,6 +414,19 @@ const importFile = async (filename, manufacturer, model, documentType) => {
   }
 
   console.log(`\n✓ Import complete: ${fileId}.pdf\n`);
+
+  // Copy commit message to clipboard
+  const commitMessage = `Adding files for ${manufacturer} ${model}`;
+  try {
+    execSync(`echo "${commitMessage}" | pbcopy`);
+    console.log(`📋 Commit message copied to clipboard: "${commitMessage}"\n`);
+  } catch (error) {
+    console.log(`⚠️  Could not copy to clipboard: ${commitMessage}\n`);
+  }
+
+  // Pause before continuing
+  await ask('Press Enter to continue to next file...');
+
   return true;
 };
 
@@ -401,9 +437,9 @@ const showMenu = async (filename, manufacturer, model, documentType) => {
   console.log('\n' + '='.repeat(60));
   console.log('File Actions Menu');
   console.log('='.repeat(60));
-  console.log('1. Import this file');
-  console.log('2. Move to issues directory');
-  console.log('3. Move to already-imported directory');
+  console.log('1. Move to issues directory');
+  console.log('2. Move to already-imported directory');
+  console.log('3. Move to to-process directory (needs more work)');
   console.log('4. Cancel (continue with next file)');
   console.log('q. Quit');
   console.log('='.repeat(60) + '\n');
@@ -415,22 +451,28 @@ const showMenu = async (filename, manufacturer, model, documentType) => {
 
   switch (trimmedChoice) {
     case '1':
-      // Import the file
-      const imported = await importFile(filename, manufacturer, model, documentType);
-      return imported ? 'n' : 'm'; // Continue to next file if imported, show menu again if failed
-
-    case '2':
       // Move to issues
       const issuesPath = path.join('import/issues', filename);
       fs.renameSync(sourcePath, issuesPath);
       console.log(`\nMoved to issues: ${filename}\n`);
       return 'n'; // Continue to next file
 
-    case '3':
+    case '2':
       // Move to already-imported
       const importedPath = path.join('import/already-imported', filename);
       fs.renameSync(sourcePath, importedPath);
       console.log(`\nMoved to already-imported: ${filename}\n`);
+      return 'n'; // Continue to next file
+
+    case '3':
+      // Move to to-process
+      const toProcessDir = 'import/to-process';
+      if (!fs.existsSync(toProcessDir)) {
+        fs.mkdirSync(toProcessDir, { recursive: true });
+      }
+      const toProcessPath = path.join(toProcessDir, filename);
+      fs.renameSync(sourcePath, toProcessPath);
+      console.log(`\nMoved to to-process: ${filename}\n`);
       return 'n'; // Continue to next file
 
     case '4':
@@ -582,7 +624,7 @@ const processFile = async (filename) => {
   console.log('');
 
   // Prompt with option to open existing files - loop until user chooses action
-  let promptText = 'Press [n] for next file, [m] for menu';
+  let promptText = 'Press [i] to import, [n] for next file, [m] for menu';
   if (existingFiles.length > 0) {
     promptText += ', [1-' + existingFiles.length + '] to open file';
   }
@@ -612,6 +654,19 @@ const processFile = async (filename) => {
         continue;
       } catch (error) {
         console.log('Warning: Could not open file\n');
+        continue;
+      }
+    }
+
+    // Check if user wants to import
+    if (action === 'i' || action === 'import') {
+      const imported = await importFile(filename, manufacturer, model, documentType);
+      // If import was successful or cancelled, move to next file
+      // If import failed (e.g., duplicate file), show prompt again
+      if (imported) {
+        return 'n';
+      } else {
+        // Show prompt again for another action
         continue;
       }
     }
