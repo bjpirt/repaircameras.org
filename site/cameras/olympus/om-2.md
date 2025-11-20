@@ -6,6 +6,7 @@ manufacturer: Olympus
 model: OM-2
 relatedFiles:
   - olympus-om-2-service-manual
+  - olympus-om-2-exploded-diagram
 relatedLinks:
 ---
 
