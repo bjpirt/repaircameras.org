@@ -6,5 +6,6 @@ manufacturer: Olympus
 model: OM-2n
 relatedFiles:
   - olympus-om-2n-exploded-diagram
+  - olympus-om-2-om-2n-repair-manual
 relatedLinks:
 ---
