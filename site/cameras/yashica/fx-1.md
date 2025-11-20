@@ -2,9 +2,9 @@
 layout: item.11ty.tsx
 tags:
   - cameras
-manufacturer: Agfa
-model: 
+manufacturer: Yashica
+model: FX-1
 relatedFiles:
-  - agfa-silette-pronto-cla-instructions
+  - yashica-fx-1-exploded-diagram
 relatedLinks:
 ---
