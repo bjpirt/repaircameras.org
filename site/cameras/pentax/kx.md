@@ -5,6 +5,7 @@ tags:
 manufacturer: Pentax
 model: KX
 relatedFiles:
+  - pentax-km-kx-service-manual
   - pentax-kx-parts-diagram
   - pentax-k1000-service-manual
   - pentax-spotmatic-meter
