@@ -5,7 +5,7 @@ tags:
 manufacturer: Olympus
 model: OM-1
 relatedFiles:
-  - olympus-om-1-service-manual
+  - olympus-om-1-repair-manual
 relatedLinks:
 ---
 
