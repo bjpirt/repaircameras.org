@@ -9,8 +9,12 @@ import { PDFDocument } from "pdf-lib";
 
 const rl = readline.createInterface({ input: stdin, output: stdout });
 
-function ask(question) {
+function ask(question, prefill = '') {
   return new Promise((resolve) => {
+    if (prefill) {
+      // Write the prefill text to the prompt
+      rl.write(prefill);
+    }
     rl.question(question, (input) => resolve(input));
   });
 }
@@ -357,7 +361,7 @@ const importFile = async (filename, manufacturer, model, documentType) => {
   console.log(`Source file:  ${filename}`);
   console.log('');
 
-  const newFileId = await ask(`Target filename (without .pdf) [${fileId}]: `);
+  const newFileId = await ask(`Target filename (without .pdf): `, fileId);
   if (newFileId.trim()) {
     fileId = newFileId.trim();
   }
@@ -373,7 +377,7 @@ const importFile = async (filename, manufacturer, model, documentType) => {
 
   // Get and confirm description
   const defaultDescription = getDefaultDescription(fileId, manufacturer, model);
-  const customDesc = await ask(`Description [${defaultDescription}]: `);
+  const customDesc = await ask(`Description: `, defaultDescription);
 
   let description = customDesc.trim() || defaultDescription;
 
@@ -386,8 +390,9 @@ const importFile = async (filename, manufacturer, model, documentType) => {
   console.log(`Description:  ${description}`);
   console.log('-'.repeat(60));
 
-  const confirmAnswer = await ask('\nProceed with import? [y/n]: ');
-  if (confirmAnswer.trim().toLowerCase() !== 'y') {
+  const confirmAnswer = await ask('\nProceed with import? [Y/n]: ');
+  const trimmedConfirm = confirmAnswer.trim().toLowerCase();
+  if (trimmedConfirm && trimmedConfirm !== 'y') {
     console.log('\nImport cancelled.\n');
     return false;
   }
