@@ -8,6 +8,7 @@ relatedFiles:
   - nikon-f-service-manual
   - nikon-f-photomic-ftn-meter-adjustmment
   - nikon-f-photomic-ftn-finder-repair-manual
+  - nikon-f-photomic-t-finder-repair-manual
 relatedLinks:
 ---
 
