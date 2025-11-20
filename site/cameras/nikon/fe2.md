@@ -5,6 +5,7 @@ tags:
 manufacturer: Nikon
 model: FE2
 relatedFiles:
+  - nikon-fe2-repair-manual
   - nikon-fe-fe2-service-manual
 relatedLinks:
 ---

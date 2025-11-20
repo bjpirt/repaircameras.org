@@ -5,6 +5,7 @@ tags:
 manufacturer: Nikon
 model: FM
 relatedFiles:
+  - nikon-fm-repair-manual
   - nikon-fm-revised-service-manual
   - nikon-fm-top-exploded-diagram
   - nikon-fm-wiring-diagram
