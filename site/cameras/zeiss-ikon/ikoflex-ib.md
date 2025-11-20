@@ -3,8 +3,8 @@ layout: item.11ty.tsx
 tags:
   - cameras
 manufacturer: Zeiss Ikon
-model: Contax IIa
+model: Ikoflex Ib
 relatedFiles:
-  - zeiss-ikon-contax-iia-iiia-service-manual-german
+  - zeiss-ikon-ikoflex-ib-ic-favorit-service-manual
 relatedLinks:
 ---
