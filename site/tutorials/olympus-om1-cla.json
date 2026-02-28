@@ -1,0 +1,23 @@
+{
+  "title": "Olympus OM-1 Basic CLA",
+  "manufacturer": "Olympus",
+  "model": "OM-1",
+  "description": "A basic clean, lube and adjust (CLA) of the Olympus OM-1 35mm SLR camera, covering shutter speed accuracy, mirror damper replacement, and light seal replacement.",
+  "steps": [
+    {
+      "title": "Tools and materials",
+      "text": "Before starting, gather: JIS screwdrivers (#000, #00, #0), spanner wrench, rubber grip pads, isopropyl alcohol (90%+), lighter fluid (naphtha), Molykote EM-30L grease, Fluorosilicone oil, foam tape for light seals, and cotton swabs.",
+      "photos": []
+    },
+    {
+      "title": "Remove the bottom plate",
+      "text": "Remove the three screws on the bottom plate using a JIS #0 screwdriver. Note that screws may be different lengths — keep track of their positions. Carefully lift off the bottom plate, noting how the film advance and rewind mechanisms sit.",
+      "photos": []
+    },
+    {
+      "title": "Check shutter speeds",
+      "text": "With the bottom plate removed, use a shutter speed tester (or a smartphone app with the microphone near the shutter) to check the accuracy of each shutter speed from B through 1/1000s. Note any speeds that are running slow — these will be adjusted after cleaning and lubrication.",
+      "photos": []
+    }
+  ]
+}

@@ -225,6 +225,135 @@ main {
   }
 }
 
+/* Tutorial list */
+
+.tutorial-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+
+  &--inline {
+    margin: 10px 0;
+  }
+}
+
+.tutorial-card {
+  background: #ddd;
+  padding: 16px;
+  margin-bottom: 12px;
+  max-width: 600px;
+
+  h3 {
+    margin: 0 0 4px;
+    font-size: 120%;
+  }
+
+  a {
+    color: #333;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .tutorial-meta {
+    font-size: 90%;
+    color: #666;
+    margin: 0 0 8px;
+  }
+
+  p {
+    margin: 4px 0 0;
+  }
+}
+
+/* Tutorial steps */
+
+.tutorial-description {
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.tutorial-steps {
+  list-style: none;
+  counter-reset: step-counter;
+  padding: 0;
+
+  .tutorial-step {
+    counter-increment: step-counter;
+    margin-bottom: 40px;
+    padding-left: 52px;
+    position: relative;
+
+    &::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 36px;
+      height: 36px;
+      background: #333;
+      color: #fff;
+      font-weight: bold;
+      font-size: 110%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    h3 {
+      margin: 4px 0 12px;
+    }
+
+    p {
+      max-width: 680px;
+      line-height: 1.6;
+    }
+  }
+}
+
+/* Tutorial photo with SVG annotation overlay */
+
+.tutorial-photo {
+  margin: 16px 0;
+  display: inline-block;
+
+  .photo-wrapper {
+    position: relative;
+    display: inline-block;
+    max-width: 800px;
+
+    picture {
+      display: block;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    svg.annotations {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  }
+
+  figcaption {
+    font-size: 90%;
+    color: #555;
+    padding: 6px 0;
+    font-style: italic;
+  }
+}
+
 /* footer styling */
 footer {
   background: #e5d8ca;

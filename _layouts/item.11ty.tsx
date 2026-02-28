@@ -4,6 +4,7 @@ import { MainTemplate } from "@components/MainTemplate";
 import PageMetadata, { Page } from "../lib/types/PageMetadata";
 import { ImageCollection } from "../lib/types/ImageMetadata";
 import { ResourceLink } from "@components/ResourceLink";
+import { ProcessedTutorial } from "../lib/types/tutorial";
 
 type ViewProps = {
   content: string;
@@ -12,8 +13,10 @@ type ViewProps = {
   model: string;
   files: Record<string, File>;
   links: Record<string, Link>;
+  tutorials: ProcessedTutorial[];
   relatedFiles: string[];
   relatedLinks: string[];
+  relatedTutorials?: string[];
   page: Page;
   collections: {
     all: PageMetadata[];
@@ -59,6 +62,31 @@ const linksSection = (relatedLinks: string[], links: Record<string, Link>) => {
   );
 };
 
+const tutorialsSection = (
+  relatedTutorials: string[],
+  tutorials: ProcessedTutorial[]
+) => {
+  return (
+    <div class="files">
+      <h3>Tutorials</h3>
+      <ul class="tutorial-list tutorial-list--inline">
+        {relatedTutorials.map((id) => {
+          const tutorial = tutorials.find((t) => t.id === id);
+          if (!tutorial) throw new Error(`Tutorial not found: ${id}`);
+          return (
+            <li class="tutorial-card">
+              <a href={`/tutorials/${tutorial.id}/`}>
+                <strong>{tutorial.title}</strong>
+              </a>
+              <p>{tutorial.description}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
 export function item({
   content,
   title,
@@ -68,6 +96,8 @@ export function item({
   files,
   links,
   relatedLinks,
+  relatedTutorials,
+  tutorials,
   page,
   collections: { all: allPages },
 }: ViewProps): JSX.Element {
@@ -79,6 +109,10 @@ export function item({
       {relatedFiles?.length > 0 ? filesSection(relatedFiles, files) : undefined}
 
       {relatedLinks?.length > 0 ? linksSection(relatedLinks, links) : undefined}
+
+      {relatedTutorials?.length > 0
+        ? tutorialsSection(relatedTutorials, tutorials)
+        : undefined}
     </MainTemplate>
   );
 }

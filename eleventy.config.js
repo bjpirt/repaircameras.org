@@ -1,6 +1,7 @@
 import "tsx/esm";
 import { jsxToString } from "jsx-async-runtime";
 import sass from "sass";
+import { resolve } from "path";
 
 export async function eleventySetup(eleventyConfig) {
   eleventyConfig.addExtension(["11ty.jsx", "11ty.ts", "11ty.tsx"], {
@@ -16,6 +17,15 @@ export async function eleventySetup(eleventyConfig) {
 
   eleventyConfig.addTemplateFormats("11ty.ts,11ty.tsx");
   eleventyConfig.addWatchTarget("./components/");
+
+  // Support TypeScript data files — tsx/esm hook handles the transformation
+  eleventyConfig.addDataExtension("ts", {
+    read: false,
+    parser: async (filePath) => {
+      const mod = await import(resolve(filePath));
+      return typeof mod.default === "function" ? mod.default() : mod.default;
+    },
+  });
 
   eleventyConfig.addTemplateFormats("scss");
 
@@ -36,6 +46,7 @@ export async function eleventySetup(eleventyConfig) {
 
   eleventyConfig.addPassthroughCopy("site/files/*.pdf");
   eleventyConfig.addPassthroughCopy("site/static/img/*");
+  eleventyConfig.addWatchTarget("./site/tutorials/");
 
   return {
     dir: {

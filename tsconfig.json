@@ -10,6 +10,6 @@
     "skipLibCheck": true,
     "target": "ESNext"
   },
-  "include": ["_layouts", "components", "site", "tests"],
+  "include": ["_layouts", "components", "lib", "site", "tests"],
   "exclude": ["node_modules", "_site"]
 }
