@@ -152,6 +152,17 @@ export function render({
       <p class="tutorial-description">
         {tutorial.manufacturer} {tutorial.model} &mdash; {tutorial.description}
       </p>
+      {tutorial.tools.length > 0 ? (
+        <div class="tutorial-tools">
+          <h3>Tools &amp; Materials</h3>
+          <p>You will need the following tools and materials to complete this tutorial:</p>
+          <ul>
+            {tutorial.tools.map((tool) => (
+              <li>{tool}</li>
+            ))}
+          </ul>
+        </div>
+      ) : undefined}
       <ol class="tutorial-steps">
         {tutorial.steps.map((step) => (
           <li class="tutorial-step">

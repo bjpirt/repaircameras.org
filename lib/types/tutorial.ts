@@ -43,6 +43,7 @@ export const TutorialSchema = z.object({
   manufacturer: z.string(),
   model: z.string(),
   description: z.string(),
+  tools: z.array(z.string()),
   steps: z.array(TutorialStepSchema),
 });
 
