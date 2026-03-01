@@ -18,12 +18,24 @@
     {
       "title": "Remove the bottom plate",
       "text": "Remove the three screws on the bottom plate using a JIS #0 screwdriver. Note that screws may be different lengths — keep track of their positions. Carefully lift off the bottom plate, noting how the film advance and rewind mechanisms sit.",
-      "photos": []
+      "photos": [
+        {
+          "filename": "step1.jpeg",
+          "alt": "Bottom plate of the Olympus OM-1 showing the three screw positions",
+          "annotations": []
+        }
+      ]
     },
     {
       "title": "Check shutter speeds",
       "text": "With the bottom plate removed, use a shutter speed tester (or a smartphone app with the microphone near the shutter) to check the accuracy of each shutter speed from B through 1/1000s. Note any speeds that are running slow — these will be adjusted after cleaning and lubrication.",
-      "photos": []
+      "photos": [
+        {
+          "filename": "step2.webp",
+          "alt": "Olympus OM-1 with bottom plate removed, showing the shutter mechanism",
+          "annotations": []
+        }
+      ]
     }
   ]
 }

@@ -31,7 +31,7 @@ const tutorials = async () => {
       tutorial.steps.map(async (step) => {
         const processedPhotos = await Promise.all(
           step.photos.map(async (photo) => {
-            const imagePath = `${IMAGES_DIR}/${photo.filename}`;
+            const imagePath = `${IMAGES_DIR}/${id}/${photo.filename}`;
             const imageExists = await fs.promises
               .access(imagePath, fs.constants.F_OK)
               .then(() => true)
