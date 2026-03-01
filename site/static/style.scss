@@ -380,10 +380,72 @@ main {
   }
 }
 
+/* Step two-column layout */
+
+.step-body {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 12px;
+
+  .step-photo {
+    flex: 0 0 50%;
+    max-width: 50%;
+
+    .tutorial-photo {
+      display: block;
+      margin: 0;
+    }
+
+    .gallery-photos {
+      .gallery-photo {
+        display: none;
+
+        &.is-active {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .step-content {
+    flex: 1;
+    min-width: 0;
+
+    .gallery-thumbs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+
+      .gallery-thumb {
+        border: 2px solid transparent;
+        padding: 2px;
+        cursor: pointer;
+        background: none;
+        border-radius: 2px;
+
+        &.is-active {
+          border-color: #333;
+        }
+
+        &:hover:not(.is-active) {
+          border-color: #999;
+        }
+
+        img {
+          display: block;
+          height: 56px;
+          width: auto;
+        }
+      }
+    }
+  }
+}
+
 /* Step sub-steps with colour-coded bullets */
 
 .step-intro {
-  max-width: 680px;
   line-height: 1.6;
   margin-bottom: 10px;
 }
@@ -399,7 +461,6 @@ main {
     padding: 3px 0 3px 28px;
     position: relative;
     line-height: 1.5;
-    max-width: 680px;
 
     &::before {
       content: counter(substep-counter);

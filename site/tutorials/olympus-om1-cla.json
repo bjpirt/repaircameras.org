@@ -31,6 +31,13 @@
             { "type": "circle", "cx": 0.64, "cy": 0.27, "r": 0.028, "substep": 0 },
             { "type": "arrow", "x1": 0.42, "y1": 0.52, "x2": 0.67, "y2": 0.43, "substep": 1 }
           ]
+        },
+        {
+          "filename": "step1b.webp",
+          "alt": "Close-up of the bottom plate lifted clear, showing the film transport mechanism",
+          "annotations": [
+            { "type": "circle", "cx": 0.5, "cy": 0.5, "r": 0.08, "substep": 1 }
+          ]
         }
       ]
     },

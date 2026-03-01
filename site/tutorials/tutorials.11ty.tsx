@@ -85,7 +85,7 @@ function renderAnnotation(annotation: Annotation, w: number, h: number): JSX.Ele
   return renderArrow(annotation, w, h);
 }
 
-function renderPhoto(photo: ProcessedPhoto): JSX.Element {
+function renderPhotoFigure(photo: ProcessedPhoto): JSX.Element {
   const largest = photo.image.jpeg[photo.image.jpeg.length - 1];
   const { width: w, height: h } = largest;
   return (
@@ -95,12 +95,7 @@ function renderPhoto(photo: ProcessedPhoto): JSX.Element {
           {photo.image.webp.map((img) => (
             <source type="image/webp" srcset={img.srcset} />
           ))}
-          <img
-            src={largest.url}
-            alt={photo.alt}
-            width={w}
-            height={h}
-          />
+          <img src={largest.url} alt={photo.alt} width={w} height={h} />
         </picture>
         {photo.annotations.length > 0 ? (
           <svg
@@ -129,10 +124,32 @@ function renderPhoto(photo: ProcessedPhoto): JSX.Element {
   );
 }
 
-function renderStep(step: ProcessedStep): JSX.Element {
+function renderThumbs(photos: ProcessedPhoto[]): JSX.Element {
   return (
-    <li class="tutorial-step">
-      <h3>{step.title}</h3>
+    <div class="gallery-thumbs" role="list">
+      {photos.map((photo, i) => {
+        const thumb = photo.image.webp[0];
+        return (
+          <button
+            class={`gallery-thumb${i === 0 ? " is-active" : ""}`}
+            data-gallery-thumb={String(i)}
+            aria-pressed={String(i === 0)}
+            aria-label={`Photo ${i + 1}`}
+            role="listitem"
+          >
+            <img src={thumb.url} alt={photo.alt} width={thumb.width} height={thumb.height} />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function renderStepContent(step: ProcessedStep): JSX.Element {
+  const hasGallery = step.photos.length > 1;
+  return (
+    <div class="step-content">
+      {hasGallery ? renderThumbs(step.photos) : undefined}
       {step.intro ? <p class="step-intro">{step.intro}</p> : undefined}
       {step.substeps.length > 0 ? (
         <ol class="step-substeps">
@@ -143,7 +160,55 @@ function renderStep(step: ProcessedStep): JSX.Element {
           ))}
         </ol>
       ) : undefined}
-      {step.photos.map(renderPhoto)}
+    </div>
+  );
+}
+
+function renderStep(step: ProcessedStep): JSX.Element {
+  const hasGallery = step.photos.length > 1;
+
+  if (step.photos.length === 0) {
+    return (
+      <li class="tutorial-step">
+        <h3>{step.title}</h3>
+        {renderStepContent(step)}
+      </li>
+    );
+  }
+
+  const photoColumn = (
+    <div class="step-photo">
+      {hasGallery ? (
+        <div class="gallery-photos">
+          {step.photos.map((photo, i) => (
+            <div
+              class={`gallery-photo${i === 0 ? " is-active" : ""}`}
+              data-gallery-photo={String(i)}
+            >
+              {renderPhotoFigure(photo)}
+            </div>
+          ))}
+        </div>
+      ) : (
+        renderPhotoFigure(step.photos[0])
+      )}
+    </div>
+  );
+
+  return (
+    <li class="tutorial-step">
+      <h3>{step.title}</h3>
+      {hasGallery ? (
+        <div class="step-body" data-gallery="true">
+          {photoColumn}
+          {renderStepContent(step)}
+        </div>
+      ) : (
+        <div class="step-body">
+          {photoColumn}
+          {renderStepContent(step)}
+        </div>
+      )}
     </li>
   );
 }
@@ -154,7 +219,12 @@ export function render({
   collections: { all: allPages },
 }: ViewProps): JSX.Element {
   return (
-    <MainTemplate title={tutorial.title} page={page} allPages={allPages}>
+    <MainTemplate
+      title={tutorial.title}
+      page={page}
+      allPages={allPages}
+      pageScripts={<script src="/static/js/tutorials.js" defer></script>}
+    >
       <h2>{tutorial.title}</h2>
       <p class="tutorial-description">
         {tutorial.manufacturer} {tutorial.model} &mdash; {tutorial.description}
