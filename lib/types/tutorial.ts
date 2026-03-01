@@ -1,23 +1,21 @@
 import { z } from "zod";
 import { ImageCollection } from "./ImageMetadata";
 
-const AnnotationBaseSchema = z.object({
-  label: z.string().optional(),
-});
-
-export const CircleAnnotationSchema = AnnotationBaseSchema.extend({
+export const CircleAnnotationSchema = z.object({
   type: z.literal("circle"),
   cx: z.number().min(0).max(1),
   cy: z.number().min(0).max(1),
   r: z.number().min(0).max(0.5),
+  substep: z.number().int().min(0).optional(),
 });
 
-export const ArrowAnnotationSchema = AnnotationBaseSchema.extend({
+export const ArrowAnnotationSchema = z.object({
   type: z.literal("arrow"),
   x1: z.number().min(0).max(1),
   y1: z.number().min(0).max(1),
   x2: z.number().min(0).max(1),
   y2: z.number().min(0).max(1),
+  substep: z.number().int().min(0).optional(),
 });
 
 export const AnnotationSchema = z.discriminatedUnion("type", [
@@ -28,14 +26,23 @@ export const AnnotationSchema = z.discriminatedUnion("type", [
 export const TutorialPhotoSchema = z.object({
   filename: z.string(),
   alt: z.string(),
-  annotations: z.array(AnnotationSchema),
+  annotations: z.array(AnnotationSchema).default([]),
 });
 
-export const TutorialStepSchema = z.object({
-  title: z.string(),
+export const SubStepSchema = z.object({
   text: z.string(),
-  photos: z.array(TutorialPhotoSchema),
 });
+
+export const TutorialStepSchema = z
+  .object({
+    title: z.string(),
+    intro: z.string().optional(),
+    substeps: z.array(SubStepSchema).default([]),
+    photos: z.array(TutorialPhotoSchema).default([]),
+  })
+  .refine((step) => step.intro !== undefined || step.substeps.length > 0, {
+    message: "Step must have at least one of: intro, substeps",
+  });
 
 export const TutorialSchema = z.object({
   id: z.string(),
@@ -51,6 +58,7 @@ export type CircleAnnotation = z.infer<typeof CircleAnnotationSchema>;
 export type ArrowAnnotation = z.infer<typeof ArrowAnnotationSchema>;
 export type Annotation = z.infer<typeof AnnotationSchema>;
 export type TutorialPhoto = z.infer<typeof TutorialPhotoSchema>;
+export type SubStep = z.infer<typeof SubStepSchema>;
 export type TutorialStep = z.infer<typeof TutorialStepSchema>;
 export type Tutorial = z.infer<typeof TutorialSchema>;
 

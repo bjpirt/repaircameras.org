@@ -5,6 +5,7 @@ import {
   ArrowAnnotation,
   CircleAnnotation,
   ProcessedPhoto,
+  ProcessedStep,
   ProcessedTutorial,
 } from "../../lib/types/tutorial";
 
@@ -27,78 +28,66 @@ export const data = {
   },
 };
 
-const STROKE_WIDTH = "0.004";
-const FONT_SIZE = "0.05";
-const COLOUR = "#ff3333";
+const STROKE_WIDTH_RATIO = 0.004;
+const ANNOTATION_COLOURS = ["#e53935", "#1e88e5", "#43a047", "#fb8c00"];
+const ANNOTATION_COLOUR_UNLINKED = "#999999";
 
-function renderCircle({ cx, cy, r, label }: CircleAnnotation): JSX.Element {
+function substepColour(index: number): string {
+  return ANNOTATION_COLOURS[index % ANNOTATION_COLOURS.length];
+}
+
+function annotationColour(annotation: Annotation): string {
+  if (annotation.substep === undefined) return ANNOTATION_COLOUR_UNLINKED;
+  return substepColour(annotation.substep);
+}
+
+function renderCircle(
+  annotation: CircleAnnotation,
+  w: number,
+  h: number
+): JSX.Element {
+  const { cx, cy, r } = annotation;
+  const colour = annotationColour(annotation);
   return (
-    <g>
-      <circle
-        cx={cx}
-        cy={cy}
-        r={r}
-        stroke={COLOUR}
-        stroke-width={STROKE_WIDTH}
-        fill="none"
-      />
-      {label ? (
-        <text
-          x={cx}
-          y={cy - r - 0.015}
-          fill={COLOUR}
-          font-size={FONT_SIZE}
-          text-anchor="middle"
-          font-weight="bold"
-        >
-          {label}
-        </text>
-      ) : undefined}
-    </g>
+    <circle
+      cx={cx * w}
+      cy={cy * h}
+      r={r * w}
+      stroke={colour}
+      stroke-width={STROKE_WIDTH_RATIO * w}
+      fill="none"
+    />
   );
 }
 
-function renderArrow({
-  x1,
-  y1,
-  x2,
-  y2,
-  label,
-}: ArrowAnnotation): JSX.Element {
+function renderArrow(
+  annotation: ArrowAnnotation,
+  w: number,
+  h: number
+): JSX.Element {
+  const { x1, y1, x2, y2 } = annotation;
+  const colour = annotationColour(annotation);
   return (
-    <g>
-      <line
-        x1={x1}
-        y1={y1}
-        x2={x2}
-        y2={y2}
-        stroke={COLOUR}
-        stroke-width={STROKE_WIDTH}
-        marker-end="url(#arrowhead)"
-      />
-      {label ? (
-        <text
-          x={(x1 + x2) / 2}
-          y={(y1 + y2) / 2 - 0.02}
-          fill={COLOUR}
-          font-size={FONT_SIZE}
-          text-anchor="middle"
-          font-weight="bold"
-        >
-          {label}
-        </text>
-      ) : undefined}
-    </g>
+    <line
+      x1={x1 * w}
+      y1={y1 * h}
+      x2={x2 * w}
+      y2={y2 * h}
+      stroke={colour}
+      stroke-width={STROKE_WIDTH_RATIO * w}
+      marker-end="url(#arrowhead)"
+    />
   );
 }
 
-function renderAnnotation(annotation: Annotation): JSX.Element {
-  if (annotation.type === "circle") return renderCircle(annotation);
-  return renderArrow(annotation);
+function renderAnnotation(annotation: Annotation, w: number, h: number): JSX.Element {
+  if (annotation.type === "circle") return renderCircle(annotation, w, h);
+  return renderArrow(annotation, w, h);
 }
 
 function renderPhoto(photo: ProcessedPhoto): JSX.Element {
   const largest = photo.image.jpeg[photo.image.jpeg.length - 1];
+  const { width: w, height: h } = largest;
   return (
     <figure class="tutorial-photo">
       <div class="photo-wrapper">
@@ -109,15 +98,14 @@ function renderPhoto(photo: ProcessedPhoto): JSX.Element {
           <img
             src={largest.url}
             alt={photo.alt}
-            width={largest.width}
-            height={largest.height}
+            width={w}
+            height={h}
           />
         </picture>
         {photo.annotations.length > 0 ? (
           <svg
             class="annotations"
-            viewBox="0 0 1 1"
-            preserveAspectRatio="none"
+            viewBox={`0 0 ${w} ${h}`}
             aria-hidden="true"
           >
             <defs>
@@ -129,15 +117,34 @@ function renderPhoto(photo: ProcessedPhoto): JSX.Element {
                 refY="3.5"
                 orient="auto"
               >
-                <polygon points="0 0, 10 3.5, 0 7" fill={COLOUR} />
+                <polygon points="0 0, 10 3.5, 0 7" fill="context-stroke" />
               </marker>
             </defs>
-            {photo.annotations.map(renderAnnotation)}
+            {photo.annotations.map((ann) => renderAnnotation(ann, w, h))}
           </svg>
         ) : undefined}
       </div>
       {photo.alt ? <figcaption>{photo.alt}</figcaption> : undefined}
     </figure>
+  );
+}
+
+function renderStep(step: ProcessedStep): JSX.Element {
+  return (
+    <li class="tutorial-step">
+      <h3>{step.title}</h3>
+      {step.intro ? <p class="step-intro">{step.intro}</p> : undefined}
+      {step.substeps.length > 0 ? (
+        <ol class="step-substeps">
+          {step.substeps.map((substep, i) => (
+            <li style={`--substep-colour: ${substepColour(i)}`}>
+              {substep.text}
+            </li>
+          ))}
+        </ol>
+      ) : undefined}
+      {step.photos.map(renderPhoto)}
+    </li>
   );
 }
 
@@ -164,13 +171,7 @@ export function render({
         </div>
       ) : undefined}
       <ol class="tutorial-steps">
-        {tutorial.steps.map((step) => (
-          <li class="tutorial-step">
-            <h3>{step.title}</h3>
-            <p>{step.text}</p>
-            {step.photos.map(renderPhoto)}
-          </li>
-        ))}
+        {tutorial.steps.map(renderStep)}
       </ol>
     </MainTemplate>
   );

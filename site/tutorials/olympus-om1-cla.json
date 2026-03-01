@@ -17,23 +17,38 @@
   "steps": [
     {
       "title": "Remove the bottom plate",
-      "text": "Remove the three screws on the bottom plate using a JIS #0 screwdriver. Note that screws may be different lengths — keep track of their positions. Carefully lift off the bottom plate, noting how the film advance and rewind mechanisms sit.",
+      "intro": "The bottom plate is held by three screws. They may be different lengths, so keep track of which came from where.",
+      "substeps": [
+        { "text": "Remove the two bottom plate screws using a JIS #0 screwdriver. Note they may be different lengths — keep track of their positions." },
+        { "text": "Note the position of the governor spring before lifting the plate clear." }
+      ],
       "photos": [
         {
           "filename": "step1.jpeg",
-          "alt": "Bottom plate of the Olympus OM-1 showing the three screw positions",
-          "annotations": []
+          "alt": "Bottom of the Olympus OM-1 showing the two plate screws and governor",
+          "annotations": [
+            { "type": "circle", "cx": 0.53, "cy": 0.26, "r": 0.028, "substep": 0 },
+            { "type": "circle", "cx": 0.64, "cy": 0.27, "r": 0.028, "substep": 0 },
+            { "type": "arrow", "x1": 0.42, "y1": 0.52, "x2": 0.67, "y2": 0.43, "substep": 1 }
+          ]
         }
       ]
     },
     {
       "title": "Check shutter speeds",
-      "text": "With the bottom plate removed, use a shutter speed tester (or a smartphone app with the microphone near the shutter) to check the accuracy of each shutter speed from B through 1/1000s. Note any speeds that are running slow — these will be adjusted after cleaning and lubrication.",
+      "intro": "Before cleaning anything, record the baseline shutter speed accuracy so you know what needs adjusting afterwards.",
+      "substeps": [
+        { "text": "Place the camera in a shutter speed tester, or hold a smartphone microphone close to the shutter." },
+        { "text": "Fire each speed from B through 1/1000s and note any that are running slow." }
+      ],
       "photos": [
         {
           "filename": "step2.webp",
-          "alt": "Olympus OM-1 with bottom plate removed, showing the shutter mechanism",
-          "annotations": []
+          "alt": "Olympus OM-1 mounted in a Reveni Labs shutter speed tester",
+          "annotations": [
+            { "type": "circle", "cx": 0.73, "cy": 0.1, "r": 0.12, "substep": 1 },
+            { "type": "arrow", "x1": 0.26, "y1": 0.42, "x2": 0.41, "y2": 0.29, "substep": 0 }
+          ]
         }
       ]
     }

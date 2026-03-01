@@ -380,6 +380,46 @@ main {
   }
 }
 
+/* Step sub-steps with colour-coded bullets */
+
+.step-intro {
+  max-width: 680px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.step-substeps {
+  list-style: none;
+  counter-reset: substep-counter;
+  margin: 8px 0 16px;
+  padding: 0;
+
+  li {
+    counter-increment: substep-counter;
+    padding: 3px 0 3px 28px;
+    position: relative;
+    line-height: 1.5;
+    max-width: 680px;
+
+    &::before {
+      content: counter(substep-counter);
+      position: absolute;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--substep-colour);
+      color: #fff;
+      font-size: 75%;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      top: 4px;
+    }
+  }
+}
+
 /* footer styling */
 footer {
   background: #e5d8ca;
