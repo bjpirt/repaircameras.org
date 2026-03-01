@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/config.ts","./src/main.tsx","./src/vite-env.d.ts","./src/hooks/useauth.test.ts","./src/hooks/useauth.ts","../lib/types/file.ts","../lib/types/imagemetadata.ts","../lib/types/link.ts","../lib/types/pagemetadata.ts","../lib/types/tutorial.ts"],"version":"5.9.3"}

@@ -1,0 +1,10 @@
+name = "repaircameras-auth"
+main = "index.ts"
+compatibility_date = "2025-01-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://repaircameras.org"
+
+# Secrets (set via `wrangler secret put`):
+# GITHUB_CLIENT_ID
+# GITHUB_CLIENT_SECRET

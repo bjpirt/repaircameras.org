@@ -47,6 +47,7 @@ export async function eleventySetup(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("site/files/*.pdf");
   eleventyConfig.addPassthroughCopy("site/static/img/*");
   eleventyConfig.addPassthroughCopy("site/static/js/*.js");
+  eleventyConfig.addPassthroughCopy("site/admin");
   eleventyConfig.addWatchTarget("./site/tutorials/");
 
   return {
