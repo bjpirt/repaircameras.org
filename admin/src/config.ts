@@ -8,4 +8,7 @@ export const config = {
   redirectUri: isDev
     ? "http://localhost:5173/admin/"
     : "https://repaircameras.org/admin/",
+  repoOwner: "bjpirt",
+  repoName: "repaircameras.org",
+  repoBranch: import.meta.env.VITE_REPO_BRANCH ?? "main",
 } as const;

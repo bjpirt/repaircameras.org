@@ -1,12 +1,13 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Link } from "react-router";
 import { useAuth } from "./hooks/useAuth";
+import TutorialList from "./pages/TutorialList";
 import "./App.css";
 
 function Home() {
   return (
     <div>
       <h2>Welcome</h2>
-      <p>Tutorial editor coming soon.</p>
+      <p><Link to="/tutorials">View tutorials</Link></p>
     </div>
   );
 }
@@ -52,6 +53,10 @@ function AuthGate() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route
+            path="/tutorials"
+            element={<TutorialList token={state.token} />}
+          />
         </Routes>
       </main>
     </div>
