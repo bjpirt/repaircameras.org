@@ -2,7 +2,7 @@
   "title": "Olympus OM-1 Basic CLA",
   "manufacturer": "Olympus",
   "model": "OM-1",
-  "description": "[Test Tutorial] A basic clean, lube and adjust (CLA) of the Olympus OM-1 35mm SLR camera, covering shutter speed accuracy, mirror damper replacement, and light seal replacement.",
+  "description": "[Test Tutorial] A basic clean, lube and adjust (CLA) of the Olympus OM-1 35mm SLR camera, covering shutter speed accuracy, mirror damper replacement, and light seal replacement.\nTest branch",
   "tools": [
     "JIS screwdrivers (#000, #00, #0)",
     "Spanner wrench",
