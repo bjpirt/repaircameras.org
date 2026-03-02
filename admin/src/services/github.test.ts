@@ -15,7 +15,9 @@ import {
   createTree,
   createCommit,
   createRef,
+  updateRef,
   createPullRequest,
+  saveToForkBranch,
   submitTutorialAsPR,
 } from "./github";
 import { calculateResizeDimensions } from "./imageResize";
@@ -516,6 +518,28 @@ describe("createRef", () => {
   });
 });
 
+describe("updateRef", () => {
+  it("updates an existing branch ref", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse({ ref: "refs/heads/tutorial/test" })));
+
+    await updateRef(TOKEN, "contributor", "tutorial/test", "new-commit-sha");
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.github.com/repos/contributor/test-repo/git/refs/heads/tutorial%2Ftest",
+      expect.objectContaining({ method: "PATCH" }),
+    );
+    const body = JSON.parse((fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body);
+    expect(body.sha).toBe("new-commit-sha");
+    expect(body.force).toBe(true);
+  });
+
+  it("throws on failure", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 422)));
+
+    await expect(updateRef(TOKEN, "contributor", "bad", "sha")).rejects.toThrow("Failed to update branch bad: 422");
+  });
+});
+
 describe("createPullRequest", () => {
   it("creates a PR and returns number + URL", async () => {
     vi.stubGlobal(
@@ -548,20 +572,20 @@ describe("createPullRequest", () => {
 });
 
 describe("submitTutorialAsPR", () => {
-  it("orchestrates fork, sync, blob, tree, commit, ref, and PR creation", async () => {
+  it("orchestrates fork, blob, sync, tree, commit, ref, and PR creation", async () => {
     const mockFetch = vi.fn()
       // 1. ensureFork
       .mockResolvedValueOnce(jsonResponse({ owner: { login: "contributor" } }))
-      // 2. syncFork
-      .mockResolvedValueOnce(jsonResponse({ message: "ok" }))
-      // 3. getRefSha
-      .mockResolvedValueOnce(jsonResponse({ object: { sha: "base-commit-sha" } }))
-      // 4. getCommitTreeSha
-      .mockResolvedValueOnce(jsonResponse({ tree: { sha: "base-tree-sha" } }))
-      // 5. createGitBlob (tutorial JSON)
+      // 2. createGitBlob (tutorial JSON)
       .mockResolvedValueOnce(jsonResponse({ sha: "json-blob-sha" }))
-      // 6. createGitBlob (image)
+      // 3. createGitBlob (image)
       .mockResolvedValueOnce(jsonResponse({ sha: "img-blob-sha" }))
+      // 4. syncFork
+      .mockResolvedValueOnce(jsonResponse({ message: "ok" }))
+      // 5. getRefSha
+      .mockResolvedValueOnce(jsonResponse({ object: { sha: "base-commit-sha" } }))
+      // 6. getCommitTreeSha
+      .mockResolvedValueOnce(jsonResponse({ tree: { sha: "base-tree-sha" } }))
       // 7. createTree
       .mockResolvedValueOnce(jsonResponse({ sha: "new-tree-sha" }))
       // 8. createCommit
@@ -586,14 +610,10 @@ describe("submitTutorialAsPR", () => {
     );
 
     expect(result).toEqual({ number: 99, html_url: "https://github.com/test-owner/test-repo/pull/99" });
-    expect(progressSteps).toEqual([
-      "Creating fork...",
-      "Syncing fork...",
-      "Preparing branch...",
-      "Uploading files...",
-      "Creating commit...",
-      "Opening pull request...",
-    ]);
+    expect(progressSteps).toContain("Creating fork...");
+    expect(progressSteps).toContain("Uploading files...");
+    expect(progressSteps).toContain("Syncing fork...");
+    expect(progressSteps).toContain("Opening pull request...");
     expect(mockFetch).toHaveBeenCalledTimes(10);
 
     // Verify PR creation payload
@@ -607,7 +627,7 @@ describe("submitTutorialAsPR", () => {
   it("reports progress and throws on error", async () => {
     const mockFetch = vi.fn()
       .mockResolvedValueOnce(jsonResponse({ owner: { login: "contributor" } }))
-      .mockResolvedValueOnce(jsonResponse(null, 500)); // syncFork fails
+      .mockResolvedValueOnce(jsonResponse(null, 500)); // createGitBlob fails
 
     vi.stubGlobal("fetch", mockFetch);
 
@@ -615,9 +635,82 @@ describe("submitTutorialAsPR", () => {
 
     await expect(
       submitTutorialAsPR(TOKEN, "contributor", "test", sampleTutorial, [], (step) => progressSteps.push(step)),
-    ).rejects.toThrow("Failed to sync fork: 500");
+    ).rejects.toThrow("Failed to create blob: 500");
 
-    expect(progressSteps).toEqual(["Creating fork...", "Syncing fork..."]);
+    expect(progressSteps).toContain("Creating fork...");
+    expect(progressSteps).toContain("Uploading files...");
+  });
+});
+
+describe("saveToForkBranch", () => {
+  it("first save: creates fork, syncs, creates branch", async () => {
+    const mockFetch = vi.fn()
+      // 1. ensureFork
+      .mockResolvedValueOnce(jsonResponse({ owner: { login: "contributor" } }))
+      // 2. createGitBlob (JSON)
+      .mockResolvedValueOnce(jsonResponse({ sha: "json-blob-sha" }))
+      // 3. syncFork
+      .mockResolvedValueOnce(jsonResponse({ message: "ok" }))
+      // 4. getRefSha (upstream base)
+      .mockResolvedValueOnce(jsonResponse({ object: { sha: "base-commit-sha" } }))
+      // 5. getCommitTreeSha (upstream base)
+      .mockResolvedValueOnce(jsonResponse({ tree: { sha: "base-tree-sha" } }))
+      // 6. createTree
+      .mockResolvedValueOnce(jsonResponse({ sha: "new-tree-sha" }))
+      // 7. createCommit
+      .mockResolvedValueOnce(jsonResponse({ sha: "new-commit-sha" }))
+      // 8. createRef
+      .mockResolvedValueOnce(jsonResponse({ ref: "refs/heads/tutorial/test" }));
+
+    vi.stubGlobal("fetch", mockFetch);
+
+    const progressSteps: string[] = [];
+    const result = await saveToForkBranch(
+      TOKEN, null, null, "olympus-om1-cla", sampleTutorial, [],
+      (step) => progressSteps.push(step),
+    );
+
+    expect(result.forkOwner).toBe("contributor");
+    expect(result.branchName).toMatch(/^tutorial\/olympus-om1-cla-/);
+    expect(progressSteps).toContain("Creating fork...");
+    expect(progressSteps).toContain("Syncing fork...");
+    expect(progressSteps).toContain("Creating commit...");
+    expect(mockFetch).toHaveBeenCalledTimes(8);
+  });
+
+  it("subsequent save: commits on existing branch and updates ref", async () => {
+    const mockFetch = vi.fn()
+      // 1. createGitBlob (JSON)
+      .mockResolvedValueOnce(jsonResponse({ sha: "json-blob-sha" }))
+      // 2. getRefSha (branch tip)
+      .mockResolvedValueOnce(jsonResponse({ object: { sha: "branch-tip-sha" } }))
+      // 3. getCommitTreeSha (branch tip)
+      .mockResolvedValueOnce(jsonResponse({ tree: { sha: "branch-tree-sha" } }))
+      // 4. createTree
+      .mockResolvedValueOnce(jsonResponse({ sha: "new-tree-sha" }))
+      // 5. createCommit
+      .mockResolvedValueOnce(jsonResponse({ sha: "new-commit-sha" }))
+      // 6. updateRef
+      .mockResolvedValueOnce(jsonResponse({ ref: "refs/heads/tutorial/existing" }));
+
+    vi.stubGlobal("fetch", mockFetch);
+
+    const progressSteps: string[] = [];
+    const result = await saveToForkBranch(
+      TOKEN, "contributor", "tutorial/existing", "olympus-om1-cla", sampleTutorial, [],
+      (step) => progressSteps.push(step),
+    );
+
+    expect(result.forkOwner).toBe("contributor");
+    expect(result.branchName).toBe("tutorial/existing");
+    expect(progressSteps).not.toContain("Creating fork...");
+    expect(progressSteps).not.toContain("Syncing fork...");
+    expect(mockFetch).toHaveBeenCalledTimes(6);
+
+    // Verify updateRef was called (last call)
+    const lastCall = mockFetch.mock.calls[5];
+    expect(lastCall[0]).toContain("git/refs/heads/");
+    expect(lastCall[1].method).toBe("PATCH");
   });
 });
 

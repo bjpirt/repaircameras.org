@@ -436,6 +436,26 @@ export async function createRef(
   }
 }
 
+export async function updateRef(
+  token: string,
+  owner: string,
+  branch: string,
+  sha: string,
+): Promise<void> {
+  const res = await fetch(
+    repoApiUrl(owner, config.repoName, `git/refs/heads/${encodeURIComponent(branch)}`),
+    {
+      method: "PATCH",
+      headers: { ...headers(token), "Content-Type": "application/json" },
+      body: JSON.stringify({ sha, force: true }),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to update branch ${branch}: ${res.status}`);
+  }
+}
+
 export interface PullRequestResult {
   number: number;
   html_url: string;
@@ -470,35 +490,38 @@ export interface PendingImage {
   blob: Blob;
 }
 
-export async function submitTutorialAsPR(
+export interface SaveToForkBranchResult {
+  forkOwner: string;
+  branchName: string;
+}
+
+export async function saveToForkBranch(
   token: string,
-  username: string,
+  existingForkOwner: string | null,
+  existingBranchName: string | null,
   tutorialId: string,
   tutorial: Tutorial,
   pendingImages: PendingImage[],
   onProgress: (step: string) => void,
-): Promise<PullRequestResult> {
-  // 1. Ensure fork exists
-  onProgress("Creating fork...");
-  const fork = await ensureFork(token);
+): Promise<SaveToForkBranchResult> {
+  // Ensure fork exists
+  let forkOwner: string;
+  if (existingForkOwner) {
+    forkOwner = existingForkOwner;
+  } else {
+    onProgress("Creating fork...");
+    const fork = await ensureFork(token);
+    forkOwner = fork.owner;
+  }
 
-  // 2. Sync fork with upstream
-  onProgress("Syncing fork...");
-  await syncFork(token, fork.owner);
-
-  // 3. Get base branch SHA
-  onProgress("Preparing branch...");
-  const baseSha = await getRefSha(token, config.repoOwner, config.repoBranch);
-  const baseTreeSha = await getCommitTreeSha(token, config.repoOwner, baseSha);
-
-  // 4. Create blobs for all files
+  // Build blobs and tree entries
   onProgress("Uploading files...");
   const treeEntries: TreeEntry[] = [];
 
   // Tutorial JSON blob
   const { id: _id, ...data } = tutorial;
   const jsonContent = JSON.stringify(data, null, 2) + "\n";
-  const jsonBlobSha = await createGitBlob(token, fork.owner, jsonContent, "utf-8");
+  const jsonBlobSha = await createGitBlob(token, forkOwner, jsonContent, "utf-8");
   treeEntries.push({
     path: `${TUTORIALS_PATH}/${tutorialId}.json`,
     mode: "100644",
@@ -509,7 +532,7 @@ export async function submitTutorialAsPR(
   // Image blobs
   for (const img of pendingImages) {
     const base64Content = await blobToBase64(img.blob);
-    const imgBlobSha = await createGitBlob(token, fork.owner, base64Content, "base64");
+    const imgBlobSha = await createGitBlob(token, forkOwner, base64Content, "base64");
     treeEntries.push({
       path: `${TUTORIALS_PATH}/images/${tutorialId}/${img.filename}`,
       mode: "100644",
@@ -518,27 +541,65 @@ export async function submitTutorialAsPR(
     });
   }
 
-  // 5. Create tree
-  onProgress("Creating commit...");
-  const treeSha = await createTree(token, fork.owner, baseTreeSha, treeEntries);
+  if (existingBranchName) {
+    // Subsequent save: commit on top of existing branch
+    onProgress("Creating commit...");
+    const branchTipSha = await getRefSha(token, forkOwner, existingBranchName);
+    const branchTreeSha = await getCommitTreeSha(token, forkOwner, branchTipSha);
 
-  // 6. Create commit
-  const commitMessage = pendingImages.length > 0
-    ? `Add tutorial: ${tutorialId}\n\nIncludes ${pendingImages.length} image${pendingImages.length !== 1 ? "s" : ""}.`
-    : `Add tutorial: ${tutorialId}`;
-  const commitSha = await createCommit(token, fork.owner, commitMessage, treeSha, baseSha);
+    const treeSha = await createTree(token, forkOwner, branchTreeSha, treeEntries);
+    const commitMessage = `Update tutorial: ${tutorialId}`;
+    const commitSha = await createCommit(token, forkOwner, commitMessage, treeSha, branchTipSha);
 
-  // 7. Create branch in fork
-  const branchName = `tutorial/${tutorialId}-${Date.now()}`;
-  await createRef(token, fork.owner, branchName, commitSha);
+    await updateRef(token, forkOwner, existingBranchName, commitSha);
 
-  // 8. Create PR
+    return { forkOwner, branchName: existingBranchName };
+  } else {
+    // First save: sync fork, create new branch
+    onProgress("Syncing fork...");
+    await syncFork(token, forkOwner);
+
+    onProgress("Creating commit...");
+    const baseSha = await getRefSha(token, config.repoOwner, config.repoBranch);
+    const baseTreeSha = await getCommitTreeSha(token, config.repoOwner, baseSha);
+
+    const treeSha = await createTree(token, forkOwner, baseTreeSha, treeEntries);
+    const commitMessage = pendingImages.length > 0
+      ? `Add tutorial: ${tutorialId}\n\nIncludes ${pendingImages.length} image${pendingImages.length !== 1 ? "s" : ""}.`
+      : `Add tutorial: ${tutorialId}`;
+    const commitSha = await createCommit(token, forkOwner, commitMessage, treeSha, baseSha);
+
+    const branchName = `tutorial/${tutorialId}-${Date.now()}`;
+    await createRef(token, forkOwner, branchName, commitSha);
+
+    return { forkOwner, branchName };
+  }
+}
+
+export async function submitTutorialAsPR(
+  token: string,
+  username: string,
+  tutorialId: string,
+  tutorial: Tutorial,
+  pendingImages: PendingImage[],
+  onProgress: (step: string) => void,
+): Promise<PullRequestResult> {
+  const { forkOwner, branchName } = await saveToForkBranch(
+    token,
+    null,
+    null,
+    tutorialId,
+    tutorial,
+    pendingImages,
+    onProgress,
+  );
+
   onProgress("Opening pull request...");
   const pr = await createPullRequest(
     token,
     `Add tutorial: ${tutorial.title}`,
     `Adds a new tutorial for the ${tutorial.manufacturer} ${tutorial.model}.\n\nSubmitted via the admin editor by @${username}.`,
-    `${fork.owner}:${branchName}`,
+    `${forkOwner}:${branchName}`,
     config.repoBranch,
   );
 

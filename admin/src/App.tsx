@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router";
+import { createBrowserRouter, RouterProvider, Outlet, Link } from "react-router";
 import { useAuth } from "./hooks/useAuth";
 import TutorialList from "./pages/TutorialList";
 import TutorialEditor from "./pages/TutorialEditor";
@@ -52,30 +52,50 @@ function AuthGate() {
         </div>
       </header>
       <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/tutorials"
-            element={<TutorialList token={state.token} />}
-          />
-          <Route
-            path="/tutorials/new"
-            element={<TutorialEditor token={state.token} username={state.user.login} canPushDirectly={state.canPushDirectly} />}
-          />
-          <Route
-            path="/tutorials/:id"
-            element={<TutorialEditor token={state.token} username={state.user.login} canPushDirectly={state.canPushDirectly} />}
-          />
-        </Routes>
+        <Outlet context={state} />
       </main>
     </div>
   );
 }
 
-export default function App() {
+function HomePage() {
+  return <Home />;
+}
+
+function TutorialListPage() {
+  const { state } = useAuth();
+  if (state.status !== "authenticated") return null;
+  return <TutorialList token={state.token} />;
+}
+
+function TutorialEditorPage() {
+  const { state } = useAuth();
+  if (state.status !== "authenticated") return null;
   return (
-    <BrowserRouter basename="/admin">
-      <AuthGate />
-    </BrowserRouter>
+    <TutorialEditor
+      token={state.token}
+      username={state.user.login}
+      canPushDirectly={state.canPushDirectly}
+    />
   );
+}
+
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <AuthGate />,
+      children: [
+        { index: true, element: <HomePage /> },
+        { path: "tutorials", element: <TutorialListPage /> },
+        { path: "tutorials/new", element: <TutorialEditorPage /> },
+        { path: "tutorials/:id", element: <TutorialEditorPage /> },
+      ],
+    },
+  ],
+  { basename: "/admin" },
+);
+
+export default function App() {
+  return <RouterProvider router={router} />;
 }
