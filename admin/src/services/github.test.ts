@@ -6,6 +6,17 @@ import {
   saveTutorial,
   createTutorial,
   uploadTutorialImage,
+  checkPushAccess,
+  ensureFork,
+  syncFork,
+  getRefSha,
+  getCommitTreeSha,
+  createGitBlob,
+  createTree,
+  createCommit,
+  createRef,
+  createPullRequest,
+  submitTutorialAsPR,
 } from "./github";
 import { calculateResizeDimensions } from "./imageResize";
 
@@ -302,6 +313,311 @@ describe("uploadTutorialImage", () => {
     await expect(
       uploadTutorialImage(TOKEN, "test", "photo.jpg", blob),
     ).rejects.toThrow("Failed to upload image photo.jpg: 422");
+  });
+});
+
+describe("checkPushAccess", () => {
+  it("returns true for admin permission", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse({ permission: "admin" })));
+
+    expect(await checkPushAccess(TOKEN, "someuser")).toBe(true);
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.github.com/repos/test-owner/test-repo/collaborators/someuser/permission",
+      expect.objectContaining({
+        headers: expect.objectContaining({ Authorization: `Bearer ${TOKEN}` }),
+      }),
+    );
+  });
+
+  it("returns true for write permission", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse({ permission: "write" })));
+
+    expect(await checkPushAccess(TOKEN, "writer")).toBe(true);
+  });
+
+  it("returns false for read permission", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse({ permission: "read" })));
+
+    expect(await checkPushAccess(TOKEN, "reader")).toBe(false);
+  });
+
+  it("returns false for none permission", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse({ permission: "none" })));
+
+    expect(await checkPushAccess(TOKEN, "nobody")).toBe(false);
+  });
+
+  it("returns false on API error", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 403)));
+
+    expect(await checkPushAccess(TOKEN, "blocked")).toBe(false);
+  });
+});
+
+describe("ensureFork", () => {
+  it("creates fork and returns owner", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ owner: { login: "contributor" } })),
+    );
+
+    const result = await ensureFork(TOKEN);
+
+    expect(result).toEqual({ owner: "contributor" });
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.github.com/repos/test-owner/test-repo/forks",
+      expect.objectContaining({ method: "POST" }),
+    );
+  });
+
+  it("throws on failure", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 403)));
+
+    await expect(ensureFork(TOKEN)).rejects.toThrow("Failed to create fork: 403");
+  });
+});
+
+describe("syncFork", () => {
+  it("calls merge-upstream endpoint", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse({ message: "ok" })));
+
+    await syncFork(TOKEN, "contributor");
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.github.com/repos/contributor/test-repo/merge-upstream",
+      expect.objectContaining({ method: "POST" }),
+    );
+    const body = JSON.parse((fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body);
+    expect(body.branch).toBe("main");
+  });
+
+  it("does not throw on 409 (already up to date)", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 409)));
+
+    await expect(syncFork(TOKEN, "contributor")).resolves.toBeUndefined();
+  });
+
+  it("throws on other errors", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 500)));
+
+    await expect(syncFork(TOKEN, "contributor")).rejects.toThrow("Failed to sync fork: 500");
+  });
+});
+
+describe("getRefSha", () => {
+  it("returns the commit SHA for a branch", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ object: { sha: "abc123" } })),
+    );
+
+    const sha = await getRefSha(TOKEN, "test-owner", "main");
+
+    expect(sha).toBe("abc123");
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.github.com/repos/test-owner/test-repo/git/ref/heads/main",
+      expect.anything(),
+    );
+  });
+
+  it("throws on failure", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 404)));
+
+    await expect(getRefSha(TOKEN, "test-owner", "missing")).rejects.toThrow("Failed to get ref missing: 404");
+  });
+});
+
+describe("getCommitTreeSha", () => {
+  it("returns the tree SHA for a commit", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ tree: { sha: "tree-sha-456" } })),
+    );
+
+    const sha = await getCommitTreeSha(TOKEN, "test-owner", "commit-sha-123");
+
+    expect(sha).toBe("tree-sha-456");
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.github.com/repos/test-owner/test-repo/git/commits/commit-sha-123",
+      expect.anything(),
+    );
+  });
+});
+
+describe("createGitBlob", () => {
+  it("creates a blob and returns SHA", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ sha: "blob-sha-789" })),
+    );
+
+    const sha = await createGitBlob(TOKEN, "contributor", "hello world", "utf-8");
+
+    expect(sha).toBe("blob-sha-789");
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.github.com/repos/contributor/test-repo/git/blobs",
+      expect.objectContaining({ method: "POST" }),
+    );
+    const body = JSON.parse((fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body);
+    expect(body.content).toBe("hello world");
+    expect(body.encoding).toBe("utf-8");
+  });
+});
+
+describe("createTree", () => {
+  it("creates a tree with base and entries", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ sha: "tree-sha-new" })),
+    );
+
+    const entries = [{ path: "file.txt", mode: "100644" as const, type: "blob" as const, sha: "blob-sha" }];
+    const sha = await createTree(TOKEN, "contributor", "base-tree-sha", entries);
+
+    expect(sha).toBe("tree-sha-new");
+    const body = JSON.parse((fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body);
+    expect(body.base_tree).toBe("base-tree-sha");
+    expect(body.tree).toEqual(entries);
+  });
+});
+
+describe("createCommit", () => {
+  it("creates a commit and returns SHA", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(jsonResponse({ sha: "commit-sha-new" })),
+    );
+
+    const sha = await createCommit(TOKEN, "contributor", "Add tutorial", "tree-sha", "parent-sha");
+
+    expect(sha).toBe("commit-sha-new");
+    const body = JSON.parse((fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body);
+    expect(body.message).toBe("Add tutorial");
+    expect(body.tree).toBe("tree-sha");
+    expect(body.parents).toEqual(["parent-sha"]);
+  });
+});
+
+describe("createRef", () => {
+  it("creates a branch ref", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse({ ref: "refs/heads/tutorial/test" })));
+
+    await createRef(TOKEN, "contributor", "tutorial/test", "commit-sha");
+
+    const body = JSON.parse((fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body);
+    expect(body.ref).toBe("refs/heads/tutorial/test");
+    expect(body.sha).toBe("commit-sha");
+  });
+
+  it("throws on failure", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 422)));
+
+    await expect(createRef(TOKEN, "contributor", "bad", "sha")).rejects.toThrow("Failed to create branch bad: 422");
+  });
+});
+
+describe("createPullRequest", () => {
+  it("creates a PR and returns number + URL", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(
+        jsonResponse({ number: 42, html_url: "https://github.com/test-owner/test-repo/pull/42" }),
+      ),
+    );
+
+    const result = await createPullRequest(TOKEN, "Add tutorial: OM-1", "Description", "contributor:tutorial/om1", "main");
+
+    expect(result).toEqual({ number: 42, html_url: "https://github.com/test-owner/test-repo/pull/42" });
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.github.com/repos/test-owner/test-repo/pulls",
+      expect.objectContaining({ method: "POST" }),
+    );
+    const body = JSON.parse((fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body);
+    expect(body.title).toBe("Add tutorial: OM-1");
+    expect(body.head).toBe("contributor:tutorial/om1");
+    expect(body.base).toBe("main");
+  });
+
+  it("throws on failure", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 422)));
+
+    await expect(
+      createPullRequest(TOKEN, "title", "body", "head", "base"),
+    ).rejects.toThrow("Failed to create pull request: 422");
+  });
+});
+
+describe("submitTutorialAsPR", () => {
+  it("orchestrates fork, sync, blob, tree, commit, ref, and PR creation", async () => {
+    const mockFetch = vi.fn()
+      // 1. ensureFork
+      .mockResolvedValueOnce(jsonResponse({ owner: { login: "contributor" } }))
+      // 2. syncFork
+      .mockResolvedValueOnce(jsonResponse({ message: "ok" }))
+      // 3. getRefSha
+      .mockResolvedValueOnce(jsonResponse({ object: { sha: "base-commit-sha" } }))
+      // 4. getCommitTreeSha
+      .mockResolvedValueOnce(jsonResponse({ tree: { sha: "base-tree-sha" } }))
+      // 5. createGitBlob (tutorial JSON)
+      .mockResolvedValueOnce(jsonResponse({ sha: "json-blob-sha" }))
+      // 6. createGitBlob (image)
+      .mockResolvedValueOnce(jsonResponse({ sha: "img-blob-sha" }))
+      // 7. createTree
+      .mockResolvedValueOnce(jsonResponse({ sha: "new-tree-sha" }))
+      // 8. createCommit
+      .mockResolvedValueOnce(jsonResponse({ sha: "new-commit-sha" }))
+      // 9. createRef
+      .mockResolvedValueOnce(jsonResponse({ ref: "refs/heads/tutorial/test" }))
+      // 10. createPullRequest
+      .mockResolvedValueOnce(jsonResponse({ number: 99, html_url: "https://github.com/test-owner/test-repo/pull/99" }));
+
+    vi.stubGlobal("fetch", mockFetch);
+
+    const progressSteps: string[] = [];
+    const imageBlob = new Blob(["fake-img"], { type: "image/jpeg" });
+
+    const result = await submitTutorialAsPR(
+      TOKEN,
+      "contributor",
+      "olympus-om1-cla",
+      sampleTutorial,
+      [{ filename: "step1.jpg", blob: imageBlob }],
+      (step) => progressSteps.push(step),
+    );
+
+    expect(result).toEqual({ number: 99, html_url: "https://github.com/test-owner/test-repo/pull/99" });
+    expect(progressSteps).toEqual([
+      "Creating fork...",
+      "Syncing fork...",
+      "Preparing branch...",
+      "Uploading files...",
+      "Creating commit...",
+      "Opening pull request...",
+    ]);
+    expect(mockFetch).toHaveBeenCalledTimes(10);
+
+    // Verify PR creation payload
+    const prCall = mockFetch.mock.calls[9];
+    const prBody = JSON.parse(prCall[1].body);
+    expect(prBody.title).toBe("Add tutorial: Olympus OM-1 Basic CLA");
+    expect(prBody.head).toContain("contributor:");
+    expect(prBody.base).toBe("main");
+  });
+
+  it("reports progress and throws on error", async () => {
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce(jsonResponse({ owner: { login: "contributor" } }))
+      .mockResolvedValueOnce(jsonResponse(null, 500)); // syncFork fails
+
+    vi.stubGlobal("fetch", mockFetch);
+
+    const progressSteps: string[] = [];
+
+    await expect(
+      submitTutorialAsPR(TOKEN, "contributor", "test", sampleTutorial, [], (step) => progressSteps.push(step)),
+    ).rejects.toThrow("Failed to sync fork: 500");
+
+    expect(progressSteps).toEqual(["Creating fork...", "Syncing fork..."]);
   });
 });
 

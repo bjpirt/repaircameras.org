@@ -12,6 +12,7 @@ interface Props {
   substepLabels: string[];
   tutorialId: string;
   token: string;
+  canPushDirectly: boolean;
   dispatch: React.Dispatch<EditorAction>;
 }
 
@@ -21,7 +22,7 @@ interface UploadingFile {
   error?: string;
 }
 
-export default function PhotoManager({ stepIndex, photos, substepLabels, tutorialId, token, dispatch }: Props) {
+export default function PhotoManager({ stepIndex, photos, substepLabels, tutorialId, token, canPushDirectly, dispatch }: Props) {
   const [uploading, setUploading] = useState<UploadingFile[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const [editingAnnotations, setEditingAnnotations] = useState<number | null>(null);
@@ -38,24 +39,42 @@ export default function PhotoManager({ stepIndex, photos, substepLabels, tutoria
       try {
         const resized = await resizeImage(file);
 
-        setUploading((prev) =>
-          prev.map((u) => (u.filename === tempName ? { ...u, filename: resized.filename, status: "uploading" } : u)),
-        );
+        if (canPushDirectly) {
+          // Direct commit path: upload immediately to GitHub
+          setUploading((prev) =>
+            prev.map((u) => (u.filename === tempName ? { ...u, filename: resized.filename, status: "uploading" } : u)),
+          );
 
-        const result = await uploadTutorialImage(token, tutorialId, resized.filename, resized.blob);
+          const result = await uploadTutorialImage(token, tutorialId, resized.filename, resized.blob);
 
-        dispatch({
-          type: "ADD_PHOTO",
-          stepIndex,
-          photo: {
-            filename: resized.filename,
-            alt: "",
-            annotations: [],
-            imageUrl: result.download_url,
-          },
-        });
+          dispatch({
+            type: "ADD_PHOTO",
+            stepIndex,
+            photo: {
+              filename: resized.filename,
+              alt: "",
+              annotations: [],
+              imageUrl: result.download_url,
+            },
+          });
+        } else {
+          // Fork/PR path: store blob locally, upload later at submit time
+          const blobUrl = URL.createObjectURL(resized.blob);
 
-        setUploading((prev) => prev.filter((u) => u.filename !== resized.filename));
+          dispatch({
+            type: "ADD_PHOTO",
+            stepIndex,
+            photo: {
+              filename: resized.filename,
+              alt: "",
+              annotations: [],
+              imageUrl: blobUrl,
+              pendingBlob: resized.blob,
+            },
+          });
+        }
+
+        setUploading((prev) => prev.filter((u) => u.filename === tempName || u.filename === resized.filename ? false : true));
       } catch (err) {
         setUploading((prev) =>
           prev.map((u) =>
@@ -66,7 +85,16 @@ export default function PhotoManager({ stepIndex, photos, substepLabels, tutoria
         );
       }
     }
-  }, [token, tutorialId, stepIndex, dispatch]);
+  }, [token, tutorialId, stepIndex, dispatch, canPushDirectly]);
+
+  const handleRemovePhoto = useCallback((photoIndex: number) => {
+    const photo = photos[photoIndex];
+    // Revoke blob URL if it's a local preview
+    if (photo.pendingBlob && photo.imageUrl) {
+      URL.revokeObjectURL(photo.imageUrl);
+    }
+    dispatch({ type: "REMOVE_PHOTO", stepIndex, photoIndex });
+  }, [photos, stepIndex, dispatch]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -132,9 +160,7 @@ export default function PhotoManager({ stepIndex, photos, substepLabels, tutoria
               <button
                 type="button"
                 className="btn-secondary btn-small"
-                onClick={() =>
-                  dispatch({ type: "REMOVE_PHOTO", stepIndex, photoIndex: j })
-                }
+                onClick={() => handleRemovePhoto(j)}
               >
                 Remove
               </button>

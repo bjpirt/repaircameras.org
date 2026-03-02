@@ -240,3 +240,307 @@ export async function uploadTutorialImage(
 
   return { sha: result.content.sha, download_url };
 }
+
+// --- Permission check ---
+
+export async function checkPushAccess(
+  token: string,
+  username: string,
+): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/repos/${config.repoOwner}/${config.repoName}/collaborators/${encodeURIComponent(username)}/permission`,
+    { headers: headers(token) },
+  );
+
+  if (!res.ok) return false;
+
+  const data: { permission: string } = await res.json();
+  return data.permission === "admin" || data.permission === "write";
+}
+
+// --- Fork & PR workflow ---
+
+function repoApiUrl(owner: string, repo: string, path: string): string {
+  return `${API_BASE}/repos/${owner}/${repo}/${path}`;
+}
+
+export async function ensureFork(
+  token: string,
+): Promise<{ owner: string }> {
+  const res = await fetch(
+    `${API_BASE}/repos/${config.repoOwner}/${config.repoName}/forks`,
+    {
+      method: "POST",
+      headers: { ...headers(token), "Content-Type": "application/json" },
+      body: JSON.stringify({ default_branch_only: true }),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to create fork: ${res.status}`);
+  }
+
+  const data: { owner: { login: string } } = await res.json();
+  return { owner: data.owner.login };
+}
+
+export async function syncFork(
+  token: string,
+  forkOwner: string,
+): Promise<void> {
+  const res = await fetch(
+    repoApiUrl(forkOwner, config.repoName, "merge-upstream"),
+    {
+      method: "POST",
+      headers: { ...headers(token), "Content-Type": "application/json" },
+      body: JSON.stringify({ branch: config.repoBranch }),
+    },
+  );
+
+  // 409 means already up to date — not an error
+  if (!res.ok && res.status !== 409) {
+    throw new Error(`Failed to sync fork: ${res.status}`);
+  }
+}
+
+export async function getRefSha(
+  token: string,
+  owner: string,
+  branch: string,
+): Promise<string> {
+  const res = await fetch(
+    repoApiUrl(owner, config.repoName, `git/ref/heads/${encodeURIComponent(branch)}`),
+    { headers: headers(token) },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to get ref ${branch}: ${res.status}`);
+  }
+
+  const data: { object: { sha: string } } = await res.json();
+  return data.object.sha;
+}
+
+export async function getCommitTreeSha(
+  token: string,
+  owner: string,
+  commitSha: string,
+): Promise<string> {
+  const res = await fetch(
+    repoApiUrl(owner, config.repoName, `git/commits/${commitSha}`),
+    { headers: headers(token) },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to get commit ${commitSha}: ${res.status}`);
+  }
+
+  const data: { tree: { sha: string } } = await res.json();
+  return data.tree.sha;
+}
+
+export async function createGitBlob(
+  token: string,
+  owner: string,
+  content: string,
+  encoding: "utf-8" | "base64",
+): Promise<string> {
+  const res = await fetch(
+    repoApiUrl(owner, config.repoName, "git/blobs"),
+    {
+      method: "POST",
+      headers: { ...headers(token), "Content-Type": "application/json" },
+      body: JSON.stringify({ content, encoding }),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to create blob: ${res.status}`);
+  }
+
+  const data: { sha: string } = await res.json();
+  return data.sha;
+}
+
+export interface TreeEntry {
+  path: string;
+  mode: "100644";
+  type: "blob";
+  sha: string;
+}
+
+export async function createTree(
+  token: string,
+  owner: string,
+  baseTreeSha: string,
+  entries: TreeEntry[],
+): Promise<string> {
+  const res = await fetch(
+    repoApiUrl(owner, config.repoName, "git/trees"),
+    {
+      method: "POST",
+      headers: { ...headers(token), "Content-Type": "application/json" },
+      body: JSON.stringify({ base_tree: baseTreeSha, tree: entries }),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to create tree: ${res.status}`);
+  }
+
+  const data: { sha: string } = await res.json();
+  return data.sha;
+}
+
+export async function createCommit(
+  token: string,
+  owner: string,
+  message: string,
+  treeSha: string,
+  parentSha: string,
+): Promise<string> {
+  const res = await fetch(
+    repoApiUrl(owner, config.repoName, "git/commits"),
+    {
+      method: "POST",
+      headers: { ...headers(token), "Content-Type": "application/json" },
+      body: JSON.stringify({ message, tree: treeSha, parents: [parentSha] }),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to create commit: ${res.status}`);
+  }
+
+  const data: { sha: string } = await res.json();
+  return data.sha;
+}
+
+export async function createRef(
+  token: string,
+  owner: string,
+  branch: string,
+  sha: string,
+): Promise<void> {
+  const res = await fetch(
+    repoApiUrl(owner, config.repoName, "git/refs"),
+    {
+      method: "POST",
+      headers: { ...headers(token), "Content-Type": "application/json" },
+      body: JSON.stringify({ ref: `refs/heads/${branch}`, sha }),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to create branch ${branch}: ${res.status}`);
+  }
+}
+
+export interface PullRequestResult {
+  number: number;
+  html_url: string;
+}
+
+export async function createPullRequest(
+  token: string,
+  title: string,
+  body: string,
+  head: string,
+  base: string,
+): Promise<PullRequestResult> {
+  const res = await fetch(
+    `${API_BASE}/repos/${config.repoOwner}/${config.repoName}/pulls`,
+    {
+      method: "POST",
+      headers: { ...headers(token), "Content-Type": "application/json" },
+      body: JSON.stringify({ title, body, head, base }),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Failed to create pull request: ${res.status}`);
+  }
+
+  const data: { number: number; html_url: string } = await res.json();
+  return { number: data.number, html_url: data.html_url };
+}
+
+export interface PendingImage {
+  filename: string;
+  blob: Blob;
+}
+
+export async function submitTutorialAsPR(
+  token: string,
+  username: string,
+  tutorialId: string,
+  tutorial: Tutorial,
+  pendingImages: PendingImage[],
+  onProgress: (step: string) => void,
+): Promise<PullRequestResult> {
+  // 1. Ensure fork exists
+  onProgress("Creating fork...");
+  const fork = await ensureFork(token);
+
+  // 2. Sync fork with upstream
+  onProgress("Syncing fork...");
+  await syncFork(token, fork.owner);
+
+  // 3. Get base branch SHA
+  onProgress("Preparing branch...");
+  const baseSha = await getRefSha(token, config.repoOwner, config.repoBranch);
+  const baseTreeSha = await getCommitTreeSha(token, config.repoOwner, baseSha);
+
+  // 4. Create blobs for all files
+  onProgress("Uploading files...");
+  const treeEntries: TreeEntry[] = [];
+
+  // Tutorial JSON blob
+  const { id: _id, ...data } = tutorial;
+  const jsonContent = JSON.stringify(data, null, 2) + "\n";
+  const jsonBlobSha = await createGitBlob(token, fork.owner, jsonContent, "utf-8");
+  treeEntries.push({
+    path: `${TUTORIALS_PATH}/${tutorialId}.json`,
+    mode: "100644",
+    type: "blob",
+    sha: jsonBlobSha,
+  });
+
+  // Image blobs
+  for (const img of pendingImages) {
+    const base64Content = await blobToBase64(img.blob);
+    const imgBlobSha = await createGitBlob(token, fork.owner, base64Content, "base64");
+    treeEntries.push({
+      path: `${TUTORIALS_PATH}/images/${tutorialId}/${img.filename}`,
+      mode: "100644",
+      type: "blob",
+      sha: imgBlobSha,
+    });
+  }
+
+  // 5. Create tree
+  onProgress("Creating commit...");
+  const treeSha = await createTree(token, fork.owner, baseTreeSha, treeEntries);
+
+  // 6. Create commit
+  const commitMessage = pendingImages.length > 0
+    ? `Add tutorial: ${tutorialId}\n\nIncludes ${pendingImages.length} image${pendingImages.length !== 1 ? "s" : ""}.`
+    : `Add tutorial: ${tutorialId}`;
+  const commitSha = await createCommit(token, fork.owner, commitMessage, treeSha, baseSha);
+
+  // 7. Create branch in fork
+  const branchName = `tutorial/${tutorialId}-${Date.now()}`;
+  await createRef(token, fork.owner, branchName, commitSha);
+
+  // 8. Create PR
+  onProgress("Opening pull request...");
+  const pr = await createPullRequest(
+    token,
+    `Add tutorial: ${tutorial.title}`,
+    `Adds a new tutorial for the ${tutorial.manufacturer} ${tutorial.model}.\n\nSubmitted via the admin editor by @${username}.`,
+    `${fork.owner}:${branchName}`,
+    config.repoBranch,
+  );
+
+  return pr;
+}

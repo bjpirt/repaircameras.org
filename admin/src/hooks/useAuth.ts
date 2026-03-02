@@ -1,5 +1,6 @@
 import { useReducer, useEffect, useCallback } from "react";
 import { config } from "../config";
+import { checkPushAccess } from "../services/github";
 
 export type GitHubUser = {
   login: string;
@@ -10,12 +11,12 @@ export type GitHubUser = {
 export type AuthState =
   | { status: "idle" }
   | { status: "authenticating" }
-  | { status: "authenticated"; token: string; user: GitHubUser }
+  | { status: "authenticated"; token: string; user: GitHubUser; canPushDirectly: boolean }
   | { status: "error"; message: string };
 
 type AuthAction =
   | { type: "START_AUTH" }
-  | { type: "AUTH_SUCCESS"; token: string; user: GitHubUser }
+  | { type: "AUTH_SUCCESS"; token: string; user: GitHubUser; canPushDirectly: boolean }
   | { type: "AUTH_ERROR"; message: string }
   | { type: "LOGOUT" };
 
@@ -26,7 +27,7 @@ function authReducer(_state: AuthState, action: AuthAction): AuthState {
     case "START_AUTH":
       return { status: "authenticating" };
     case "AUTH_SUCCESS":
-      return { status: "authenticated", token: action.token, user: action.user };
+      return { status: "authenticated", token: action.token, user: action.user, canPushDirectly: action.canPushDirectly };
     case "AUTH_ERROR":
       return { status: "error", message: action.message };
     case "LOGOUT":
@@ -58,11 +59,13 @@ export function useAuth() {
       if (!userRes.ok) throw new Error("Failed to fetch user");
       const user: GitHubUser = await userRes.json();
 
+      const canPush = await checkPushAccess(accessToken, user.login);
+
       sessionStorage.setItem(
         SESSION_KEY,
-        JSON.stringify({ token: accessToken, user })
+        JSON.stringify({ token: accessToken, user, canPushDirectly: canPush })
       );
-      dispatch({ type: "AUTH_SUCCESS", token: accessToken, user });
+      dispatch({ type: "AUTH_SUCCESS", token: accessToken, user, canPushDirectly: canPush });
 
       window.history.replaceState({}, "", window.location.pathname);
     } catch (err) {
@@ -84,8 +87,8 @@ export function useAuth() {
     const stored = sessionStorage.getItem(SESSION_KEY);
     if (stored) {
       try {
-        const { token, user } = JSON.parse(stored);
-        dispatch({ type: "AUTH_SUCCESS", token, user });
+        const { token, user, canPushDirectly } = JSON.parse(stored);
+        dispatch({ type: "AUTH_SUCCESS", token, user, canPushDirectly: canPushDirectly ?? false });
       } catch {
         sessionStorage.removeItem(SESSION_KEY);
       }

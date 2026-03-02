@@ -60,11 +60,11 @@ function AuthGate() {
           />
           <Route
             path="/tutorials/new"
-            element={<TutorialEditor token={state.token} />}
+            element={<TutorialEditor token={state.token} username={state.user.login} canPushDirectly={state.canPushDirectly} />}
           />
           <Route
             path="/tutorials/:id"
-            element={<TutorialEditor token={state.token} />}
+            element={<TutorialEditor token={state.token} username={state.user.login} canPushDirectly={state.canPushDirectly} />}
           />
         </Routes>
       </main>

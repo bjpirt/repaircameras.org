@@ -7,7 +7,10 @@ import {
   listTutorialImages,
   saveTutorial,
   createTutorial,
+  submitTutorialAsPR,
   type TutorialImageEntry,
+  type PendingImage,
+  type PullRequestResult,
 } from "../services/github";
 import StepEditor from "./StepEditor";
 import "./TutorialEditor.css";
@@ -19,6 +22,7 @@ export interface PhotoFormState {
   alt: string;
   annotations: Annotation[];
   imageUrl: string | null;
+  pendingBlob?: Blob;
 }
 
 export interface StepFormState {
@@ -44,6 +48,8 @@ interface EditorState {
   error: string | null;
   validationErrors: string[];
   saveSuccess: boolean;
+  prProgress: string | null;
+  prResult: PullRequestResult | null;
 }
 
 // --- Actions ---
@@ -71,7 +77,9 @@ export type EditorAction =
   | { type: "SET_ERROR"; message: string | null }
   | { type: "SET_VALIDATION_ERRORS"; errors: string[] }
   | { type: "SET_SAVE_SUCCESS"; value: boolean }
-  | { type: "UPDATE_SHA"; sha: string };
+  | { type: "UPDATE_SHA"; sha: string }
+  | { type: "SET_PR_PROGRESS"; step: string }
+  | { type: "SET_PR_RESULT"; result: PullRequestResult };
 
 // --- Reducer ---
 
@@ -222,6 +230,10 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       return { ...state, saveSuccess: action.value, saving: false };
     case "UPDATE_SHA":
       return { ...state, sha: action.sha, isNew: false };
+    case "SET_PR_PROGRESS":
+      return { ...state, prProgress: action.step };
+    case "SET_PR_RESULT":
+      return { ...state, prResult: action.result, prProgress: null, saving: false };
     default:
       return state;
   }
@@ -233,6 +245,8 @@ const ID_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 interface Props {
   token: string;
+  username: string;
+  canPushDirectly: boolean;
 }
 
 function initialState(isNew: boolean, id: string): EditorState {
@@ -252,10 +266,12 @@ function initialState(isNew: boolean, id: string): EditorState {
     error: null,
     validationErrors: [],
     saveSuccess: false,
+    prProgress: null,
+    prResult: null,
   };
 }
 
-export default function TutorialEditor({ token }: Props) {
+export default function TutorialEditor({ token, username, canPushDirectly }: Props) {
   const { id: paramId } = useParams<{ id: string }>();
   const isNew = paramId === "new";
   const [state, dispatch] = useReducer(editorReducer, initialState(isNew, isNew ? "" : paramId!));
@@ -329,21 +345,44 @@ export default function TutorialEditor({ token }: Props) {
     dispatch({ type: "SET_SAVING", value: true });
 
     try {
-      let newSha: string;
-      if (state.isNew) {
-        newSha = await createTutorial(token, state.id, result.data);
+      if (canPushDirectly) {
+        // Direct commit path
+        let newSha: string;
+        if (state.isNew) {
+          newSha = await createTutorial(token, state.id, result.data);
+        } else {
+          newSha = await saveTutorial(token, state.id, result.data, state.sha!);
+        }
+        dispatch({ type: "UPDATE_SHA", sha: newSha });
+        dispatch({ type: "SET_SAVE_SUCCESS", value: true });
       } else {
-        newSha = await saveTutorial(token, state.id, result.data, state.sha!);
+        // Fork + PR path — collect pending image blobs
+        const pendingImages: PendingImage[] = [];
+        for (const step of state.steps) {
+          for (const photo of step.photos) {
+            if (photo.pendingBlob) {
+              pendingImages.push({ filename: photo.filename, blob: photo.pendingBlob });
+            }
+          }
+        }
+
+        const prResult = await submitTutorialAsPR(
+          token,
+          username,
+          state.id,
+          result.data,
+          pendingImages,
+          (step) => dispatch({ type: "SET_PR_PROGRESS", step }),
+        );
+        dispatch({ type: "SET_PR_RESULT", result: prResult });
       }
-      dispatch({ type: "UPDATE_SHA", sha: newSha });
-      dispatch({ type: "SET_SAVE_SUCCESS", value: true });
     } catch (err) {
       dispatch({
         type: "SET_ERROR",
         message: err instanceof Error ? err.message : "Failed to save",
       });
     }
-  }, [state, token]);
+  }, [state, token, username, canPushDirectly]);
 
   if (state.loading) {
     return <div className="loading">Loading tutorial...</div>;
@@ -368,12 +407,22 @@ export default function TutorialEditor({ token }: Props) {
           disabled={state.saving}
           className="btn-primary"
         >
-          {state.saving ? "Saving..." : "Save"}
+          {state.saving
+            ? (canPushDirectly ? "Saving..." : "Submitting...")
+            : (canPushDirectly ? "Save" : "Submit as PR")}
         </button>
       </div>
 
       {state.saveSuccess && (
         <div className="save-success">Tutorial saved successfully.</div>
+      )}
+      {state.prResult && (
+        <div className="save-success">
+          Pull request created:{" "}
+          <a href={state.prResult.html_url} target="_blank" rel="noopener noreferrer">
+            #{state.prResult.number}
+          </a>
+        </div>
       )}
       {state.error && (
         <div className="save-error">{state.error}</div>
@@ -484,6 +533,7 @@ export default function TutorialEditor({ token }: Props) {
             totalSteps={state.steps.length}
             tutorialId={state.id}
             token={token}
+            canPushDirectly={canPushDirectly}
             dispatch={dispatch}
           />
         ))}
@@ -495,6 +545,15 @@ export default function TutorialEditor({ token }: Props) {
           + Add step
         </button>
       </section>
+
+      {state.prProgress && (
+        <div className="pr-progress-overlay">
+          <div className="pr-progress-modal">
+            <div className="pr-progress-spinner" />
+            <p>{state.prProgress}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
