@@ -22,7 +22,7 @@ export default function TutorialList({ token }: Props) {
           files.map((f) => fetchTutorialJson(token, f.id)),
         );
         if (!cancelled) {
-          setTutorials(results);
+          setTutorials(results.map((r) => r.tutorial));
           setLoading(false);
         }
       } catch (err) {
@@ -51,7 +51,10 @@ export default function TutorialList({ token }: Props) {
 
   return (
     <div className="tutorial-list">
-      <h2>Tutorials</h2>
+      <div className="tutorial-list-header">
+        <h2>Tutorials</h2>
+        <Link to="/tutorials/new" className="btn-primary">New tutorial</Link>
+      </div>
       <ul>
         {tutorials.map((t) => (
           <li key={t.id} className="tutorial-list-item">

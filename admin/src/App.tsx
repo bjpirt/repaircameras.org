@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router";
 import { useAuth } from "./hooks/useAuth";
 import TutorialList from "./pages/TutorialList";
+import TutorialEditor from "./pages/TutorialEditor";
 import "./App.css";
 
 function Home() {
@@ -56,6 +57,14 @@ function AuthGate() {
           <Route
             path="/tutorials"
             element={<TutorialList token={state.token} />}
+          />
+          <Route
+            path="/tutorials/new"
+            element={<TutorialEditor token={state.token} />}
+          />
+          <Route
+            path="/tutorials/:id"
+            element={<TutorialEditor token={state.token} />}
           />
         </Routes>
       </main>

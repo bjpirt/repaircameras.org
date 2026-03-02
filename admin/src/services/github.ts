@@ -42,6 +42,21 @@ function decodeBase64Utf8(base64: string): string {
   return new TextDecoder().decode(bytes);
 }
 
+function encodeBase64Utf8(str: string): string {
+  const bytes = new TextEncoder().encode(str);
+  const binary = Array.from(bytes, (b) => String.fromCharCode(b)).join("");
+  return btoa(binary);
+}
+
+function contentUrl(path: string): string {
+  return `${API_BASE}/repos/${config.repoOwner}/${config.repoName}/contents/${path}`;
+}
+
+interface GitHubPutResponse {
+  content: { sha: string };
+  commit: { sha: string };
+}
+
 export async function listTutorialFiles(
   token: string,
 ): Promise<TutorialFileEntry[]> {
@@ -65,10 +80,15 @@ export async function listTutorialFiles(
     }));
 }
 
+export interface FetchTutorialResult {
+  tutorial: Tutorial;
+  sha: string;
+}
+
 export async function fetchTutorialJson(
   token: string,
   id: string,
-): Promise<Tutorial> {
+): Promise<FetchTutorialResult> {
   const res = await fetch(repoUrl(`${TUTORIALS_PATH}/${id}.json`), {
     headers: headers(token),
   });
@@ -87,7 +107,7 @@ export async function fetchTutorialJson(
     );
   }
 
-  return result.data;
+  return { tutorial: result.data, sha: file.sha };
 }
 
 export interface TutorialImageEntry {
@@ -124,4 +144,99 @@ export async function listTutorialImages(
       sha: item.sha,
       download_url: item.download_url,
     }));
+}
+
+export async function saveTutorial(
+  token: string,
+  id: string,
+  tutorial: Tutorial,
+  sha: string,
+): Promise<string> {
+  const { id: _id, ...data } = tutorial;
+  const content = encodeBase64Utf8(JSON.stringify(data, null, 2) + "\n");
+
+  const res = await fetch(contentUrl(`${TUTORIALS_PATH}/${id}.json`), {
+    method: "PUT",
+    headers: { ...headers(token), "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: `Update tutorial: ${id}`,
+      content,
+      branch: config.repoBranch,
+      sha,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to save tutorial ${id}: ${res.status}`);
+  }
+
+  const result: GitHubPutResponse = await res.json();
+  return result.content.sha;
+}
+
+export async function createTutorial(
+  token: string,
+  id: string,
+  tutorial: Tutorial,
+): Promise<string> {
+  const { id: _id, ...data } = tutorial;
+  const content = encodeBase64Utf8(JSON.stringify(data, null, 2) + "\n");
+
+  const res = await fetch(contentUrl(`${TUTORIALS_PATH}/${id}.json`), {
+    method: "PUT",
+    headers: { ...headers(token), "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: `Add tutorial: ${id}`,
+      content,
+      branch: config.repoBranch,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to create tutorial ${id}: ${res.status}`);
+  }
+
+  const result: GitHubPutResponse = await res.json();
+  return result.content.sha;
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      resolve(dataUrl.split(",")[1]);
+    };
+    reader.onerror = () => reject(new Error("Failed to read blob"));
+    reader.readAsDataURL(blob);
+  });
+}
+
+export async function uploadTutorialImage(
+  token: string,
+  tutorialId: string,
+  filename: string,
+  imageBlob: Blob,
+): Promise<{ sha: string; download_url: string }> {
+  const content = await blobToBase64(imageBlob);
+  const path = `${TUTORIALS_PATH}/images/${tutorialId}/${filename}`;
+
+  const res = await fetch(contentUrl(path), {
+    method: "PUT",
+    headers: { ...headers(token), "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: `Add image: ${tutorialId}/${filename}`,
+      content,
+      branch: config.repoBranch,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to upload image ${filename}: ${res.status}`);
+  }
+
+  const result: GitHubPutResponse = await res.json();
+  const download_url = `https://raw.githubusercontent.com/${config.repoOwner}/${config.repoName}/${config.repoBranch}/${path}`;
+
+  return { sha: result.content.sha, download_url };
 }

@@ -1,0 +1,306 @@
+.tutorial-editor {
+  max-width: 800px;
+}
+
+.editor-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.editor-header h2 {
+  flex: 1;
+  margin: 0;
+}
+
+.back-link {
+  color: #555;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #222;
+}
+
+/* Buttons */
+
+.btn-primary {
+  background: #24292e;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1a1e22;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #24292e;
+  border: 1px solid #ccc;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn-secondary:hover {
+  background: #f5f5f5;
+  border-color: #999;
+}
+
+.btn-small {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.btn-icon {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+}
+
+.btn-icon:hover:not(:disabled) {
+  background: #f5f5f5;
+  border-color: #999;
+}
+
+.btn-icon:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-icon.btn-danger:hover:not(:disabled) {
+  color: #c0392b;
+  border-color: #c0392b;
+}
+
+/* Feedback messages */
+
+.save-success {
+  background: #d4edda;
+  color: #155724;
+  padding: 10px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.save-error {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 10px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.validation-errors {
+  background: #fff3cd;
+  color: #856404;
+  padding: 10px 16px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.validation-errors ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+/* Sections */
+
+.editor-section {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.editor-section h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+}
+
+/* Fields */
+
+.field-group {
+  margin-bottom: 12px;
+}
+
+.field-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #555;
+}
+
+.field-group input,
+.field-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.field-group input:focus,
+.field-group textarea:focus {
+  outline: none;
+  border-color: #24292e;
+}
+
+.field-row {
+  display: flex;
+  gap: 16px;
+}
+
+.field-row .field-group {
+  flex: 1;
+}
+
+/* List items (tools, substeps) */
+
+.list-item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.list-item-row input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.list-item-row input:focus {
+  outline: none;
+  border-color: #24292e;
+}
+
+/* Steps */
+
+.step-card {
+  border: 1px solid #e0e0e0;
+  border-left: 3px solid #24292e;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: #fafafa;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.step-number {
+  font-weight: 700;
+  font-size: 14px;
+  color: #24292e;
+}
+
+.step-actions {
+  display: flex;
+  gap: 4px;
+}
+
+/* Substeps */
+
+.substep-section {
+  margin-top: 12px;
+}
+
+.substep-section > label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.substep-number {
+  font-size: 13px;
+  color: #999;
+  min-width: 20px;
+}
+
+/* Photos */
+
+.photo-section {
+  margin-top: 12px;
+}
+
+.photo-section > label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.photo-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.photo-thumb {
+  width: 120px;
+}
+
+.photo-thumb img {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+.photo-placeholder {
+  width: 120px;
+  height: 80px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #999;
+}
+
+.photo-caption {
+  display: block;
+  font-size: 11px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.annotation-badge {
+  display: inline-block;
+  background: #e0e0e0;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+  margin-left: 4px;
+}
