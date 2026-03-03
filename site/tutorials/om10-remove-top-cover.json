@@ -1,0 +1,68 @@
+{
+  "title": "Remove the top cover of the Olympus OM10",
+  "manufacturer": "Olympus",
+  "model": "OM10",
+  "description": "A guide to removing the top cover of the Olympus OM10",
+  "tools": [
+    "JIS Screwdriver",
+    "Circlip Pliers / Small flathead screwdriver",
+    "Soldering Iron"
+  ],
+  "steps": [
+    {
+      "title": "Remove the screws from around the top cover",
+      "intro": "There are 6 screws to remove. Two long ones at the front and four shorter ones on the sides and back.",
+      "substeps": [
+        {
+          "text": "Remove the two long screws from the front"
+        },
+        {
+          "text": "Remove the four short screws from the sides and back"
+        }
+      ],
+      "photos": []
+    },
+    {
+      "title": "Remove the rewind lever and power dial",
+      "intro": "Removing the circlip is best done with some fine circlip pliers, but if you don't have these it can be carefully levered off using a small screwdriver. Be careful removing the power switch because there are fine contacts that are easily damaged.",
+      "substeps": [
+        {
+          "text": "Open the back of the camera, put something in the winding fork to jam it and unscrew the winder"
+        },
+        {
+          "text": "Remove the circlip from around the central plastic column"
+        },
+        {
+          "text": "Remove the power switch"
+        }
+      ],
+      "photos": []
+    },
+    {
+      "title": "Remove the wind lever",
+      "intro": "It is best to try and use friction to unscrew this (normal threaded, turn anti-clockwise) without damaging it. There are two holes to use a spanning wrench, however the plate is thin and easily damaged by too much force.",
+      "substeps": [
+        {
+          "text": "Remove the top plate from the wind lever using friction"
+        }
+      ],
+      "photos": []
+    },
+    {
+      "title": "Remove the top cover",
+      "intro": "The top cover should now be able to be removed. It is connected via wires to the internals of the camera. If you are going to do more to the camera then these wires are best unsoldered. There is a blue wire with two cores - this is connected to a second wire that is in turn connected to the flash mount. Do not unsolder it directly from the flash mount because it is easy to melt the plastic mount.",
+      "substeps": [
+        {
+          "text": "Unsolder the wires connected to the flex circuit inside the camera"
+        },
+        {
+          "text": "Pull the connection on the blue wire out from the plastic tube and unsolder it"
+        },
+        {
+          "text": "Unsolder the white wire within the blue sheath from the flash mount"
+        }
+      ],
+      "photos": []
+    }
+  ]
+}
