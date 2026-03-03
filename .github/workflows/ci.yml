@@ -17,6 +17,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            admin/package-lock.json
 
       - name: Install root dependencies
         run: npm ci
@@ -41,6 +45,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            admin/package-lock.json
 
       - name: Install root dependencies
         run: npm ci
@@ -48,8 +56,21 @@ jobs:
       - name: Install admin dependencies
         run: npm ci --prefix admin
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('admin/package-lock.json') }}
+
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install chromium --with-deps
+        working-directory: admin
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
         working-directory: admin
 
       - name: Run E2E tests
