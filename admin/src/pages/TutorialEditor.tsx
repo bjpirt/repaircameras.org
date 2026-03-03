@@ -232,7 +232,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
     case "SET_SAVING":
       return { ...state, saving: action.value, error: null, validationErrors: [] };
     case "SET_ERROR":
-      return { ...state, error: action.message, saving: false, prProgress: null };
+      return { ...state, error: action.message, saving: false, prProgress: null, loading: false };
     case "SET_VALIDATION_ERRORS":
       return { ...state, validationErrors: action.errors, saving: false };
     case "SET_SAVE_SUCCESS":
