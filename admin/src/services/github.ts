@@ -671,36 +671,3 @@ export async function saveToForkBranch(
     return { forkOwner, branchName: newBranchName };
   }
 }
-
-export async function submitTutorialAsPR(
-  token: string,
-  username: string,
-  tutorialId: string,
-  tutorial: Tutorial,
-  pendingImages: PendingImage[],
-  onProgress: (step: string) => void,
-): Promise<PullRequestResult> {
-  const newBranchName = `tutorial/new/${tutorialId}`;
-  const { forkOwner, branchName } = await saveToForkBranch(
-    token,
-    username,
-    null,
-    null,
-    newBranchName,
-    tutorialId,
-    tutorial,
-    pendingImages,
-    onProgress,
-  );
-
-  onProgress("Opening pull request...");
-  const pr = await createPullRequest(
-    token,
-    `Add tutorial: ${tutorial.title}`,
-    `Adds a new tutorial for the ${tutorial.manufacturer} ${tutorial.model}.\n\nSubmitted via the admin editor by @${username}.`,
-    `${forkOwner}:${branchName}`,
-    config.repoBranch,
-  );
-
-  return pr;
-}

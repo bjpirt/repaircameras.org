@@ -20,7 +20,6 @@ import {
   updateRef,
   createPullRequest,
   saveToForkBranch,
-  submitTutorialAsPR,
 } from "./github";
 import { calculateResizeDimensions } from "./imageResize";
 
@@ -656,76 +655,6 @@ describe("createPullRequest", () => {
   });
 });
 
-describe("submitTutorialAsPR", () => {
-  it("orchestrates fork, blob, sync, tree, commit, ref, and PR creation", async () => {
-    const mockFetch = vi.fn()
-      // 1. ensureFork
-      .mockResolvedValueOnce(jsonResponse({ owner: { login: "contributor" } }))
-      // 2. createGitBlob (tutorial JSON)
-      .mockResolvedValueOnce(jsonResponse({ sha: "json-blob-sha" }))
-      // 3. createGitBlob (image)
-      .mockResolvedValueOnce(jsonResponse({ sha: "img-blob-sha" }))
-      // 4. syncFork
-      .mockResolvedValueOnce(jsonResponse({ message: "ok" }))
-      // 5. getRefSha
-      .mockResolvedValueOnce(jsonResponse({ object: { sha: "base-commit-sha" } }))
-      // 6. getCommitTreeSha
-      .mockResolvedValueOnce(jsonResponse({ tree: { sha: "base-tree-sha" } }))
-      // 7. createTree
-      .mockResolvedValueOnce(jsonResponse({ sha: "new-tree-sha" }))
-      // 8. createCommit
-      .mockResolvedValueOnce(jsonResponse({ sha: "new-commit-sha" }))
-      // 9. createRef
-      .mockResolvedValueOnce(jsonResponse({ ref: "refs/heads/tutorial/test" }))
-      // 10. createPullRequest
-      .mockResolvedValueOnce(jsonResponse({ number: 99, html_url: "https://github.com/test-owner/test-repo/pull/99" }));
-
-    vi.stubGlobal("fetch", mockFetch);
-
-    const progressSteps: string[] = [];
-    const imageBlob = new Blob(["fake-img"], { type: "image/jpeg" });
-
-    const result = await submitTutorialAsPR(
-      TOKEN,
-      "contributor",
-      "olympus-om1-cla",
-      sampleTutorial,
-      [{ filename: "step1.jpg", blob: imageBlob }],
-      (step) => progressSteps.push(step),
-    );
-
-    expect(result).toEqual({ number: 99, html_url: "https://github.com/test-owner/test-repo/pull/99" });
-    expect(progressSteps).toContain("Creating fork...");
-    expect(progressSteps).toContain("Uploading files...");
-    expect(progressSteps).toContain("Syncing fork...");
-    expect(progressSteps).toContain("Opening pull request...");
-    expect(mockFetch).toHaveBeenCalledTimes(10);
-
-    // Verify PR creation payload
-    const prCall = mockFetch.mock.calls[9];
-    const prBody = JSON.parse(prCall[1].body);
-    expect(prBody.title).toBe("Add tutorial: Olympus OM-1 Basic CLA");
-    expect(prBody.head).toContain("contributor:");
-    expect(prBody.base).toBe("main");
-  });
-
-  it("reports progress and throws on error", async () => {
-    const mockFetch = vi.fn()
-      .mockResolvedValueOnce(jsonResponse({ owner: { login: "contributor" } }))
-      .mockResolvedValueOnce(jsonResponse(null, 500)); // createGitBlob fails
-
-    vi.stubGlobal("fetch", mockFetch);
-
-    const progressSteps: string[] = [];
-
-    await expect(
-      submitTutorialAsPR(TOKEN, "contributor", "test", sampleTutorial, [], (step) => progressSteps.push(step)),
-    ).rejects.toThrow("Failed to create blob: 500");
-
-    expect(progressSteps).toContain("Creating fork...");
-    expect(progressSteps).toContain("Uploading files...");
-  });
-});
 
 describe("saveToForkBranch", () => {
   it("first save: creates fork, syncs, creates branch", async () => {
