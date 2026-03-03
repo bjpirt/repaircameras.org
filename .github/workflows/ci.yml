@@ -18,11 +18,40 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Install root dependencies
+        run: npm ci
+
       - name: Install admin dependencies
         run: npm ci --prefix admin
 
       - name: Type-check admin
-        run: npx tsc --noEmit -p admin/tsconfig.json
+        run: npx tsc --noEmit -p tsconfig.json
+        working-directory: admin
 
       - name: Run admin tests
         run: npm run admin:test
+
+  e2e:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install admin dependencies
+        run: npm ci --prefix admin
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+        working-directory: admin
+
+      - name: Run E2E tests
+        run: npx playwright test
+        working-directory: admin
