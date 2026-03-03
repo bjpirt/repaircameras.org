@@ -4,11 +4,12 @@ import { TutorialSchema } from "@shared/types/tutorial";
 import type { Annotation } from "@shared/types/tutorial";
 import {
   fetchTutorialJson,
+  fetchTutorialJsonFromRef,
   listTutorialImages,
-  saveTutorial,
-  createTutorial,
+  listTutorialImagesFromRef,
   saveToForkBranch,
   createPullRequest,
+  getRefSha,
   type TutorialImageEntry,
   type PendingImage,
   type PullRequestResult,
@@ -231,11 +232,11 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
     case "SET_SAVING":
       return { ...state, saving: action.value, error: null, validationErrors: [] };
     case "SET_ERROR":
-      return { ...state, error: action.message, saving: false };
+      return { ...state, error: action.message, saving: false, prProgress: null };
     case "SET_VALIDATION_ERRORS":
       return { ...state, validationErrors: action.errors, saving: false };
     case "SET_SAVE_SUCCESS":
-      return { ...state, saveSuccess: action.value, saving: false };
+      return { ...state, saveSuccess: action.value, saving: false, prProgress: null };
     case "UPDATE_SHA":
       return { ...state, sha: action.sha, isNew: false };
     case "SET_PR_PROGRESS":
@@ -258,7 +259,6 @@ const ID_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 interface Props {
   token: string;
   username: string;
-  canPushDirectly: boolean;
 }
 
 function initialState(isNew: boolean, id: string): EditorState {
@@ -286,7 +286,7 @@ function initialState(isNew: boolean, id: string): EditorState {
   };
 }
 
-export default function TutorialEditor({ token, username, canPushDirectly }: Props) {
+export default function TutorialEditor({ token, username }: Props) {
   const { id: paramId } = useParams<{ id: string }>();
   const isNew = paramId === "new";
   const [state, dispatch] = useReducer(editorReducer, initialState(isNew, isNew ? "" : paramId!));
@@ -297,6 +297,27 @@ export default function TutorialEditor({ token, username, canPushDirectly }: Pro
 
     async function load() {
       try {
+        // Try to detect an existing branch for auto-resume
+        const branchesToTry = [`tutorial/edit/${paramId!}`, `tutorial/new/${paramId!}`];
+        for (const branch of branchesToTry) {
+          try {
+            await getRefSha(token, username, branch);
+            // Branch exists — load tutorial and images from it
+            const [{ tutorial, sha }, images] = await Promise.all([
+              fetchTutorialJsonFromRef(token, username, branch, paramId!),
+              listTutorialImagesFromRef(token, username, branch, paramId!),
+            ]);
+            if (!cancelled) {
+              dispatch({ type: "LOAD_TUTORIAL", tutorial, images, sha });
+              dispatch({ type: "SET_FORK_BRANCH", forkOwner: username, branchName: branch });
+            }
+            return;
+          } catch {
+            // Branch doesn't exist, continue
+          }
+        }
+
+        // Default: load from main repo
         const [{ tutorial, sha }, images] = await Promise.all([
           fetchTutorialJson(token, paramId!),
           listTutorialImages(token, paramId!),
@@ -316,7 +337,7 @@ export default function TutorialEditor({ token, username, canPushDirectly }: Pro
 
     load();
     return () => { cancelled = true; };
-  }, [token, paramId, isNew]);
+  }, [token, paramId, isNew, username]);
 
   // Warn on browser navigation with unsaved changes
   useEffect(() => {
@@ -391,43 +412,33 @@ export default function TutorialEditor({ token, username, canPushDirectly }: Pro
     dispatch({ type: "SET_SAVING", value: true });
 
     try {
-      if (canPushDirectly) {
-        // Direct commit path
-        let newSha: string;
-        if (state.isNew) {
-          newSha = await createTutorial(token, state.id, tutorial);
-        } else {
-          newSha = await saveTutorial(token, state.id, tutorial, state.sha!);
-        }
-        dispatch({ type: "UPDATE_SHA", sha: newSha });
-        dispatch({ type: "SET_SAVE_SUCCESS", value: true });
-        dispatch({ type: "SET_DIRTY", value: false });
-      } else {
-        // Fork + branch save path
-        const pendingImages = collectPendingImages();
+      const pendingImages = collectPendingImages();
+      const branchPrefix = state.isNew ? "tutorial/new" : "tutorial/edit";
+      const newBranchName = `${branchPrefix}/${state.id}`;
 
-        const result = await saveToForkBranch(
-          token,
-          state.forkOwner,
-          state.branchName,
-          state.id,
-          tutorial,
-          pendingImages,
-          (step) => dispatch({ type: "SET_PR_PROGRESS", step }),
-        );
+      const result = await saveToForkBranch(
+        token,
+        username,
+        state.forkOwner,
+        state.branchName,
+        newBranchName,
+        state.id,
+        tutorial,
+        pendingImages,
+        (step) => dispatch({ type: "SET_PR_PROGRESS", step }),
+      );
 
-        dispatch({ type: "SET_FORK_BRANCH", forkOwner: result.forkOwner, branchName: result.branchName });
-        dispatch({ type: "SET_SAVE_SUCCESS", value: true });
-        dispatch({ type: "SET_DIRTY", value: false });
-        dispatch({ type: "SET_SAVING", value: false });
-      }
+      dispatch({ type: "SET_FORK_BRANCH", forkOwner: result.forkOwner, branchName: result.branchName });
+      dispatch({ type: "SET_SAVE_SUCCESS", value: true });
+      dispatch({ type: "SET_DIRTY", value: false });
+      dispatch({ type: "SET_SAVING", value: false });
     } catch (err) {
       dispatch({
         type: "SET_ERROR",
         message: err instanceof Error ? err.message : "Failed to save",
       });
     }
-  }, [state, token, canPushDirectly, buildAndValidate, collectPendingImages]);
+  }, [state, token, username, buildAndValidate, collectPendingImages]);
 
   const handleSubmitPR = useCallback(async () => {
     if (!state.branchName || !state.forkOwner) return;
@@ -470,51 +481,39 @@ export default function TutorialEditor({ token, username, canPushDirectly }: Pro
       <div className="editor-header">
         <Link to="/tutorials" className="back-link">Back to list</Link>
         <h2>{state.isNew ? "New Tutorial" : "Edit Tutorial"}</h2>
-        {canPushDirectly ? (
+        <div className="editor-header-actions">
           <button
             onClick={handleSave}
             disabled={state.saving}
             className="btn-primary"
           >
-            {state.saving ? "Saving..." : "Save"}
+            {state.saving && !state.prResult ? "Saving..." : "Save to branch"}
           </button>
-        ) : (
-          <div className="editor-header-actions">
-            <button
-              onClick={handleSave}
-              disabled={state.saving}
-              className="btn-primary"
-            >
-              {state.saving && !state.prResult ? "Saving..." : "Save to branch"}
-            </button>
-            <button
-              onClick={handleSubmitPR}
-              disabled={state.saving || !state.branchName || state.isDirty}
-              className="btn-primary"
-              title={!state.branchName ? "Save to branch first" : state.isDirty ? "Save changes before submitting" : ""}
-            >
-              Submit as PR
-            </button>
-          </div>
-        )}
+          <button
+            onClick={handleSubmitPR}
+            disabled={state.saving || !state.branchName || state.isDirty}
+            className="btn-primary"
+            title={!state.branchName ? "Save to branch first" : state.isDirty ? "Save changes before submitting" : ""}
+          >
+            Submit as PR
+          </button>
+        </div>
       </div>
 
-      {!canPushDirectly && (
-        <div className="editor-status">
-          {state.branchName && (
-            <span className="status-branch">Branch: {state.branchName}</span>
-          )}
-          {state.isDirty ? (
-            <span className="status-dirty">Unsaved changes</span>
-          ) : state.branchName ? (
-            <span className="status-clean">All changes saved</span>
-          ) : null}
-        </div>
-      )}
+      <div className="editor-status">
+        {state.branchName && (
+          <span className="status-branch">Branch: {state.branchName}</span>
+        )}
+        {state.isDirty ? (
+          <span className="status-dirty">Unsaved changes</span>
+        ) : state.branchName ? (
+          <span className="status-clean">All changes saved</span>
+        ) : null}
+      </div>
 
       {state.saveSuccess && (
         <div className="save-success">
-          {canPushDirectly ? "Tutorial saved successfully." : "Saved to branch successfully."}
+          Saved to branch successfully.
         </div>
       )}
       {state.prResult && (
@@ -634,7 +633,6 @@ export default function TutorialEditor({ token, username, canPushDirectly }: Pro
             totalSteps={state.steps.length}
             tutorialId={state.id}
             token={token}
-            canPushDirectly={canPushDirectly}
             dispatch={dispatch}
           />
         ))}

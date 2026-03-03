@@ -1,0 +1,120 @@
+/* Tutorial list page */
+
+.tutorial-list {
+  max-width: 800px;
+}
+
+.tutorial-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.tutorial-list-header .btn-primary {
+  background: #24292e;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.tutorial-list-header .btn-primary:hover {
+  background: #1a1e22;
+}
+
+/* Sections */
+
+.tutorial-section {
+  margin-bottom: 28px;
+}
+
+.tutorial-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+/* Cards */
+
+.tutorial-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tutorial-card {
+  display: block;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s ease;
+  position: relative;
+}
+
+.tutorial-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tutorial-card--edit {
+  border-left: 3px solid #e67e22;
+}
+
+.tutorial-card--new {
+  border-left: 3px solid #2980b9;
+}
+
+.tutorial-card-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #222;
+  margin-bottom: 4px;
+}
+
+.tutorial-card-meta {
+  font-size: 13px;
+  color: #777;
+}
+
+.tutorial-card-desc {
+  font-size: 13px;
+  color: #555;
+  margin-top: 6px;
+}
+
+.tutorial-card-badge {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.tutorial-card-badge--edit {
+  background: #fef3e2;
+  color: #b45309;
+}
+
+.tutorial-card-badge--new {
+  background: #e8f4fd;
+  color: #1e6fa0;
+}
+
+/* Empty state */
+
+.tutorial-empty {
+  color: #777;
+  font-size: 14px;
+  padding: 20px 0;
+}

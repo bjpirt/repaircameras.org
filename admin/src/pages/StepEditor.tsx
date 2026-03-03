@@ -7,11 +7,10 @@ interface Props {
   totalSteps: number;
   tutorialId: string;
   token: string;
-  canPushDirectly: boolean;
   dispatch: React.Dispatch<EditorAction>;
 }
 
-export default function StepEditor({ step, index, totalSteps, tutorialId, token, canPushDirectly, dispatch }: Props) {
+export default function StepEditor({ step, index, totalSteps, tutorialId, token, dispatch }: Props) {
   return (
     <div className="step-card">
       <div className="step-header">
@@ -105,7 +104,6 @@ export default function StepEditor({ step, index, totalSteps, tutorialId, token,
         substepLabels={step.substeps.map((ss) => ss.text)}
         tutorialId={tutorialId}
         token={token}
-        canPushDirectly={canPushDirectly}
         dispatch={dispatch}
       />
     </div>

@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import type { Annotation } from "@shared/types/tutorial";
 import type { PhotoFormState, EditorAction } from "../pages/TutorialEditor";
-import { uploadTutorialImage } from "../services/github";
 import { resizeImage } from "../services/imageResize";
 import AnnotationEditor from "./AnnotationEditor";
 import "./PhotoManager.css";
@@ -12,7 +11,6 @@ interface Props {
   substepLabels: string[];
   tutorialId: string;
   token: string;
-  canPushDirectly: boolean;
   dispatch: React.Dispatch<EditorAction>;
 }
 
@@ -22,7 +20,7 @@ interface UploadingFile {
   error?: string;
 }
 
-export default function PhotoManager({ stepIndex, photos, substepLabels, tutorialId, token, canPushDirectly, dispatch }: Props) {
+export default function PhotoManager({ stepIndex, photos, substepLabels, tutorialId, token, dispatch }: Props) {
   const [uploading, setUploading] = useState<UploadingFile[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const [editingAnnotations, setEditingAnnotations] = useState<number | null>(null);
@@ -39,40 +37,20 @@ export default function PhotoManager({ stepIndex, photos, substepLabels, tutoria
       try {
         const resized = await resizeImage(file);
 
-        if (canPushDirectly) {
-          // Direct commit path: upload immediately to GitHub
-          setUploading((prev) =>
-            prev.map((u) => (u.filename === tempName ? { ...u, filename: resized.filename, status: "uploading" } : u)),
-          );
+        // Store blob locally, upload at save time
+        const blobUrl = URL.createObjectURL(resized.blob);
 
-          const result = await uploadTutorialImage(token, tutorialId, resized.filename, resized.blob);
-
-          dispatch({
-            type: "ADD_PHOTO",
-            stepIndex,
-            photo: {
-              filename: resized.filename,
-              alt: "",
-              annotations: [],
-              imageUrl: result.download_url,
-            },
-          });
-        } else {
-          // Fork/PR path: store blob locally, upload later at submit time
-          const blobUrl = URL.createObjectURL(resized.blob);
-
-          dispatch({
-            type: "ADD_PHOTO",
-            stepIndex,
-            photo: {
-              filename: resized.filename,
-              alt: "",
-              annotations: [],
-              imageUrl: blobUrl,
-              pendingBlob: resized.blob,
-            },
-          });
-        }
+        dispatch({
+          type: "ADD_PHOTO",
+          stepIndex,
+          photo: {
+            filename: resized.filename,
+            alt: "",
+            annotations: [],
+            imageUrl: blobUrl,
+            pendingBlob: resized.blob,
+          },
+        });
 
         setUploading((prev) => prev.filter((u) => u.filename === tempName || u.filename === resized.filename ? false : true));
       } catch (err) {
@@ -85,7 +63,7 @@ export default function PhotoManager({ stepIndex, photos, substepLabels, tutoria
         );
       }
     }
-  }, [token, tutorialId, stepIndex, dispatch, canPushDirectly]);
+  }, [stepIndex, dispatch]);
 
   const handleRemovePhoto = useCallback((photoIndex: number) => {
     const photo = photos[photoIndex];

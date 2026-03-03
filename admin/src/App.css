@@ -87,25 +87,3 @@ body {
 .admin-shell main {
   padding: 24px;
 }
-
-.tutorial-list-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.tutorial-list-header .btn-primary {
-  background: #24292e;
-  color: #fff;
-  border: none;
-  padding: 8px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  text-decoration: none;
-}
-
-.tutorial-list-header .btn-primary:hover {
-  background: #1a1e22;
-}

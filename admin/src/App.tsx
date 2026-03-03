@@ -65,7 +65,7 @@ function HomePage() {
 function TutorialListPage() {
   const { state } = useAuth();
   if (state.status !== "authenticated") return null;
-  return <TutorialList token={state.token} />;
+  return <TutorialList token={state.token} username={state.user.login} />;
 }
 
 function TutorialEditorPage() {
@@ -75,7 +75,6 @@ function TutorialEditorPage() {
     <TutorialEditor
       token={state.token}
       username={state.user.login}
-      canPushDirectly={state.canPushDirectly}
     />
   );
 }

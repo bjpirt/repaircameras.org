@@ -2,12 +2,14 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   listTutorialFiles,
   fetchTutorialJson,
+  fetchTutorialJsonFromRef,
   listTutorialImages,
   saveTutorial,
   createTutorial,
   uploadTutorialImage,
   checkPushAccess,
   ensureFork,
+  listForkBranches,
   syncFork,
   getRefSha,
   getCommitTreeSha,
@@ -182,6 +184,36 @@ describe("fetchTutorialJson", () => {
   });
 });
 
+describe("fetchTutorialJsonFromRef", () => {
+  it("fetches tutorial from a specific owner and branch", async () => {
+    const encoded = base64Encode(JSON.stringify(sampleTutorialJson));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValueOnce(
+        jsonResponse({ content: encoded, encoding: "base64", sha: "fork-sha" }),
+      ),
+    );
+
+    const { tutorial, sha } = await fetchTutorialJsonFromRef(TOKEN, "contributor", "tutorial/edit/olympus-om1-cla", "olympus-om1-cla");
+
+    expect(tutorial.id).toBe("olympus-om1-cla");
+    expect(tutorial.title).toBe("Olympus OM-1 Basic CLA");
+    expect(sha).toBe("fork-sha");
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.github.com/repos/contributor/test-repo/contents/site/tutorials/olympus-om1-cla.json?ref=tutorial%2Fedit%2Folympus-om1-cla",
+      expect.anything(),
+    );
+  });
+
+  it("throws on non-OK response", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 404)));
+
+    await expect(
+      fetchTutorialJsonFromRef(TOKEN, "contributor", "tutorial/edit/missing", "missing"),
+    ).rejects.toThrow("Failed to fetch tutorial missing from contributor/tutorial/edit/missing: 404");
+  });
+});
+
 describe("listTutorialImages", () => {
   it("returns image file entries", async () => {
     const items = [
@@ -319,6 +351,22 @@ describe("uploadTutorialImage", () => {
 });
 
 describe("checkPushAccess", () => {
+  it("returns true for repo owner without API call", async () => {
+    const mockFetch = vi.fn();
+    vi.stubGlobal("fetch", mockFetch);
+
+    expect(await checkPushAccess(TOKEN, "test-owner")).toBe(true);
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  it("returns true for repo owner case-insensitively", async () => {
+    const mockFetch = vi.fn();
+    vi.stubGlobal("fetch", mockFetch);
+
+    expect(await checkPushAccess(TOKEN, "Test-Owner")).toBe(true);
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
   it("returns true for admin permission", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse({ permission: "admin" })));
 
@@ -376,6 +424,43 @@ describe("ensureFork", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 403)));
 
     await expect(ensureFork(TOKEN)).rejects.toThrow("Failed to create fork: 403");
+  });
+});
+
+describe("listForkBranches", () => {
+  it("returns branches matching prefix", async () => {
+    const branches = [
+      { name: "main", commit: { sha: "aaa" } },
+      { name: "tutorial/edit/olympus-om1-cla", commit: { sha: "bbb" } },
+      { name: "tutorial/new/pentax-mx-cla", commit: { sha: "ccc" } },
+      { name: "other-branch", commit: { sha: "ddd" } },
+    ];
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(branches)));
+
+    const result = await listForkBranches(TOKEN, "contributor", "tutorial/");
+
+    expect(result).toEqual([
+      { name: "tutorial/edit/olympus-om1-cla", commitSha: "bbb" },
+      { name: "tutorial/new/pentax-mx-cla", commitSha: "ccc" },
+    ]);
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.github.com/repos/contributor/test-repo/branches?per_page=100",
+      expect.anything(),
+    );
+  });
+
+  it("returns empty array on 404 (no fork)", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 404)));
+
+    const result = await listForkBranches(TOKEN, "contributor", "tutorial/");
+
+    expect(result).toEqual([]);
+  });
+
+  it("throws on other errors", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(null, 500)));
+
+    await expect(listForkBranches(TOKEN, "contributor", "tutorial/")).rejects.toThrow("Failed to list branches: 500");
   });
 });
 
@@ -666,16 +751,46 @@ describe("saveToForkBranch", () => {
 
     const progressSteps: string[] = [];
     const result = await saveToForkBranch(
-      TOKEN, null, null, "olympus-om1-cla", sampleTutorial, [],
+      TOKEN, "contributor", null, null, "tutorial/new/olympus-om1-cla", "olympus-om1-cla", sampleTutorial, [],
       (step) => progressSteps.push(step),
     );
 
     expect(result.forkOwner).toBe("contributor");
-    expect(result.branchName).toMatch(/^tutorial\/olympus-om1-cla-/);
+    expect(result.branchName).toBe("tutorial/new/olympus-om1-cla");
     expect(progressSteps).toContain("Creating fork...");
     expect(progressSteps).toContain("Syncing fork...");
     expect(progressSteps).toContain("Creating commit...");
     expect(mockFetch).toHaveBeenCalledTimes(8);
+  });
+
+  it("first save as repo owner: skips fork and sync", async () => {
+    const mockFetch = vi.fn()
+      // 1. createGitBlob (JSON)
+      .mockResolvedValueOnce(jsonResponse({ sha: "json-blob-sha" }))
+      // 2. getRefSha (upstream base)
+      .mockResolvedValueOnce(jsonResponse({ object: { sha: "base-commit-sha" } }))
+      // 3. getCommitTreeSha (upstream base)
+      .mockResolvedValueOnce(jsonResponse({ tree: { sha: "base-tree-sha" } }))
+      // 4. createTree
+      .mockResolvedValueOnce(jsonResponse({ sha: "new-tree-sha" }))
+      // 5. createCommit
+      .mockResolvedValueOnce(jsonResponse({ sha: "new-commit-sha" }))
+      // 6. createRef
+      .mockResolvedValueOnce(jsonResponse({ ref: "refs/heads/tutorial/new/test" }));
+
+    vi.stubGlobal("fetch", mockFetch);
+
+    const progressSteps: string[] = [];
+    const result = await saveToForkBranch(
+      TOKEN, "test-owner", null, null, "tutorial/new/olympus-om1-cla", "olympus-om1-cla", sampleTutorial, [],
+      (step) => progressSteps.push(step),
+    );
+
+    expect(result.forkOwner).toBe("test-owner");
+    expect(result.branchName).toBe("tutorial/new/olympus-om1-cla");
+    expect(progressSteps).not.toContain("Creating fork...");
+    expect(progressSteps).not.toContain("Syncing fork...");
+    expect(mockFetch).toHaveBeenCalledTimes(6);
   });
 
   it("subsequent save: commits on existing branch and updates ref", async () => {
@@ -697,12 +812,12 @@ describe("saveToForkBranch", () => {
 
     const progressSteps: string[] = [];
     const result = await saveToForkBranch(
-      TOKEN, "contributor", "tutorial/existing", "olympus-om1-cla", sampleTutorial, [],
+      TOKEN, "contributor", "contributor", "tutorial/edit/olympus-om1-cla", "tutorial/edit/olympus-om1-cla", "olympus-om1-cla", sampleTutorial, [],
       (step) => progressSteps.push(step),
     );
 
     expect(result.forkOwner).toBe("contributor");
-    expect(result.branchName).toBe("tutorial/existing");
+    expect(result.branchName).toBe("tutorial/edit/olympus-om1-cla");
     expect(progressSteps).not.toContain("Creating fork...");
     expect(progressSteps).not.toContain("Syncing fork...");
     expect(mockFetch).toHaveBeenCalledTimes(6);

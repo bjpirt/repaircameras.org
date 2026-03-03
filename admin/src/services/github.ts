@@ -110,6 +110,32 @@ export async function fetchTutorialJson(
   return { tutorial: result.data, sha: file.sha };
 }
 
+export async function fetchTutorialJsonFromRef(
+  token: string,
+  owner: string,
+  branch: string,
+  id: string,
+): Promise<FetchTutorialResult> {
+  const url = `${API_BASE}/repos/${owner}/${config.repoName}/contents/${TUTORIALS_PATH}/${id}.json?ref=${encodeURIComponent(branch)}`;
+  const res = await fetch(url, { headers: headers(token) });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch tutorial ${id} from ${owner}/${branch}: ${res.status}`);
+  }
+
+  const file: GitHubFileContent = await res.json();
+  const json = JSON.parse(decodeBase64Utf8(file.content));
+  const result = TutorialSchema.safeParse({ ...json, id });
+
+  if (!result.success) {
+    throw new Error(
+      `Invalid tutorial data for ${id}: ${result.error.message}`,
+    );
+  }
+
+  return { tutorial: result.data, sha: file.sha };
+}
+
 export interface TutorialImageEntry {
   name: string;
   path: string;
@@ -131,6 +157,36 @@ export async function listTutorialImages(
 
   if (!res.ok) {
     throw new Error(`Failed to list images for ${id}: ${res.status}`);
+  }
+
+  const items: (GitHubContentItem & { download_url: string })[] =
+    await res.json();
+
+  return items
+    .filter((item) => item.type === "file")
+    .map((item) => ({
+      name: item.name,
+      path: item.path,
+      sha: item.sha,
+      download_url: item.download_url,
+    }));
+}
+
+export async function listTutorialImagesFromRef(
+  token: string,
+  owner: string,
+  branch: string,
+  id: string,
+): Promise<TutorialImageEntry[]> {
+  const url = `${API_BASE}/repos/${owner}/${config.repoName}/contents/${TUTORIALS_PATH}/images/${id}?ref=${encodeURIComponent(branch)}`;
+  const res = await fetch(url, { headers: headers(token) });
+
+  if (res.status === 404) {
+    return [];
+  }
+
+  if (!res.ok) {
+    throw new Error(`Failed to list images for ${id} from ${owner}/${branch}: ${res.status}`);
   }
 
   const items: (GitHubContentItem & { download_url: string })[] =
@@ -247,6 +303,9 @@ export async function checkPushAccess(
   token: string,
   username: string,
 ): Promise<boolean> {
+  // Repo owner always has push access
+  if (username.toLowerCase() === config.repoOwner.toLowerCase()) return true;
+
   const res = await fetch(
     `${API_BASE}/repos/${config.repoOwner}/${config.repoName}/collaborators/${encodeURIComponent(username)}/permission`,
     { headers: headers(token) },
@@ -282,6 +341,35 @@ export async function ensureFork(
 
   const data: { owner: { login: string } } = await res.json();
   return { owner: data.owner.login };
+}
+
+export interface ForkBranch {
+  name: string;
+  commitSha: string;
+}
+
+export async function listForkBranches(
+  token: string,
+  forkOwner: string,
+  prefix: string,
+): Promise<ForkBranch[]> {
+  const res = await fetch(
+    repoApiUrl(forkOwner, config.repoName, "branches?per_page=100"),
+    { headers: headers(token) },
+  );
+
+  // No fork exists
+  if (res.status === 404) return [];
+
+  if (!res.ok) {
+    throw new Error(`Failed to list branches: ${res.status}`);
+  }
+
+  const branches: Array<{ name: string; commit: { sha: string } }> = await res.json();
+
+  return branches
+    .filter((b) => b.name.startsWith(prefix))
+    .map((b) => ({ name: b.name, commitSha: b.commit.sha }));
 }
 
 export async function syncFork(
@@ -497,17 +585,24 @@ export interface SaveToForkBranchResult {
 
 export async function saveToForkBranch(
   token: string,
+  username: string,
   existingForkOwner: string | null,
   existingBranchName: string | null,
+  newBranchName: string,
   tutorialId: string,
   tutorial: Tutorial,
   pendingImages: PendingImage[],
   onProgress: (step: string) => void,
 ): Promise<SaveToForkBranchResult> {
-  // Ensure fork exists
+  const isRepoOwner = username.toLowerCase() === config.repoOwner.toLowerCase();
+
+  // Determine the repo to work with
   let forkOwner: string;
   if (existingForkOwner) {
     forkOwner = existingForkOwner;
+  } else if (isRepoOwner) {
+    // Repo owner doesn't need a fork — branches go on the main repo
+    forkOwner = config.repoOwner;
   } else {
     onProgress("Creating fork...");
     const fork = await ensureFork(token);
@@ -555,9 +650,11 @@ export async function saveToForkBranch(
 
     return { forkOwner, branchName: existingBranchName };
   } else {
-    // First save: sync fork, create new branch
-    onProgress("Syncing fork...");
-    await syncFork(token, forkOwner);
+    // First save: sync fork (if it's actually a fork), create new branch
+    if (!isRepoOwner) {
+      onProgress("Syncing fork...");
+      await syncFork(token, forkOwner);
+    }
 
     onProgress("Creating commit...");
     const baseSha = await getRefSha(token, config.repoOwner, config.repoBranch);
@@ -569,10 +666,9 @@ export async function saveToForkBranch(
       : `Add tutorial: ${tutorialId}`;
     const commitSha = await createCommit(token, forkOwner, commitMessage, treeSha, baseSha);
 
-    const branchName = `tutorial/${tutorialId}-${Date.now()}`;
-    await createRef(token, forkOwner, branchName, commitSha);
+    await createRef(token, forkOwner, newBranchName, commitSha);
 
-    return { forkOwner, branchName };
+    return { forkOwner, branchName: newBranchName };
   }
 }
 
@@ -584,10 +680,13 @@ export async function submitTutorialAsPR(
   pendingImages: PendingImage[],
   onProgress: (step: string) => void,
 ): Promise<PullRequestResult> {
+  const newBranchName = `tutorial/new/${tutorialId}`;
   const { forkOwner, branchName } = await saveToForkBranch(
     token,
+    username,
     null,
     null,
+    newBranchName,
     tutorialId,
     tutorial,
     pendingImages,
