@@ -1,4 +1,4 @@
-import type { StepFormState, EditorAction } from "./TutorialEditor";
+import type { StepFormState, EditorAction } from "./editorReducer";
 import PhotoManager from "../components/PhotoManager";
 
 interface Props {

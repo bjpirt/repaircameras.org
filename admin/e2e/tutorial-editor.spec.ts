@@ -75,6 +75,19 @@ test.describe("TutorialEditor — new tutorial", () => {
     await page.getByRole("button", { name: "Submit as PR" }).click();
     await expect(page.getByText(/#42/)).toBeVisible();
   });
+
+  test("shows validation errors when saving a tutorial with an empty step", async ({ page }) => {
+    await page.goto("/admin/tutorials/new");
+    await page.getByLabel("ID (slug)").fill("my-tutorial");
+    await page.getByLabel("Title").fill("My Tutorial");
+    await page.getByLabel("Manufacturer").fill("Olympus");
+    await page.getByLabel("Model").fill("OM-1");
+    await page.getByLabel("Description").fill("A test tutorial.");
+    await page.getByRole("button", { name: "+ Add step" }).click();
+    await page.getByRole("button", { name: "Save to branch" }).click();
+
+    await expect(page.getByText("Please fix the following:")).toBeVisible();
+  });
 });
 
 // --- Existing tutorial ---
@@ -153,6 +166,24 @@ test.describe("TutorialEditor — existing tutorial", () => {
     await expect(page.getByText("You have unsaved changes. Leave anyway?")).toBeVisible();
     await expect(page.getByRole("button", { name: "Stay" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Leave" })).toBeVisible();
+  });
+
+  test("shows error screen when the tutorial fails to load", async ({ page }) => {
+    await setupNoBranchMocks(page);
+    // Tutorial JSON returns 404 — no mock for it so the catch-all fires... but we need a specific 404
+    await page.route(
+      (url) =>
+        url.hostname === "api.github.com" &&
+        url.pathname ===
+          "/repos/bjpirt/repaircameras.org/contents/site/tutorials/missing-tutorial.json",
+      (route) =>
+        route.fulfill({ status: 404, body: '{"message":"Not Found"}' }),
+    );
+
+    await page.goto("/admin/tutorials/missing-tutorial");
+
+    await expect(page.getByText(/Failed to fetch tutorial/)).toBeVisible();
+    await expect(page.getByRole("link", { name: "Back to list" })).toBeVisible();
   });
 
   test("can proceed through the unsaved changes prompt", async ({ page }) => {

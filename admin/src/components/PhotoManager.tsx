@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import type { Annotation } from "@shared/types/tutorial";
-import type { PhotoFormState, EditorAction } from "../pages/TutorialEditor";
+import type { PhotoFormState, EditorAction } from "../pages/editorReducer";
 import { resizeImage } from "../services/imageResize";
 import AnnotationEditor from "./AnnotationEditor";
 import "./PhotoManager.css";
@@ -56,7 +56,7 @@ export default function PhotoManager({ stepIndex, photos, substepLabels, tutoria
       } catch (err) {
         setUploading((prev) =>
           prev.map((u) =>
-            u.filename === tempName || u.status !== "error"
+            u.filename === tempName
               ? { ...u, status: "error", error: err instanceof Error ? err.message : "Upload failed" }
               : u,
           ),
