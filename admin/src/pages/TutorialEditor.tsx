@@ -447,10 +447,17 @@ export default function TutorialEditor({ token, username }: Props) {
     dispatch({ type: "SET_PR_PROGRESS", step: "Opening pull request..." });
 
     try {
+      const prTitle = state.isNew
+        ? `Add tutorial: ${state.title}`
+        : `Update tutorial: ${state.title}`;
+      const prBody = state.isNew
+        ? `Adds a new tutorial for the ${state.manufacturer} ${state.model}.\n\nSubmitted via the admin editor by @${username}.`
+        : `Updates the ${state.manufacturer} ${state.model} tutorial.\n\nSubmitted via the admin editor by @${username}.`;
+
       const pr = await createPullRequest(
         token,
-        `Add tutorial: ${state.title}`,
-        `Adds a new tutorial for the ${state.manufacturer} ${state.model}.\n\nSubmitted via the admin editor by @${username}.`,
+        prTitle,
+        prBody,
         `${state.forkOwner}:${state.branchName}`,
         config.repoBranch,
       );
@@ -461,7 +468,7 @@ export default function TutorialEditor({ token, username }: Props) {
         message: err instanceof Error ? err.message : "Failed to create PR",
       });
     }
-  }, [state.branchName, state.forkOwner, state.title, state.manufacturer, state.model, token, username]);
+  }, [state.isNew, state.branchName, state.forkOwner, state.title, state.manufacturer, state.model, token, username]);
 
   if (state.loading) {
     return <div className="loading">Loading tutorial...</div>;
