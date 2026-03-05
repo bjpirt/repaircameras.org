@@ -71,9 +71,9 @@ export async function listTutorialFiles(
   const items: GitHubContentItem[] = await res.json();
 
   return items
-    .filter((item) => item.type === "file" && item.name.endsWith(".json"))
+    .filter((item) => item.type === "dir")
     .map((item) => ({
-      id: item.name.replace(/\.json$/, ""),
+      id: item.name,
       name: item.name,
       path: item.path,
       sha: item.sha,
@@ -89,7 +89,7 @@ export async function fetchTutorialJson(
   token: string,
   id: string,
 ): Promise<FetchTutorialResult> {
-  const res = await fetch(repoUrl(`${TUTORIALS_PATH}/${id}.json`), {
+  const res = await fetch(repoUrl(`${TUTORIALS_PATH}/${id}/tutorial.json`), {
     headers: headers(token),
   });
 
@@ -116,7 +116,7 @@ export async function fetchTutorialJsonFromRef(
   branch: string,
   id: string,
 ): Promise<FetchTutorialResult> {
-  const url = `${API_BASE}/repos/${owner}/${config.repoName}/contents/${TUTORIALS_PATH}/${id}.json?ref=${encodeURIComponent(branch)}`;
+  const url = `${API_BASE}/repos/${owner}/${config.repoName}/contents/${TUTORIALS_PATH}/${id}/tutorial.json?ref=${encodeURIComponent(branch)}`;
   const res = await fetch(url, { headers: headers(token) });
 
   if (!res.ok) {
@@ -147,7 +147,7 @@ export async function listTutorialImages(
   token: string,
   id: string,
 ): Promise<TutorialImageEntry[]> {
-  const res = await fetch(repoUrl(`${TUTORIALS_PATH}/images/${id}`), {
+  const res = await fetch(repoUrl(`${TUTORIALS_PATH}/${id}/images`), {
     headers: headers(token),
   });
 
@@ -178,7 +178,7 @@ export async function listTutorialImagesFromRef(
   branch: string,
   id: string,
 ): Promise<TutorialImageEntry[]> {
-  const url = `${API_BASE}/repos/${owner}/${config.repoName}/contents/${TUTORIALS_PATH}/images/${id}?ref=${encodeURIComponent(branch)}`;
+  const url = `${API_BASE}/repos/${owner}/${config.repoName}/contents/${TUTORIALS_PATH}/${id}/images?ref=${encodeURIComponent(branch)}`;
   const res = await fetch(url, { headers: headers(token) });
 
   if (res.status === 404) {
@@ -211,7 +211,7 @@ export async function saveTutorial(
   const { id: _id, ...data } = tutorial;
   const content = encodeBase64Utf8(JSON.stringify(data, null, 2) + "\n");
 
-  const res = await fetch(contentUrl(`${TUTORIALS_PATH}/${id}.json`), {
+  const res = await fetch(contentUrl(`${TUTORIALS_PATH}/${id}/tutorial.json`), {
     method: "PUT",
     headers: { ...headers(token), "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -238,7 +238,7 @@ export async function createTutorial(
   const { id: _id, ...data } = tutorial;
   const content = encodeBase64Utf8(JSON.stringify(data, null, 2) + "\n");
 
-  const res = await fetch(contentUrl(`${TUTORIALS_PATH}/${id}.json`), {
+  const res = await fetch(contentUrl(`${TUTORIALS_PATH}/${id}/tutorial.json`), {
     method: "PUT",
     headers: { ...headers(token), "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -275,7 +275,7 @@ export async function uploadTutorialImage(
   imageBlob: Blob,
 ): Promise<{ sha: string; download_url: string }> {
   const content = await blobToBase64(imageBlob);
-  const path = `${TUTORIALS_PATH}/images/${tutorialId}/${filename}`;
+  const path = `${TUTORIALS_PATH}/${tutorialId}/images/${filename}`;
 
   const res = await fetch(contentUrl(path), {
     method: "PUT",
@@ -618,7 +618,7 @@ export async function saveToForkBranch(
   const jsonContent = JSON.stringify(data, null, 2) + "\n";
   const jsonBlobSha = await createGitBlob(token, forkOwner, jsonContent, "utf-8");
   treeEntries.push({
-    path: `${TUTORIALS_PATH}/${tutorialId}.json`,
+    path: `${TUTORIALS_PATH}/${tutorialId}/tutorial.json`,
     mode: "100644",
     type: "blob",
     sha: jsonBlobSha,
@@ -629,7 +629,7 @@ export async function saveToForkBranch(
     const base64Content = await blobToBase64(img.blob);
     const imgBlobSha = await createGitBlob(token, forkOwner, base64Content, "base64");
     treeEntries.push({
-      path: `${TUTORIALS_PATH}/images/${tutorialId}/${img.filename}`,
+      path: `${TUTORIALS_PATH}/${tutorialId}/images/${img.filename}`,
       mode: "100644",
       type: "blob",
       sha: imgBlobSha,

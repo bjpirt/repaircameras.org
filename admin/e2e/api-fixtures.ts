@@ -16,8 +16,8 @@ function encodeContent(data: unknown): string {
 
 // GitHub API response shapes used across tests
 export const tutorialFileContent = {
-  name: "olympus-om1-cla.json",
-  path: "site/tutorials/olympus-om1-cla.json",
+  name: "tutorial.json",
+  path: "site/tutorials/olympus-om1-cla/tutorial.json",
   sha: "file-sha-abc",
   content: encodeContent(tutorialData),
   encoding: "base64",
@@ -25,10 +25,10 @@ export const tutorialFileContent = {
 
 export const tutorialDirListing = [
   {
-    name: "olympus-om1-cla.json",
-    path: "site/tutorials/olympus-om1-cla.json",
-    sha: "file-sha-abc",
-    type: "file",
+    name: "olympus-om1-cla",
+    path: "site/tutorials/olympus-om1-cla",
+    sha: "dir-sha-abc",
+    type: "dir",
   },
 ];
 
@@ -65,7 +65,7 @@ export async function setupTutorialListMocks(
   );
   await fulfill(
     page,
-    (url) => url.hostname === GH && url.pathname === "/repos/bjpirt/repaircameras.org/contents/site/tutorials/olympus-om1-cla.json",
+    (url) => url.hostname === GH && url.pathname === "/repos/bjpirt/repaircameras.org/contents/site/tutorials/olympus-om1-cla/tutorial.json",
     tutorialFileContent, 200,
   );
   await fulfill(
@@ -115,7 +115,7 @@ export async function setupLoadFromMainMocks(page: Page) {
     page,
     (url) =>
       url.hostname === GH &&
-      url.pathname === "/repos/bjpirt/repaircameras.org/contents/site/tutorials/olympus-om1-cla.json",
+      url.pathname === "/repos/bjpirt/repaircameras.org/contents/site/tutorials/olympus-om1-cla/tutorial.json",
     tutorialFileContent, 200,
   );
   // Images directory returns 404 (no images)
@@ -123,7 +123,7 @@ export async function setupLoadFromMainMocks(page: Page) {
     page,
     (url) =>
       url.hostname === GH &&
-      url.pathname.startsWith("/repos/bjpirt/repaircameras.org/contents/site/tutorials/images/olympus-om1-cla"),
+      url.pathname.startsWith("/repos/bjpirt/repaircameras.org/contents/site/tutorials/olympus-om1-cla/images"),
     { message: "Not Found" }, 404,
   );
 }
@@ -143,7 +143,7 @@ export async function setupAutoResumeMocks(page: Page) {
     page,
     (url) =>
       url.hostname === GH &&
-      url.pathname === "/repos/test-user/repaircameras.org/contents/site/tutorials/olympus-om1-cla.json",
+      url.pathname === "/repos/test-user/repaircameras.org/contents/site/tutorials/olympus-om1-cla/tutorial.json",
     tutorialFileContent, 200,
   );
   // Images from fork branch (none)
@@ -151,7 +151,7 @@ export async function setupAutoResumeMocks(page: Page) {
     page,
     (url) =>
       url.hostname === GH &&
-      url.pathname.startsWith("/repos/test-user/repaircameras.org/contents/site/tutorials/images/olympus-om1-cla"),
+      url.pathname.startsWith("/repos/test-user/repaircameras.org/contents/site/tutorials/olympus-om1-cla/images"),
     { message: "Not Found" }, 404,
   );
 }

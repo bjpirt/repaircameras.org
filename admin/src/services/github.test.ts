@@ -83,16 +83,16 @@ beforeEach(() => {
 describe("listTutorialFiles", () => {
   it("returns filtered JSON file entries", async () => {
     const items = [
-      { name: "olympus-om1-cla.json", path: "site/tutorials/olympus-om1-cla.json", sha: "abc123", type: "file" },
-      { name: "images", path: "site/tutorials/images", sha: "def456", type: "dir" },
-      { name: "README.md", path: "site/tutorials/README.md", sha: "ghi789", type: "file" },
+      { name: "olympus-om1-cla", path: "site/tutorials/olympus-om1-cla", sha: "abc123", type: "dir" },
+      { name: "index.md", path: "site/tutorials/index.md", sha: "def456", type: "file" },
+      { name: "tutorials.11ty.tsx", path: "site/tutorials/tutorials.11ty.tsx", sha: "ghi789", type: "file" },
     ];
     vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(items)));
 
     const result = await listTutorialFiles(TOKEN);
 
     expect(result).toEqual([
-      { id: "olympus-om1-cla", name: "olympus-om1-cla.json", path: "site/tutorials/olympus-om1-cla.json", sha: "abc123" },
+      { id: "olympus-om1-cla", name: "olympus-om1-cla", path: "site/tutorials/olympus-om1-cla", sha: "abc123" },
     ]);
     expect(fetch).toHaveBeenCalledWith(
       "https://api.github.com/repos/test-owner/test-repo/contents/site/tutorials?ref=main",
@@ -127,7 +127,7 @@ describe("fetchTutorialJson", () => {
     expect(tutorial.steps).toHaveLength(1);
     expect(sha).toBe("file-sha-123");
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.github.com/repos/test-owner/test-repo/contents/site/tutorials/olympus-om1-cla.json?ref=main",
+      "https://api.github.com/repos/test-owner/test-repo/contents/site/tutorials/olympus-om1-cla/tutorial.json?ref=main",
       expect.anything(),
     );
   });
@@ -199,7 +199,7 @@ describe("fetchTutorialJsonFromRef", () => {
     expect(tutorial.title).toBe("Olympus OM-1 Basic CLA");
     expect(sha).toBe("fork-sha");
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.github.com/repos/contributor/test-repo/contents/site/tutorials/olympus-om1-cla.json?ref=tutorial%2Fedit%2Folympus-om1-cla",
+      "https://api.github.com/repos/contributor/test-repo/contents/site/tutorials/olympus-om1-cla/tutorial.json?ref=tutorial%2Fedit%2Folympus-om1-cla",
       expect.anything(),
     );
   });
@@ -216,8 +216,8 @@ describe("fetchTutorialJsonFromRef", () => {
 describe("listTutorialImages", () => {
   it("returns image file entries", async () => {
     const items = [
-      { name: "step1.jpeg", path: "site/tutorials/images/om1/step1.jpeg", sha: "aaa", type: "file", download_url: "https://raw.githubusercontent.com/test-owner/test-repo/main/site/tutorials/images/om1/step1.jpeg" },
-      { name: "step2.webp", path: "site/tutorials/images/om1/step2.webp", sha: "bbb", type: "file", download_url: "https://raw.githubusercontent.com/test-owner/test-repo/main/site/tutorials/images/om1/step2.webp" },
+      { name: "step1.jpeg", path: "site/tutorials/om1/images/step1.jpeg", sha: "aaa", type: "file", download_url: "https://raw.githubusercontent.com/test-owner/test-repo/main/site/tutorials/om1/images/step1.jpeg" },
+      { name: "step2.webp", path: "site/tutorials/om1/images/step2.webp", sha: "bbb", type: "file", download_url: "https://raw.githubusercontent.com/test-owner/test-repo/main/site/tutorials/om1/images/step2.webp" },
     ];
     vi.stubGlobal("fetch", vi.fn().mockResolvedValueOnce(jsonResponse(items)));
 
@@ -258,7 +258,7 @@ describe("saveTutorial", () => {
 
     expect(newSha).toBe("new-sha-456");
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.github.com/repos/test-owner/test-repo/contents/site/tutorials/olympus-om1-cla.json",
+      "https://api.github.com/repos/test-owner/test-repo/contents/site/tutorials/olympus-om1-cla/tutorial.json",
       expect.objectContaining({
         method: "PUT",
         headers: expect.objectContaining({ Authorization: `Bearer ${TOKEN}` }),
@@ -326,10 +326,10 @@ describe("uploadTutorialImage", () => {
 
     expect(result.sha).toBe("img-sha-123");
     expect(result.download_url).toBe(
-      "https://raw.githubusercontent.com/test-owner/test-repo/main/site/tutorials/images/olympus-om1-cla/step1.jpg",
+      "https://raw.githubusercontent.com/test-owner/test-repo/main/site/tutorials/olympus-om1-cla/images/step1.jpg",
     );
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.github.com/repos/test-owner/test-repo/contents/site/tutorials/images/olympus-om1-cla/step1.jpg",
+      "https://api.github.com/repos/test-owner/test-repo/contents/site/tutorials/olympus-om1-cla/images/step1.jpg",
       expect.objectContaining({ method: "PUT" }),
     );
 

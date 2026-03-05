@@ -4,19 +4,21 @@ import Image from "@11ty/eleventy-img";
 import { TutorialSchema } from "../../lib/types/tutorial.ts";
 
 const TUTORIALS_DIR = "site/tutorials";
-const IMAGES_DIR = `${TUTORIALS_DIR}/images`;
 const IMAGE_OUTPUT_DIR = "_site/img/tutorials";
 const IMAGE_URL_PATH = "/img/tutorials/";
 
 const tutorials = async () => {
-  const tutorialFiles = (await fs.promises.readdir(TUTORIALS_DIR))
-    .filter((f) => f.endsWith(".json"))
-    .map((f) => `${TUTORIALS_DIR}/${f}`);
+  const entries = await fs.promises.readdir(TUTORIALS_DIR, {
+    withFileTypes: true,
+  });
+  const tutorialDirs = entries
+    .filter((e) => e.isDirectory())
+    .map((e) => e.name);
 
   const output = [];
 
-  for (const file of tutorialFiles) {
-    const id = Path.parse(file).name;
+  for (const id of tutorialDirs) {
+    const file = `${TUTORIALS_DIR}/${id}/tutorial.json`;
     const raw = JSON.parse(await fs.promises.readFile(file, "utf8"));
 
     const result = TutorialSchema.safeParse({ ...raw, id });
@@ -31,7 +33,7 @@ const tutorials = async () => {
       tutorial.steps.map(async (step) => {
         const processedPhotos = await Promise.all(
           step.photos.map(async (photo) => {
-            const imagePath = `${IMAGES_DIR}/${id}/${photo.filename}`;
+            const imagePath = `${TUTORIALS_DIR}/${id}/images/${photo.filename}`;
             const imageExists = await fs.promises
               .access(imagePath, fs.constants.F_OK)
               .then(() => true)

@@ -175,7 +175,7 @@ test.describe("TutorialEditor — existing tutorial", () => {
       (url) =>
         url.hostname === "api.github.com" &&
         url.pathname ===
-          "/repos/bjpirt/repaircameras.org/contents/site/tutorials/missing-tutorial.json",
+          "/repos/bjpirt/repaircameras.org/contents/site/tutorials/missing-tutorial/tutorial.json",
       (route) =>
         route.fulfill({ status: 404, body: '{"message":"Not Found"}' }),
     );
@@ -206,6 +206,6 @@ test.describe("TutorialEditor — existing tutorial", () => {
     );
 
     await page.getByRole("button", { name: "Leave" }).click();
-    await expect(page.getByText("Tutorials")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Tutorials" })).toBeVisible();
   });
 });

@@ -71,7 +71,7 @@ describe("TutorialList", () => {
   });
 
   it("shows published tutorials with title and meta", async () => {
-    vi.mocked(listTutorialFiles).mockResolvedValue([{ id: "olympus-om1-cla", name: "olympus-om1-cla.json", path: "site/tutorials/olympus-om1-cla.json", sha: "abc" }]);
+    vi.mocked(listTutorialFiles).mockResolvedValue([{ id: "olympus-om1-cla", name: "olympus-om1-cla", path: "site/tutorials/olympus-om1-cla", sha: "abc" }]);
     vi.mocked(fetchTutorialJson).mockResolvedValue({
       tutorial: sampleTutorial,
       sha: "abc",
@@ -87,7 +87,7 @@ describe("TutorialList", () => {
   });
 
   it("links published tutorials to their edit pages", async () => {
-    vi.mocked(listTutorialFiles).mockResolvedValue([{ id: "olympus-om1-cla", name: "olympus-om1-cla.json", path: "site/tutorials/olympus-om1-cla.json", sha: "abc" }]);
+    vi.mocked(listTutorialFiles).mockResolvedValue([{ id: "olympus-om1-cla", name: "olympus-om1-cla", path: "site/tutorials/olympus-om1-cla", sha: "abc" }]);
     vi.mocked(fetchTutorialJson).mockResolvedValue({
       tutorial: sampleTutorial,
       sha: "abc",
@@ -104,7 +104,7 @@ describe("TutorialList", () => {
   });
 
   it("shows 'Edits in Progress' section when an edit branch exists", async () => {
-    vi.mocked(listTutorialFiles).mockResolvedValue([{ id: "olympus-om1-cla", name: "olympus-om1-cla.json", path: "site/tutorials/olympus-om1-cla.json", sha: "abc" }]);
+    vi.mocked(listTutorialFiles).mockResolvedValue([{ id: "olympus-om1-cla", name: "olympus-om1-cla", path: "site/tutorials/olympus-om1-cla", sha: "abc" }]);
     vi.mocked(fetchTutorialJson).mockResolvedValue({
       tutorial: sampleTutorial,
       sha: "abc",
@@ -133,7 +133,7 @@ describe("TutorialList", () => {
   });
 
   it("does not show unsubmitted section for branches that are already published", async () => {
-    vi.mocked(listTutorialFiles).mockResolvedValue([{ id: "olympus-om1-cla", name: "olympus-om1-cla.json", path: "site/tutorials/olympus-om1-cla.json", sha: "abc" }]);
+    vi.mocked(listTutorialFiles).mockResolvedValue([{ id: "olympus-om1-cla", name: "olympus-om1-cla", path: "site/tutorials/olympus-om1-cla", sha: "abc" }]);
     vi.mocked(fetchTutorialJson).mockResolvedValue({
       tutorial: sampleTutorial,
       sha: "abc",
@@ -162,7 +162,7 @@ describe("TutorialList", () => {
   });
 
   it("continues rendering even when branch listing fails", async () => {
-    vi.mocked(listTutorialFiles).mockResolvedValue([{ id: "olympus-om1-cla", name: "olympus-om1-cla.json", path: "site/tutorials/olympus-om1-cla.json", sha: "abc" }]);
+    vi.mocked(listTutorialFiles).mockResolvedValue([{ id: "olympus-om1-cla", name: "olympus-om1-cla", path: "site/tutorials/olympus-om1-cla", sha: "abc" }]);
     vi.mocked(fetchTutorialJson).mockResolvedValue({
       tutorial: sampleTutorial,
       sha: "abc",

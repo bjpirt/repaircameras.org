@@ -7,7 +7,6 @@
   "scripts": {
     "build": "npx @11ty/eleventy",
     "serve": "npx @11ty/eleventy --serve --incremental",
-    "start": "npx @11ty/eleventy --serve --incremental",
     "admin:dev": "npm --prefix admin run dev",
     "admin:build": "npm --prefix admin run build",
     "admin:test": "npm --prefix admin run test"
