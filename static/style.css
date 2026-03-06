@@ -236,7 +236,6 @@ main h3 {
 /* Tutorial tools */
 .tutorial-tools {
   margin-bottom: 32px;
-  padding-left: 52px;
 }
 .tutorial-tools h3 {
   margin: 4px 0 8px;
@@ -268,10 +267,14 @@ main h3 {
 .tutorial-steps .tutorial-step {
   counter-increment: step-counter;
   margin-bottom: 40px;
-  padding-left: 52px;
   position: relative;
 }
-.tutorial-steps .tutorial-step::before {
+.tutorial-steps .tutorial-step > h3 {
+  padding-left: 52px;
+  position: relative;
+  margin: 4px 0 12px;
+}
+.tutorial-steps .tutorial-step > h3::before {
   content: counter(step-counter);
   position: absolute;
   left: 0;
@@ -287,9 +290,6 @@ main h3 {
   justify-content: center;
   border-radius: 50%;
   flex-shrink: 0;
-}
-.tutorial-steps .tutorial-step h3 {
-  margin: 4px 0 12px;
 }
 .tutorial-steps .tutorial-step p {
   max-width: 680px;
@@ -387,31 +387,36 @@ main h3 {
 
 .step-substeps {
   list-style: none;
-  counter-reset: substep-counter;
   margin: 8px 0 16px;
   padding: 0;
 }
 .step-substeps li {
-  counter-increment: substep-counter;
   padding: 3px 0 3px 28px;
   position: relative;
   line-height: 1.5;
 }
 .step-substeps li::before {
-  content: counter(substep-counter);
+  content: "";
   position: absolute;
-  left: 0;
-  width: 20px;
-  height: 20px;
+  left: 4px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--substep-colour);
-  color: #fff;
-  font-size: 75%;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 4px;
+  top: 8px;
+}
+.step-substeps li .callout-icon {
+  margin-right: 4px;
+  font-style: normal;
+}
+.step-substeps li[data-callout=caution] .callout-icon {
+  color: #e53935;
+}
+.step-substeps li[data-callout=note] .callout-icon {
+  color: #1e88e5;
+}
+.step-substeps li[data-callout=reminder] .callout-icon {
+  color: #fb8c00;
 }
 
 /* footer styling */
