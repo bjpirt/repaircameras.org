@@ -20,10 +20,11 @@ export function calculateResizeDimensions(
   };
 }
 
-function sanitiseFilename(name: string): string {
-  const base = name.replace(/\.[^.]+$/, "");
-  const sanitised = base.toLowerCase().replace(/\s+/g, "-");
-  return `${sanitised}.jpg`;
+export function generateFilename(): string {
+  const bytes = new Uint8Array(3);
+  crypto.getRandomValues(bytes);
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return `${hex}.jpg`;
 }
 
 export async function resizeImage(
@@ -63,7 +64,7 @@ export async function resizeImage(
 
     return {
       blob,
-      filename: sanitiseFilename(file.name),
+      filename: generateFilename(),
       width,
       height,
     };
