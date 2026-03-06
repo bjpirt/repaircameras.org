@@ -1,0 +1,92 @@
+name: Tutorial Preview
+
+on:
+  pull_request:
+    paths:
+      - "site/tutorials/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Detect changed tutorials
+        id: detect
+        run: |
+          TUTORIALS=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'site/tutorials/' \
+            | sed -n 's|site/tutorials/\([^/]*\)/.*|\1|p' \
+            | sort -u)
+          echo "tutorials<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$TUTORIALS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+          if [ -z "$TUTORIALS" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install OS packages
+        if: steps.detect.outputs.skip == 'false'
+        run: sudo apt-get update && sudo apt-get install -y imagemagick ghostscript
+
+      - name: Install dependencies
+        if: steps.detect.outputs.skip == 'false'
+        run: npm ci
+
+      - name: Build site
+        if: steps.detect.outputs.skip == 'false'
+        run: npm run build
+
+      - name: Install Playwright
+        if: steps.detect.outputs.skip == 'false'
+        run: npx playwright install chromium --with-deps
+        working-directory: admin
+
+      - name: Take screenshots
+        if: steps.detect.outputs.skip == 'false'
+        env:
+          TUTORIALS: ${{ steps.detect.outputs.tutorials }}
+        run: node bin/screenshot-tutorials.mjs
+
+      - name: Upload screenshots
+        if: steps.detect.outputs.skip == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tutorial-previews
+          path: screenshots/
+
+      - name: Comment on PR
+        if: steps.detect.outputs.skip == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TUTORIALS: ${{ steps.detect.outputs.tutorials }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          TUTORIAL_LIST=$(echo "$TUTORIALS" | sed 's/^/- `/' | sed 's/$/`/')
+          BODY=$(cat <<EOF
+          ## Tutorial Preview
+
+          The following tutorials were added or modified in this PR:
+          ${TUTORIAL_LIST}
+
+          Full-page screenshots are available as build artifacts:
+          [View screenshots](${RUN_URL})
+          EOF
+          )
+          gh pr comment "${{ github.event.pull_request.number }}" --body "$BODY" --edit-last || \
+            gh pr comment "${{ github.event.pull_request.number }}" --body "$BODY"
