@@ -31,6 +31,8 @@ export const TutorialPhotoSchema = z.object({
 
 export const SubStepSchema = z.object({
   text: z.string(),
+  colour: z.string().optional(),
+  callout: z.enum(["caution", "note", "reminder"]).optional(),
 });
 
 export const TutorialStepSchema = z

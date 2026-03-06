@@ -9,6 +9,7 @@ interface Props {
   stepIndex: number;
   photos: PhotoFormState[];
   substepLabels: string[];
+  substepColours: string[];
   tutorialId: string;
   token: string;
   dispatch: React.Dispatch<EditorAction>;
@@ -20,7 +21,7 @@ interface UploadingFile {
   error?: string;
 }
 
-export default function PhotoManager({ stepIndex, photos, substepLabels, tutorialId, token, dispatch }: Props) {
+export default function PhotoManager({ stepIndex, photos, substepLabels, substepColours, tutorialId, token, dispatch }: Props) {
   const [uploading, setUploading] = useState<UploadingFile[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const [editingAnnotations, setEditingAnnotations] = useState<number | null>(null);
@@ -183,6 +184,7 @@ export default function PhotoManager({ stepIndex, photos, substepLabels, tutoria
           imageUrl={photos[editingAnnotations].imageUrl!}
           annotations={photos[editingAnnotations].annotations}
           substepLabels={substepLabels}
+          substepColours={substepColours}
           onSave={(annotations: Annotation[]) => {
             dispatch({ type: "SET_PHOTO_ANNOTATIONS", stepIndex, photoIndex: editingAnnotations, annotations });
             setEditingAnnotations(null);

@@ -1,5 +1,7 @@
+import { useState } from "react";
 import type { StepFormState, EditorAction } from "./editorReducer";
 import PhotoManager from "../components/PhotoManager";
+import { SUBSTEP_COLOURS } from "@shared/colours";
 
 interface Props {
   step: StepFormState;
@@ -9,6 +11,54 @@ interface Props {
   token: string;
   dispatch: React.Dispatch<EditorAction>;
 }
+
+function ColourPicker({
+  colour,
+  defaultColour,
+  onChange,
+}: {
+  colour: string | undefined;
+  defaultColour: string;
+  onChange: (colour: string | undefined) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const activeColour = colour ?? defaultColour;
+
+  return (
+    <span className="colour-picker-wrapper">
+      <button
+        type="button"
+        className="colour-swatch"
+        style={{ background: activeColour }}
+        onClick={() => setOpen(!open)}
+        title="Choose colour"
+      />
+      {open && (
+        <div className="colour-picker-popover">
+          {SUBSTEP_COLOURS.map((c) => (
+            <button
+              key={c}
+              type="button"
+              className={`colour-option${c === activeColour ? " is-active" : ""}`}
+              style={{ background: c }}
+              onClick={() => {
+                onChange(c === defaultColour ? undefined : c);
+                setOpen(false);
+              }}
+            />
+          ))}
+        </div>
+      )}
+    </span>
+  );
+}
+
+const CALLOUT_OPTIONS: { value: string; label: string }[] = [
+  { value: "", label: "\u2014" },
+  { value: "caution", label: "\u26A0" },
+  { value: "note", label: "\u2139" },
+  { value: "reminder", label: "\u21BB" },
+];
 
 export default function StepEditor({ step, index, totalSteps, tutorialId, token, dispatch }: Props) {
   return (
@@ -71,7 +121,13 @@ export default function StepEditor({ step, index, totalSteps, tutorialId, token,
         <label>Substeps</label>
         {step.substeps.map((ss, j) => (
           <div key={j} className="list-item-row">
-            <span className="substep-number">{j + 1}.</span>
+            <ColourPicker
+              colour={ss.colour}
+              defaultColour={SUBSTEP_COLOURS[j % SUBSTEP_COLOURS.length]}
+              onChange={(colour) =>
+                dispatch({ type: "UPDATE_SUBSTEP_COLOUR", stepIndex: index, substepIndex: j, colour })
+              }
+            />
             <input
               type="text"
               value={ss.text}
@@ -79,6 +135,25 @@ export default function StepEditor({ step, index, totalSteps, tutorialId, token,
                 dispatch({ type: "UPDATE_SUBSTEP", stepIndex: index, substepIndex: j, value: e.target.value })
               }
             />
+            <select
+              className="callout-select"
+              value={ss.callout ?? ""}
+              onChange={(e) =>
+                dispatch({
+                  type: "UPDATE_SUBSTEP_CALLOUT",
+                  stepIndex: index,
+                  substepIndex: j,
+                  callout: (e.target.value || undefined) as "caution" | "note" | "reminder" | undefined,
+                })
+              }
+              title="Callout type"
+            >
+              {CALLOUT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
             <button
               type="button"
               className="btn-icon btn-danger"
@@ -102,6 +177,7 @@ export default function StepEditor({ step, index, totalSteps, tutorialId, token,
         stepIndex={index}
         photos={step.photos}
         substepLabels={step.substeps.map((ss) => ss.text)}
+        substepColours={step.substeps.map((ss, j) => ss.colour ?? SUBSTEP_COLOURS[j % SUBSTEP_COLOURS.length])}
         tutorialId={tutorialId}
         token={token}
         dispatch={dispatch}

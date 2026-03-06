@@ -1,12 +1,11 @@
 import type { Annotation } from "@shared/types/tutorial";
+import { SUBSTEP_COLOURS, ANNOTATION_COLOUR_UNLINKED } from "@shared/colours";
 
 const STROKE_WIDTH_RATIO = 0.004;
-export const ANNOTATION_COLOURS = ["#e53935", "#1e88e5", "#43a047", "#fb8c00"];
-export const ANNOTATION_COLOUR_UNLINKED = "#999999";
 
-export function annotationColour(annotation: Annotation): string {
+function annotationColour(annotation: Annotation, substepColours: string[]): string {
   if (annotation.substep === undefined) return ANNOTATION_COLOUR_UNLINKED;
-  return ANNOTATION_COLOURS[annotation.substep % ANNOTATION_COLOURS.length];
+  return substepColours[annotation.substep] ?? SUBSTEP_COLOURS[annotation.substep % SUBSTEP_COLOURS.length];
 }
 
 interface Props {
@@ -14,6 +13,7 @@ interface Props {
   imageWidth: number;
   imageHeight: number;
   selectedIndex?: number | null;
+  substepColours?: string[];
   onAnnotationClick?: (index: number) => void;
 }
 
@@ -22,6 +22,7 @@ export default function AnnotationOverlay({
   imageWidth: w,
   imageHeight: h,
   selectedIndex,
+  substepColours = [],
   onAnnotationClick,
 }: Props) {
   const strokeWidth = STROKE_WIDTH_RATIO * w;
@@ -46,7 +47,7 @@ export default function AnnotationOverlay({
         </marker>
       </defs>
       {annotations.map((ann, i) => {
-        const colour = annotationColour(ann);
+        const colour = annotationColour(ann, substepColours);
         const isSelected = selectedIndex === i;
         const opacity = isSelected ? 1 : 0.85;
         const cursor = onAnnotationClick ? "pointer" : "default";
