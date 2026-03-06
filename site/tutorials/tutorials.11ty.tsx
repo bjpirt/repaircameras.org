@@ -7,7 +7,13 @@ import {
   ProcessedPhoto,
   ProcessedStep,
   ProcessedTutorial,
+  SubStep,
 } from "../../lib/types/tutorial";
+import {
+  SUBSTEP_COLOURS,
+  ANNOTATION_COLOUR_UNLINKED,
+  CALLOUT_ICONS,
+} from "../../lib/colours";
 
 type ViewProps = {
   tutorial: ProcessedTutorial;
@@ -29,25 +35,28 @@ export const data = {
 };
 
 const STROKE_WIDTH_RATIO = 0.004;
-const ANNOTATION_COLOURS = ["#e53935", "#1e88e5", "#43a047", "#fb8c00"];
-const ANNOTATION_COLOUR_UNLINKED = "#999999";
 
-function substepColour(index: number): string {
-  return ANNOTATION_COLOURS[index % ANNOTATION_COLOURS.length];
+function defaultSubstepColour(index: number): string {
+  return SUBSTEP_COLOURS[index % SUBSTEP_COLOURS.length];
 }
 
-function annotationColour(annotation: Annotation): string {
+function getSubstepColour(substeps: SubStep[], index: number): string {
+  return substeps[index]?.colour ?? defaultSubstepColour(index);
+}
+
+function annotationColour(annotation: Annotation, substeps: SubStep[]): string {
   if (annotation.substep === undefined) return ANNOTATION_COLOUR_UNLINKED;
-  return substepColour(annotation.substep);
+  return getSubstepColour(substeps, annotation.substep);
 }
 
 function renderCircle(
   annotation: CircleAnnotation,
   w: number,
-  h: number
+  h: number,
+  substeps: SubStep[]
 ): JSX.Element {
   const { cx, cy, r } = annotation;
-  const colour = annotationColour(annotation);
+  const colour = annotationColour(annotation, substeps);
   return (
     <circle
       cx={cx * w}
@@ -63,10 +72,11 @@ function renderCircle(
 function renderArrow(
   annotation: ArrowAnnotation,
   w: number,
-  h: number
+  h: number,
+  substeps: SubStep[]
 ): JSX.Element {
   const { x1, y1, x2, y2 } = annotation;
-  const colour = annotationColour(annotation);
+  const colour = annotationColour(annotation, substeps);
   return (
     <line
       x1={x1 * w}
@@ -80,12 +90,12 @@ function renderArrow(
   );
 }
 
-function renderAnnotation(annotation: Annotation, w: number, h: number): JSX.Element {
-  if (annotation.type === "circle") return renderCircle(annotation, w, h);
-  return renderArrow(annotation, w, h);
+function renderAnnotation(annotation: Annotation, w: number, h: number, substeps: SubStep[]): JSX.Element {
+  if (annotation.type === "circle") return renderCircle(annotation, w, h, substeps);
+  return renderArrow(annotation, w, h, substeps);
 }
 
-function renderPhotoFigure(photo: ProcessedPhoto): JSX.Element {
+function renderPhotoFigure(photo: ProcessedPhoto, substeps: SubStep[]): JSX.Element {
   const largest = photo.image.jpeg[photo.image.jpeg.length - 1];
   const { width: w, height: h } = largest;
   return (
@@ -117,7 +127,7 @@ function renderPhotoFigure(photo: ProcessedPhoto): JSX.Element {
                 <polygon points="0 0, 10 3.5, 0 7" fill="context-stroke" />
               </marker>
             </defs>
-            {photo.annotations.map((ann) => renderAnnotation(ann, w, h))}
+            {photo.annotations.map((ann) => renderAnnotation(ann, w, h, substeps))}
           </svg>
         ) : undefined}
       </div>
@@ -154,13 +164,19 @@ function renderStepContent(step: ProcessedStep): JSX.Element {
       {hasGallery ? renderThumbs(step.photos) : undefined}
       {step.intro ? <p class="step-intro">{step.intro}</p> : undefined}
       {step.substeps.length > 0 ? (
-        <ol class="step-substeps">
+        <ul class="step-substeps">
           {step.substeps.map((substep, i) => (
-            <li style={`--substep-colour: ${substepColour(i)}`}>
+            <li
+              style={`--substep-colour: ${getSubstepColour(step.substeps, i)}`}
+              {...(substep.callout ? { "data-callout": substep.callout } : {})}
+            >
+              {substep.callout ? (
+                <span class="callout-icon">{CALLOUT_ICONS[substep.callout]}</span>
+              ) : undefined}
               {substep.text}
             </li>
           ))}
-        </ol>
+        </ul>
       ) : undefined}
     </div>
   );
@@ -187,12 +203,12 @@ function renderStep(step: ProcessedStep): JSX.Element {
               class={`gallery-photo${i === 0 ? " is-active" : ""}`}
               data-gallery-photo={String(i)}
             >
-              {renderPhotoFigure(photo)}
+              {renderPhotoFigure(photo, step.substeps)}
             </div>
           ))}
         </div>
       ) : (
-        renderPhotoFigure(step.photos[0])
+        renderPhotoFigure(step.photos[0], step.substeps)
       )}
     </div>
   );

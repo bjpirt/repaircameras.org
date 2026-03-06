@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { Annotation, CircleAnnotation, ArrowAnnotation } from "@shared/types/tutorial";
-import AnnotationOverlay, { ANNOTATION_COLOURS, ANNOTATION_COLOUR_UNLINKED } from "./AnnotationOverlay";
+import AnnotationOverlay from "./AnnotationOverlay";
+import { SUBSTEP_COLOURS, ANNOTATION_COLOUR_UNLINKED } from "@shared/colours";
 import "./AnnotationEditor.css";
 
 type Tool = "select" | "circle" | "arrow";
@@ -17,6 +18,7 @@ interface Props {
   imageUrl: string;
   annotations: Annotation[];
   substepLabels: string[];
+  substepColours: string[];
   onSave: (annotations: Annotation[]) => void;
   onCancel: () => void;
 }
@@ -29,7 +31,7 @@ function truncate(text: string, max: number): string {
   return text.length > max ? text.slice(0, max) + "…" : text;
 }
 
-export default function AnnotationEditor({ imageUrl, annotations: initialAnnotations, substepLabels, onSave, onCancel }: Props) {
+export default function AnnotationEditor({ imageUrl, annotations: initialAnnotations, substepLabels, substepColours, onSave, onCancel }: Props) {
   const [annotations, setAnnotations] = useState<Annotation[]>([...initialAnnotations]);
   const [tool, setTool] = useState<Tool>("select");
   const [selected, setSelected] = useState<number | null>(null);
@@ -297,7 +299,7 @@ export default function AnnotationEditor({ imageUrl, annotations: initialAnnotat
               className="colour-preview"
               style={{
                 backgroundColor: selectedAnnotation.substep !== undefined
-                  ? ANNOTATION_COLOURS[selectedAnnotation.substep % ANNOTATION_COLOURS.length]
+                  ? (substepColours[selectedAnnotation.substep] ?? SUBSTEP_COLOURS[selectedAnnotation.substep % SUBSTEP_COLOURS.length])
                   : ANNOTATION_COLOUR_UNLINKED,
               }}
             />
@@ -338,6 +340,7 @@ export default function AnnotationEditor({ imageUrl, annotations: initialAnnotat
               imageWidth={imageSize.w}
               imageHeight={imageSize.h}
               selectedIndex={selected}
+              substepColours={substepColours}
               onAnnotationClick={handleAnnotationClick}
             />
           </div>

@@ -11,10 +11,16 @@ export interface PhotoFormState {
   pendingBlob?: Blob;
 }
 
+export interface SubstepFormState {
+  text: string;
+  colour?: string;
+  callout?: "caution" | "note" | "reminder";
+}
+
 export interface StepFormState {
   title: string;
   intro: string;
-  substeps: { text: string }[];
+  substeps: SubstepFormState[];
   photos: PhotoFormState[];
 }
 
@@ -47,7 +53,7 @@ export interface PullRequestResult {
 }
 
 export type EditorAction =
-  | { type: "LOAD_TUTORIAL"; tutorial: { id: string; title: string; manufacturer: string; model: string; description: string; tools: string[]; steps: { title: string; intro?: string; substeps: { text: string }[]; photos: { filename: string; alt: string; annotations: Annotation[] }[] }[] }; images: TutorialImageEntry[]; sha: string }
+  | { type: "LOAD_TUTORIAL"; tutorial: { id: string; title: string; manufacturer: string; model: string; description: string; tools: string[]; steps: { title: string; intro?: string; substeps: { text: string; colour?: string; callout?: "caution" | "note" | "reminder" }[]; photos: { filename: string; alt: string; annotations: Annotation[] }[] }[] }; images: TutorialImageEntry[]; sha: string }
   | { type: "SET_FIELD"; field: "title" | "manufacturer" | "model" | "description"; value: string }
   | { type: "SET_ID"; value: string }
   | { type: "ADD_TOOL" }
@@ -60,6 +66,8 @@ export type EditorAction =
   | { type: "ADD_SUBSTEP"; stepIndex: number }
   | { type: "REMOVE_SUBSTEP"; stepIndex: number; substepIndex: number }
   | { type: "UPDATE_SUBSTEP"; stepIndex: number; substepIndex: number; value: string }
+  | { type: "UPDATE_SUBSTEP_COLOUR"; stepIndex: number; substepIndex: number; colour: string | undefined }
+  | { type: "UPDATE_SUBSTEP_CALLOUT"; stepIndex: number; substepIndex: number; callout: "caution" | "note" | "reminder" | undefined }
   | { type: "ADD_PHOTO"; stepIndex: number; photo: PhotoFormState }
   | { type: "REMOVE_PHOTO"; stepIndex: number; photoIndex: number }
   | { type: "UPDATE_PHOTO_ALT"; stepIndex: number; photoIndex: number; value: string }
@@ -189,7 +197,33 @@ export function editorReducer(state: EditorState, action: EditorAction): EditorS
           ? {
               ...step,
               substeps: step.substeps.map((ss, j) =>
-                j === action.substepIndex ? { text: action.value } : ss,
+                j === action.substepIndex ? { ...ss, text: action.value } : ss,
+              ),
+            }
+          : step,
+      );
+      return { ...state, steps, saveSuccess: false, isDirty: true };
+    }
+    case "UPDATE_SUBSTEP_COLOUR": {
+      const steps = state.steps.map((step, i) =>
+        i === action.stepIndex
+          ? {
+              ...step,
+              substeps: step.substeps.map((ss, j) =>
+                j === action.substepIndex ? { ...ss, colour: action.colour } : ss,
+              ),
+            }
+          : step,
+      );
+      return { ...state, steps, saveSuccess: false, isDirty: true };
+    }
+    case "UPDATE_SUBSTEP_CALLOUT": {
+      const steps = state.steps.map((step, i) =>
+        i === action.stepIndex
+          ? {
+              ...step,
+              substeps: step.substeps.map((ss, j) =>
+                j === action.substepIndex ? { ...ss, callout: action.callout } : ss,
               ),
             }
           : step,
@@ -286,7 +320,13 @@ export function buildAndValidate(state: EditorState): { data: Tutorial } | { err
     steps: state.steps.map((step) => ({
       title: step.title,
       intro: step.intro || undefined,
-      substeps: step.substeps.filter((ss) => ss.text.trim() !== ""),
+      substeps: step.substeps
+        .filter((ss) => ss.text.trim() !== "")
+        .map((ss) => ({
+          text: ss.text,
+          ...(ss.colour ? { colour: ss.colour } : {}),
+          ...(ss.callout ? { callout: ss.callout } : {}),
+        })),
       photos: step.photos.map((photo) => ({
         filename: photo.filename,
         alt: photo.alt,

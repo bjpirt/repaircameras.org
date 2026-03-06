@@ -28,8 +28,6 @@ vi.mock("./AnnotationOverlay", () => ({
       ))}
     </svg>
   ),
-  ANNOTATION_COLOURS: ["#e53935", "#1e88e5", "#43a047", "#fb8c00"],
-  ANNOTATION_COLOUR_UNLINKED: "#999999",
 }));
 
 // Auto-fire onload for new Image() calls
@@ -52,12 +50,14 @@ afterEach(() => {
 
 const IMAGE_URL = "blob:test/image";
 const SUBSTEP_LABELS = ["Clean shutter blades", "Lubricate helicoid"];
+const DEFAULT_SUBSTEP_COLOURS = ["#e53935", "#1e88e5"];
 const CIRCLE: Annotation = { type: "circle", cx: 0.5, cy: 0.5, r: 0.1 };
 const ARROW: Annotation = { type: "arrow", x1: 0.1, y1: 0.1, x2: 0.4, y2: 0.4 };
 
 function renderEditor({
   annotations = [] as Annotation[],
   substepLabels = SUBSTEP_LABELS,
+  substepColours = DEFAULT_SUBSTEP_COLOURS,
   onSave = vi.fn(),
   onCancel = vi.fn(),
 } = {}) {
@@ -66,6 +66,7 @@ function renderEditor({
       imageUrl={IMAGE_URL}
       annotations={annotations}
       substepLabels={substepLabels}
+      substepColours={substepColours}
       onSave={onSave}
       onCancel={onCancel}
     />,
