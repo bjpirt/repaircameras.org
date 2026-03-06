@@ -5,6 +5,7 @@ type Props = {
   page: any;
   allPages: any[];
   preMain?: JSX.Element;
+  pageScripts?: JSX.Element;
   children?: JSX.Children;
 };
 
@@ -14,6 +15,7 @@ export function MainTemplate({
   page,
   allPages,
   preMain,
+  pageScripts,
 }: Props): JSX.Element {
   return (
     <html lang="en">
@@ -41,6 +43,7 @@ export function MainTemplate({
         </div>
         {preMain ? preMain : undefined}
         <main>{children}</main>
+        {pageScripts}
         <footer>
           <ul>
             <li>

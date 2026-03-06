@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            admin/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install admin dependencies
+        run: npm ci --prefix admin
+
+      - name: Type-check admin
+        run: npx tsc --noEmit -p tsconfig.json
+        working-directory: admin
+
+      - name: Run admin tests
+        run: npm run admin:test
+
+  e2e:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            admin/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install admin dependencies
+        run: npm ci --prefix admin
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('admin/package-lock.json') }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium --with-deps
+        working-directory: admin
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+        working-directory: admin
+
+      - name: Run E2E tests
+        run: npx playwright test
+        working-directory: admin

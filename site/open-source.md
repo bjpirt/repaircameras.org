@@ -11,4 +11,4 @@ This site is built with openness in mind:
 
 The openness goes both ways, there is open access to the information on the site as well as an openness to adding more information from the camera community to it.
 
-The site is created for the community, byy the community.
+The site is created for the community, by the community.

@@ -1,0 +1,103 @@
+.photo-manager {
+  margin-top: 12px;
+}
+
+.photo-manager > label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.photo-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+
+.photo-item img {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.photo-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.photo-filename {
+  font-size: 12px;
+  color: #777;
+}
+
+.photo-item-details input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.photo-item-details input:focus {
+  outline: none;
+  border-color: #24292e;
+}
+
+.photo-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.photo-uploading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #666;
+}
+
+.photo-upload-error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.upload-error-msg {
+  color: #721c24;
+}
+
+.photo-dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 6px;
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  cursor: pointer;
+  font-size: 13px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.photo-dropzone:hover {
+  border-color: #999;
+}
+
+.photo-dropzone.drag-over {
+  border-color: #24292e;
+  background: #f0f0f0;
+}
