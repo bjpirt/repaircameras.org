@@ -197,6 +197,223 @@ main h3 {
   border-radius: 5px;
 }
 
+/* Tutorial list */
+.tutorial-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+.tutorial-list--inline {
+  margin: 10px 0;
+}
+
+.tutorial-card {
+  background: #ddd;
+  padding: 16px;
+  margin-bottom: 12px;
+  max-width: 600px;
+}
+.tutorial-card h3 {
+  margin: 0 0 4px;
+  font-size: 120%;
+}
+.tutorial-card a {
+  color: #333;
+  text-decoration: none;
+}
+.tutorial-card a:hover {
+  text-decoration: underline;
+}
+.tutorial-card .tutorial-meta {
+  font-size: 90%;
+  color: #666;
+  margin: 0 0 8px;
+}
+.tutorial-card p {
+  margin: 4px 0 0;
+}
+
+/* Tutorial tools */
+.tutorial-tools {
+  margin-bottom: 32px;
+  padding-left: 52px;
+}
+.tutorial-tools h3 {
+  margin: 4px 0 8px;
+}
+.tutorial-tools p {
+  max-width: 680px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.tutorial-tools ul {
+  list-style: disc;
+  list-style-position: inside;
+}
+.tutorial-tools ul li {
+  margin: 6px 0;
+}
+
+/* Tutorial steps */
+.tutorial-description {
+  color: #555;
+  margin-bottom: 24px;
+}
+
+.tutorial-steps {
+  list-style: none;
+  counter-reset: step-counter;
+  padding: 0;
+}
+.tutorial-steps .tutorial-step {
+  counter-increment: step-counter;
+  margin-bottom: 40px;
+  padding-left: 52px;
+  position: relative;
+}
+.tutorial-steps .tutorial-step::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 36px;
+  background: #333;
+  color: #fff;
+  font-weight: bold;
+  font-size: 110%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.tutorial-steps .tutorial-step h3 {
+  margin: 4px 0 12px;
+}
+.tutorial-steps .tutorial-step p {
+  max-width: 680px;
+  line-height: 1.6;
+}
+
+/* Tutorial photo with SVG annotation overlay */
+.tutorial-photo {
+  margin: 16px 0;
+  display: inline-block;
+}
+.tutorial-photo .photo-wrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 800px;
+}
+.tutorial-photo .photo-wrapper picture {
+  display: block;
+}
+.tutorial-photo .photo-wrapper img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.tutorial-photo .photo-wrapper svg.annotations {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.tutorial-photo figcaption {
+  font-size: 90%;
+  color: #555;
+  padding: 6px 0;
+  font-style: italic;
+}
+
+/* Step two-column layout */
+.step-body {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 12px;
+}
+.step-body .step-photo {
+  flex: 0 0 50%;
+  max-width: 50%;
+}
+.step-body .step-photo .tutorial-photo {
+  display: block;
+  margin: 0;
+}
+.step-body .step-photo .gallery-photos .gallery-photo {
+  display: none;
+}
+.step-body .step-photo .gallery-photos .gallery-photo.is-active {
+  display: block;
+}
+.step-body .step-content {
+  flex: 1;
+  min-width: 0;
+}
+.step-body .step-content .gallery-thumbs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.step-body .step-content .gallery-thumbs .gallery-thumb {
+  border: 2px solid transparent;
+  padding: 2px;
+  cursor: pointer;
+  background: none;
+  border-radius: 2px;
+}
+.step-body .step-content .gallery-thumbs .gallery-thumb.is-active {
+  border-color: #333;
+}
+.step-body .step-content .gallery-thumbs .gallery-thumb:hover:not(.is-active) {
+  border-color: #999;
+}
+.step-body .step-content .gallery-thumbs .gallery-thumb img {
+  display: block;
+  height: 56px;
+  width: auto;
+}
+
+/* Step sub-steps with colour-coded bullets */
+.step-intro {
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.step-substeps {
+  list-style: none;
+  counter-reset: substep-counter;
+  margin: 8px 0 16px;
+  padding: 0;
+}
+.step-substeps li {
+  counter-increment: substep-counter;
+  padding: 3px 0 3px 28px;
+  position: relative;
+  line-height: 1.5;
+}
+.step-substeps li::before {
+  content: counter(substep-counter);
+  position: absolute;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--substep-colour);
+  color: #fff;
+  font-size: 75%;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 4px;
+}
+
 /* footer styling */
 footer {
   background: #e5d8ca;
