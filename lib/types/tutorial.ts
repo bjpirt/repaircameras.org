@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ImageCollection } from "./ImageMetadata";
+import { BULLET_STYLES } from "../colours";
 
 export const CircleAnnotationSchema = z.object({
   type: z.literal("circle"),
@@ -31,8 +32,7 @@ export const TutorialPhotoSchema = z.object({
 
 export const SubStepSchema = z.object({
   text: z.string(),
-  colour: z.string().optional(),
-  callout: z.enum(["caution", "note", "reminder"]).optional(),
+  bulletStyle: z.enum(BULLET_STYLES).optional(),
 });
 
 export const TutorialStepSchema = z

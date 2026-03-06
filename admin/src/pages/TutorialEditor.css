@@ -245,17 +245,29 @@
 }
 
 .colour-swatch {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 2px solid #ccc;
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .colour-swatch:hover {
   border-color: #666;
+}
+
+.swatch-icon {
+  font-size: 11px;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
 }
 
 .colour-picker-popover {
@@ -267,11 +279,20 @@
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 6px;
+  width: 130px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.picker-row {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  width: 130px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.picker-divider {
+  height: 1px;
+  background: #e0e0e0;
+  margin: 5px 0;
 }
 
 .colour-option {
@@ -292,15 +313,34 @@
   box-shadow: 0 0 0 1px #fff inset;
 }
 
-.callout-select {
-  width: 36px;
-  padding: 2px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  text-align: center;
+.callout-row {
+  gap: 2px;
+}
+
+.callout-option {
+  width: 26px;
+  height: 22px;
+  border: 1px solid transparent;
+  border-radius: 3px;
   cursor: pointer;
-  flex-shrink: 0;
+  padding: 0;
+  font-size: 14px;
+  background: none;
+  color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.callout-option:hover {
+  background: #f0f0f0;
+  border-color: #ccc;
+}
+
+.callout-option.is-active {
+  background: #e8e8e8;
+  border-color: #999;
+  font-weight: bold;
 }
 
 /* Photos */

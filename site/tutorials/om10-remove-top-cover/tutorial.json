@@ -14,10 +14,12 @@
       "intro": "There are 6 screws to remove. Two long ones at the front and four shorter ones on the sides and back.",
       "substeps": [
         {
-          "text": "Remove the two long screws from the front"
+          "text": "Remove the two long screws from the front",
+          "bulletStyle": "red"
         },
         {
-          "text": "Remove the four short screws from the sides and back"
+          "text": "Remove the four short screws from the sides and back",
+          "bulletStyle": "blue"
         }
       ],
       "photos": [
@@ -82,13 +84,16 @@
       "intro": "Removing the circlip is best done with some fine circlip pliers, but if you don't have these it can be carefully levered off using a small screwdriver. Be careful removing the power switch because there are fine contacts that are easily damaged.",
       "substeps": [
         {
-          "text": "Open the back of the camera, put something in the winding fork to jam it and unscrew the winder"
+          "text": "Open the back of the camera, put something in the winding fork to jam it and unscrew the winder",
+          "bulletStyle": "red"
         },
         {
-          "text": "Remove the circlip from around the central plastic column"
+          "text": "Remove the circlip from around the central plastic column",
+          "bulletStyle": "blue"
         },
         {
-          "text": "Remove the power switch"
+          "text": "Be careful removing the power switch because there are fine contacts that are easily damaged",
+          "bulletStyle": "caution"
         }
       ],
       "photos": [
@@ -141,7 +146,8 @@
       "intro": "It is best to try and use friction to unscrew this (normal threaded, turn anti-clockwise) without damaging it. There are two holes to use a spanning wrench, however the plate is thin and easily damaged by too much force.",
       "substeps": [
         {
-          "text": "Remove the top plate from the wind lever using friction"
+          "text": "Remove the top plate from the wind lever using friction",
+          "bulletStyle": "green"
         }
       ],
       "photos": [
@@ -166,25 +172,32 @@
       "intro": "The top cover should now be able to be removed. It is connected via wires to the internals of the camera. If you are going to do more to the camera then these wires are best unsoldered. There is a blue wire with two cores - this is connected to a second wire that is in turn connected to the flash mount. Do not unsolder it directly from the flash mount because it is easy to melt the plastic mount.",
       "substeps": [
         {
-          "text": "Unsolder the yellow wire"
+          "text": "Unsolder the yellow wire",
+          "bulletStyle": "yellow"
         },
         {
-          "text": "Unsolder the green wire"
+          "text": "Unsolder the green wire",
+          "bulletStyle": "green"
         },
         {
-          "text": "Unsolder the red wire"
+          "text": "Unsolder the red wire",
+          "bulletStyle": "red"
         },
         {
-          "text": "Unsolder the second yellow wire. It is soldered along with another wire - reattach the other one so you don't forget where it goes"
+          "text": "Unsolder the second yellow wire. It is soldered along with another wire - reattach the other one so you don't forget where it goes",
+          "bulletStyle": "orange"
         },
         {
-          "text": "Unsolder the blue wire"
+          "text": "Unsolder the blue wire",
+          "bulletStyle": "blue"
         },
         {
-          "text": "Pull the connection on the blue wire out from the plastic tube and unsolder it"
+          "text": "Pull the connection on the blue wire out from the plastic tube and unsolder it",
+          "bulletStyle": "cyan"
         },
         {
-          "text": "Unsolder the inner white wire from the flash mount"
+          "text": "Do not unsolder directly from the flash mount - it is easy to melt the plastic",
+          "bulletStyle": "caution"
         }
       ],
       "photos": [

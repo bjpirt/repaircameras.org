@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { Annotation, CircleAnnotation, ArrowAnnotation } from "@shared/types/tutorial";
 import AnnotationOverlay from "./AnnotationOverlay";
-import { SUBSTEP_COLOURS, ANNOTATION_COLOUR_UNLINKED } from "@shared/colours";
+import { ANNOTATION_COLOUR_UNLINKED, bulletStyleHex } from "@shared/colours";
 import "./AnnotationEditor.css";
 
 type Tool = "select" | "circle" | "arrow";
@@ -299,7 +299,7 @@ export default function AnnotationEditor({ imageUrl, annotations: initialAnnotat
               className="colour-preview"
               style={{
                 backgroundColor: selectedAnnotation.substep !== undefined
-                  ? (substepColours[selectedAnnotation.substep] ?? SUBSTEP_COLOURS[selectedAnnotation.substep % SUBSTEP_COLOURS.length])
+                  ? (substepColours[selectedAnnotation.substep] ?? bulletStyleHex(undefined, selectedAnnotation.substep))
                   : ANNOTATION_COLOUR_UNLINKED,
               }}
             />

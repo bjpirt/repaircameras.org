@@ -1,7 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { StepFormState, EditorAction } from "./editorReducer";
 import PhotoManager from "../components/PhotoManager";
-import { SUBSTEP_COLOURS } from "@shared/colours";
+import {
+  BULLET_COLOURS,
+  CALLOUT_TYPES,
+  STYLE_HEX,
+  CALLOUT_ICONS,
+  bulletStyleHex,
+  isCallout,
+  type BulletStyle,
+} from "@shared/colours";
 
 interface Props {
   step: StepFormState;
@@ -12,53 +20,79 @@ interface Props {
   dispatch: React.Dispatch<EditorAction>;
 }
 
-function ColourPicker({
-  colour,
-  defaultColour,
+function SubstepPicker({
+  bulletStyle,
+  defaultStyle,
   onChange,
 }: {
-  colour: string | undefined;
-  defaultColour: string;
-  onChange: (colour: string | undefined) => void;
+  bulletStyle: BulletStyle | undefined;
+  defaultStyle: BulletStyle;
+  onChange: (style: BulletStyle | undefined) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const activeColour = colour ?? defaultColour;
+  const wrapperRef = useRef<HTMLSpanElement>(null);
+  const active = bulletStyle ?? defaultStyle;
+  const hex = STYLE_HEX[active];
+
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
 
   return (
-    <span className="colour-picker-wrapper">
+    <span className="colour-picker-wrapper" ref={wrapperRef}>
       <button
         type="button"
         className="colour-swatch"
-        style={{ background: activeColour }}
+        style={{ background: hex }}
         onClick={() => setOpen(!open)}
-        title="Choose colour"
-      />
+        title="Bullet style"
+      >
+        {isCallout(active) ? <span className="swatch-icon">{CALLOUT_ICONS[active]}</span> : null}
+      </button>
       {open && (
         <div className="colour-picker-popover">
-          {SUBSTEP_COLOURS.map((c) => (
-            <button
-              key={c}
-              type="button"
-              className={`colour-option${c === activeColour ? " is-active" : ""}`}
-              style={{ background: c }}
-              onClick={() => {
-                onChange(c === defaultColour ? undefined : c);
-                setOpen(false);
-              }}
-            />
-          ))}
+          <div className="picker-row">
+            {BULLET_COLOURS.map((name) => (
+              <button
+                key={name}
+                type="button"
+                className={`colour-option${active === name ? " is-active" : ""}`}
+                style={{ background: STYLE_HEX[name] }}
+                onClick={() => {
+                  onChange(name === defaultStyle ? undefined : name);
+                  setOpen(false);
+                }}
+                title={name}
+              />
+            ))}
+          </div>
+          <div className="picker-divider" />
+          <div className="picker-row callout-row">
+            {CALLOUT_TYPES.map((type) => (
+              <button
+                key={type}
+                type="button"
+                className={`callout-option${active === type ? " is-active" : ""}`}
+                style={{ color: STYLE_HEX[type] }}
+                onClick={() => { onChange(active === type ? undefined : type); setOpen(false); }}
+                title={type.charAt(0).toUpperCase() + type.slice(1)}
+              >
+                {CALLOUT_ICONS[type]}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </span>
   );
 }
-
-const CALLOUT_OPTIONS: { value: string; label: string }[] = [
-  { value: "", label: "\u2014" },
-  { value: "caution", label: "\u26A0" },
-  { value: "note", label: "\u2139" },
-  { value: "reminder", label: "\u21BB" },
-];
 
 export default function StepEditor({ step, index, totalSteps, tutorialId, token, dispatch }: Props) {
   return (
@@ -121,11 +155,11 @@ export default function StepEditor({ step, index, totalSteps, tutorialId, token,
         <label>Substeps</label>
         {step.substeps.map((ss, j) => (
           <div key={j} className="list-item-row">
-            <ColourPicker
-              colour={ss.colour}
-              defaultColour={SUBSTEP_COLOURS[j % SUBSTEP_COLOURS.length]}
-              onChange={(colour) =>
-                dispatch({ type: "UPDATE_SUBSTEP_COLOUR", stepIndex: index, substepIndex: j, colour })
+            <SubstepPicker
+              bulletStyle={ss.bulletStyle}
+              defaultStyle={BULLET_COLOURS[j % BULLET_COLOURS.length]}
+              onChange={(bulletStyle) =>
+                dispatch({ type: "UPDATE_SUBSTEP_STYLE", stepIndex: index, substepIndex: j, bulletStyle })
               }
             />
             <input
@@ -135,25 +169,6 @@ export default function StepEditor({ step, index, totalSteps, tutorialId, token,
                 dispatch({ type: "UPDATE_SUBSTEP", stepIndex: index, substepIndex: j, value: e.target.value })
               }
             />
-            <select
-              className="callout-select"
-              value={ss.callout ?? ""}
-              onChange={(e) =>
-                dispatch({
-                  type: "UPDATE_SUBSTEP_CALLOUT",
-                  stepIndex: index,
-                  substepIndex: j,
-                  callout: (e.target.value || undefined) as "caution" | "note" | "reminder" | undefined,
-                })
-              }
-              title="Callout type"
-            >
-              {CALLOUT_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
             <button
               type="button"
               className="btn-icon btn-danger"
@@ -177,7 +192,7 @@ export default function StepEditor({ step, index, totalSteps, tutorialId, token,
         stepIndex={index}
         photos={step.photos}
         substepLabels={step.substeps.map((ss) => ss.text)}
-        substepColours={step.substeps.map((ss, j) => ss.colour ?? SUBSTEP_COLOURS[j % SUBSTEP_COLOURS.length])}
+        substepColours={step.substeps.map((ss, j) => bulletStyleHex(ss.bulletStyle, j))}
         tutorialId={tutorialId}
         token={token}
         dispatch={dispatch}

@@ -1,4 +1,5 @@
 import { TutorialSchema, type Tutorial, type Annotation } from "@shared/types/tutorial";
+import type { BulletStyle } from "@shared/colours";
 import type { TutorialImageEntry, PendingImage } from "../services/github";
 
 // --- Types ---
@@ -13,8 +14,7 @@ export interface PhotoFormState {
 
 export interface SubstepFormState {
   text: string;
-  colour?: string;
-  callout?: "caution" | "note" | "reminder";
+  bulletStyle?: BulletStyle;
 }
 
 export interface StepFormState {
@@ -53,7 +53,7 @@ export interface PullRequestResult {
 }
 
 export type EditorAction =
-  | { type: "LOAD_TUTORIAL"; tutorial: { id: string; title: string; manufacturer: string; model: string; description: string; tools: string[]; steps: { title: string; intro?: string; substeps: { text: string; colour?: string; callout?: "caution" | "note" | "reminder" }[]; photos: { filename: string; alt: string; annotations: Annotation[] }[] }[] }; images: TutorialImageEntry[]; sha: string }
+  | { type: "LOAD_TUTORIAL"; tutorial: { id: string; title: string; manufacturer: string; model: string; description: string; tools: string[]; steps: { title: string; intro?: string; substeps: { text: string; bulletStyle?: BulletStyle }[]; photos: { filename: string; alt: string; annotations: Annotation[] }[] }[] }; images: TutorialImageEntry[]; sha: string }
   | { type: "SET_FIELD"; field: "title" | "manufacturer" | "model" | "description"; value: string }
   | { type: "SET_ID"; value: string }
   | { type: "ADD_TOOL" }
@@ -66,8 +66,7 @@ export type EditorAction =
   | { type: "ADD_SUBSTEP"; stepIndex: number }
   | { type: "REMOVE_SUBSTEP"; stepIndex: number; substepIndex: number }
   | { type: "UPDATE_SUBSTEP"; stepIndex: number; substepIndex: number; value: string }
-  | { type: "UPDATE_SUBSTEP_COLOUR"; stepIndex: number; substepIndex: number; colour: string | undefined }
-  | { type: "UPDATE_SUBSTEP_CALLOUT"; stepIndex: number; substepIndex: number; callout: "caution" | "note" | "reminder" | undefined }
+  | { type: "UPDATE_SUBSTEP_STYLE"; stepIndex: number; substepIndex: number; bulletStyle: BulletStyle | undefined }
   | { type: "ADD_PHOTO"; stepIndex: number; photo: PhotoFormState }
   | { type: "REMOVE_PHOTO"; stepIndex: number; photoIndex: number }
   | { type: "UPDATE_PHOTO_ALT"; stepIndex: number; photoIndex: number; value: string }
@@ -204,26 +203,13 @@ export function editorReducer(state: EditorState, action: EditorAction): EditorS
       );
       return { ...state, steps, saveSuccess: false, isDirty: true };
     }
-    case "UPDATE_SUBSTEP_COLOUR": {
+    case "UPDATE_SUBSTEP_STYLE": {
       const steps = state.steps.map((step, i) =>
         i === action.stepIndex
           ? {
               ...step,
               substeps: step.substeps.map((ss, j) =>
-                j === action.substepIndex ? { ...ss, colour: action.colour } : ss,
-              ),
-            }
-          : step,
-      );
-      return { ...state, steps, saveSuccess: false, isDirty: true };
-    }
-    case "UPDATE_SUBSTEP_CALLOUT": {
-      const steps = state.steps.map((step, i) =>
-        i === action.stepIndex
-          ? {
-              ...step,
-              substeps: step.substeps.map((ss, j) =>
-                j === action.substepIndex ? { ...ss, callout: action.callout } : ss,
+                j === action.substepIndex ? { ...ss, bulletStyle: action.bulletStyle } : ss,
               ),
             }
           : step,
@@ -324,8 +310,7 @@ export function buildAndValidate(state: EditorState): { data: Tutorial } | { err
         .filter((ss) => ss.text.trim() !== "")
         .map((ss) => ({
           text: ss.text,
-          ...(ss.colour ? { colour: ss.colour } : {}),
-          ...(ss.callout ? { callout: ss.callout } : {}),
+          ...(ss.bulletStyle ? { bulletStyle: ss.bulletStyle } : {}),
         })),
       photos: step.photos.map((photo) => ({
         filename: photo.filename,
