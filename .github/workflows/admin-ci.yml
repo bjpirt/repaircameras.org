@@ -2,9 +2,13 @@ name: CI
 
 on:
   pull_request:
+    paths:
+      - "admin/**"
   push:
     branches:
       - main
+    paths:
+      - "admin/**"
 
 jobs:
   test:
