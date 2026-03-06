@@ -92,9 +92,11 @@ function renderPhotoFigure(photo: ProcessedPhoto): JSX.Element {
     <figure class="tutorial-photo">
       <div class="photo-wrapper">
         <picture>
-          {photo.image.webp.map((img) => (
-            <source type="image/webp" srcset={img.srcset} />
-          ))}
+          <source
+            type="image/webp"
+            srcset={photo.image.webp.map((img) => img.srcset).join(", ")}
+            sizes="(min-width: 768px) 50vw, 100vw"
+          />
           <img src={largest.url} alt={photo.alt} width={w} height={h} />
         </picture>
         {photo.annotations.length > 0 ? (

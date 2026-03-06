@@ -46,7 +46,7 @@ const tutorials = async () => {
             }
 
             const image = await Image(imagePath, {
-              widths: [400, 800],
+              widths: [400, 800, 1200],
               outputDir: IMAGE_OUTPUT_DIR,
               urlPath: IMAGE_URL_PATH,
             });
