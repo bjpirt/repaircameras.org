@@ -2,6 +2,10 @@ name = "repaircameras-auth"
 main = "index.ts"
 compatibility_date = "2025-01-01"
 
+routes = [
+  { pattern = "repaircameras.org/auth/*", zone_name = "repaircameras.org" }
+]
+
 [vars]
 ALLOWED_ORIGIN = "https://repaircameras.org"
 
