@@ -20,7 +20,7 @@ export default {
 
     if (
       request.method === "POST" &&
-      new URL(request.url).pathname === "/token"
+      new URL(request.url).pathname === "/auth/token"
     ) {
       try {
         const { code } = await request.json<{ code: string }>();
