@@ -416,7 +416,7 @@ main h3 {
   color: #1e88e5;
 }
 .step-substeps li[data-callout=reminder] .callout-icon {
-  color: #fb8c00;
+  color: #555555;
 }
 
 /* footer styling */
