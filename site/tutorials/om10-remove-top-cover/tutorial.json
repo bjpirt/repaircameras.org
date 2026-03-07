@@ -1,0 +1,270 @@
+{
+  "title": "Remove the top cover of the Olympus OM10",
+  "manufacturer": "Olympus",
+  "model": "OM10",
+  "description": "A guide to removing the top cover of the Olympus OM10",
+  "tools": [
+    "JIS Screwdriver",
+    "Circlip Pliers / Small flathead screwdriver",
+    "Soldering Iron"
+  ],
+  "steps": [
+    {
+      "title": "Remove the screws from around the top cover",
+      "intro": "There are 6 screws to remove. Two long ones at the front and four shorter ones on the sides and back.",
+      "substeps": [
+        {
+          "text": "Remove the two long screws from the front",
+          "bulletStyle": "red"
+        },
+        {
+          "text": "Remove the four short screws from the sides and back",
+          "bulletStyle": "blue"
+        }
+      ],
+      "photos": [
+        {
+          "filename": "9fa060.jpg",
+          "alt": "",
+          "annotations": [
+            {
+              "type": "circle",
+              "cx": 0.288613334826177,
+              "cy": 0.45104064292201085,
+              "r": 0.02936189447131203,
+              "substep": 0
+            },
+            {
+              "type": "circle",
+              "cx": 0.4773087760547874,
+              "cy": 0.608685916176306,
+              "r": 0.027880710766624343,
+              "substep": 0
+            },
+            {
+              "type": "circle",
+              "cx": 0.8558939334564929,
+              "cy": 0.6102782926738242,
+              "r": 0.026704804912457702,
+              "substep": 1
+            }
+          ]
+        },
+        {
+          "filename": "478127.jpg",
+          "alt": "",
+          "annotations": [
+            {
+              "type": "circle",
+              "cx": 0.21456828826811472,
+              "cy": 0.3539056765734048,
+              "r": 0.02396835696632732,
+              "substep": 1
+            },
+            {
+              "type": "circle",
+              "cx": 0.4964171751665454,
+              "cy": 0.5115509498276999,
+              "r": 0.022631865868441493,
+              "substep": 1
+            },
+            {
+              "type": "circle",
+              "cx": 0.8570882084009778,
+              "cy": 0.5672841272408345,
+              "r": 0.025054561596086718,
+              "substep": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Remove the rewind lever and power dial",
+      "intro": "Removing the circlip is best done with some fine circlip pliers, but if you don't have these it can be carefully levered off using a small screwdriver. Be careful removing the power switch because there are fine contacts that are easily damaged.",
+      "substeps": [
+        {
+          "text": "Open the back of the camera, put something in the winding fork to jam it and unscrew the winder",
+          "bulletStyle": "red"
+        },
+        {
+          "text": "Remove the circlip from around the central plastic column",
+          "bulletStyle": "blue"
+        },
+        {
+          "text": "Be careful removing the power switch because there are fine contacts that are easily damaged",
+          "bulletStyle": "caution"
+        }
+      ],
+      "photos": [
+        {
+          "filename": "cb07f6.jpg",
+          "alt": "",
+          "annotations": [
+            {
+              "type": "arrow",
+              "x1": 0.33638433260557205,
+              "y1": 0.6182401751614147,
+              "x2": 0.45342327716508984,
+              "y2": 0.47492629038478285,
+              "substep": 0
+            }
+          ]
+        },
+        {
+          "filename": "359584.jpg",
+          "alt": "",
+          "annotations": [
+            {
+              "type": "arrow",
+              "x1": 0.4820858758327269,
+              "y1": 0.6039087866837516,
+              "x2": 0.5489652727238798,
+              "y2": 0.49562718485251855,
+              "substep": 1
+            }
+          ]
+        },
+        {
+          "filename": "a20737.jpg",
+          "alt": "",
+          "annotations": [
+            {
+              "type": "arrow",
+              "x1": 0.29577898449308626,
+              "y1": 0.4319321249517933,
+              "x2": 0.43789770288678653,
+              "y2": 0.4207854894691664,
+              "substep": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Remove the wind lever",
+      "intro": "It is best to try and use friction to unscrew this (normal threaded, turn anti-clockwise) without damaging it. There are two holes to use a spanning wrench, however the plate is thin and easily damaged by too much force.",
+      "substeps": [
+        {
+          "text": "Remove the top plate from the wind lever using friction",
+          "bulletStyle": "green"
+        }
+      ],
+      "photos": [
+        {
+          "filename": "41c014.jpg",
+          "alt": "",
+          "annotations": [
+            {
+              "type": "arrow",
+              "x1": 0.43872522719581347,
+              "y1": 0.6803428585646218,
+              "x2": 0.510569454647506,
+              "y2": 0.5720612567333889,
+              "substep": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Remove the top cover",
+      "intro": "The top cover should now be able to be removed. It is connected via wires to the internals of the camera. If you are going to do more to the camera then these wires are best unsoldered. There is a blue wire with two cores - this is connected to a second wire that is in turn connected to the flash mount. Do not unsolder it directly from the flash mount because it is easy to melt the plastic mount.",
+      "substeps": [
+        {
+          "text": "Unsolder the yellow wire",
+          "bulletStyle": "yellow"
+        },
+        {
+          "text": "Unsolder the green wire",
+          "bulletStyle": "green"
+        },
+        {
+          "text": "Unsolder the red wire",
+          "bulletStyle": "red"
+        },
+        {
+          "text": "Unsolder the second yellow wire. It is soldered along with another wire - reattach the other one so you don't forget where it goes",
+          "bulletStyle": "orange"
+        },
+        {
+          "text": "Unsolder the blue wire",
+          "bulletStyle": "blue"
+        },
+        {
+          "text": "Pull the connection on the blue wire out from the plastic tube and unsolder it",
+          "bulletStyle": "cyan"
+        },
+        {
+          "text": "Do not unsolder directly from the flash mount - it is easy to melt the plastic",
+          "bulletStyle": "caution"
+        }
+      ],
+      "photos": [
+        {
+          "filename": "6a3c5c.jpg",
+          "alt": "",
+          "annotations": [
+            {
+              "type": "circle",
+              "cx": 0.40326372949672507,
+              "cy": 0.36664468855354987,
+              "r": 0.019441453276533713,
+              "substep": 1
+            },
+            {
+              "type": "circle",
+              "cx": 0.4761145011103025,
+              "cy": 0.271102098702462,
+              "r": 0.018570110935004356,
+              "substep": 0
+            },
+            {
+              "type": "circle",
+              "cx": 0.3136931086603594,
+              "cy": 0.3570904295684411,
+              "r": 0.02393851958913898,
+              "substep": 2
+            },
+            {
+              "type": "circle",
+              "cx": 0.2850305099927224,
+              "cy": 0.4383016309418658,
+              "r": 0.020082974951470562,
+              "substep": 3
+            },
+            {
+              "type": "circle",
+              "cx": 0.42953777827539236,
+              "cy": 0.19466802682159162,
+              "r": 0.0224384143510314,
+              "substep": 4
+            }
+          ]
+        },
+        {
+          "filename": "96d4b9.jpg",
+          "alt": "",
+          "annotations": [
+            {
+              "type": "arrow",
+              "x1": 0.39012670510739145,
+              "y1": 0.29976487565778837,
+              "x2": 0.5,
+              "y2": 0.3268352761155966,
+              "substep": 5
+            },
+            {
+              "type": "arrow",
+              "x1": 0.40445800444120994,
+              "y1": 0.4446711369319383,
+              "x2": 0.49761145011103025,
+              "y2": 0.3761989475386587,
+              "substep": 6
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

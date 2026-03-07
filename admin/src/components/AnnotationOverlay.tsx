@@ -1,11 +1,11 @@
 import type { Annotation } from "@shared/types/tutorial";
-import { SUBSTEP_COLOURS, ANNOTATION_COLOUR_UNLINKED } from "@shared/colours";
+import { ANNOTATION_COLOUR_UNLINKED, bulletStyleHex } from "@shared/colours";
 
 const STROKE_WIDTH_RATIO = 0.004;
 
 function annotationColour(annotation: Annotation, substepColours: string[]): string {
   if (annotation.substep === undefined) return ANNOTATION_COLOUR_UNLINKED;
-  return substepColours[annotation.substep] ?? SUBSTEP_COLOURS[annotation.substep % SUBSTEP_COLOURS.length];
+  return substepColours[annotation.substep] ?? bulletStyleHex(undefined, annotation.substep);
 }
 
 interface Props {

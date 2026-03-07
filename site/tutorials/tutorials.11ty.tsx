@@ -10,9 +10,10 @@ import {
   SubStep,
 } from "../../lib/types/tutorial";
 import {
-  SUBSTEP_COLOURS,
   ANNOTATION_COLOUR_UNLINKED,
   CALLOUT_ICONS,
+  bulletStyleHex,
+  isCallout,
 } from "../../lib/colours";
 
 type ViewProps = {
@@ -36,12 +37,8 @@ export const data = {
 
 const STROKE_WIDTH_RATIO = 0.004;
 
-function defaultSubstepColour(index: number): string {
-  return SUBSTEP_COLOURS[index % SUBSTEP_COLOURS.length];
-}
-
 function getSubstepColour(substeps: SubStep[], index: number): string {
-  return substeps[index]?.colour ?? defaultSubstepColour(index);
+  return bulletStyleHex(substeps[index]?.bulletStyle, index);
 }
 
 function annotationColour(annotation: Annotation, substeps: SubStep[]): string {
@@ -168,10 +165,10 @@ function renderStepContent(step: ProcessedStep): JSX.Element {
           {step.substeps.map((substep, i) => (
             <li
               style={`--substep-colour: ${getSubstepColour(step.substeps, i)}`}
-              {...(substep.callout ? { "data-callout": substep.callout } : {})}
+              {...(isCallout(substep.bulletStyle) ? { "data-callout": substep.bulletStyle } : {})}
             >
-              {substep.callout ? (
-                <span class="callout-icon">{CALLOUT_ICONS[substep.callout]}</span>
+              {isCallout(substep.bulletStyle) ? (
+                <span class="callout-icon">{CALLOUT_ICONS[substep.bulletStyle]}</span>
               ) : undefined}
               {substep.text}
             </li>
