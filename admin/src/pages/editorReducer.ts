@@ -76,6 +76,7 @@ export type EditorAction =
   | { type: "SET_ERROR"; message: string | null }
   | { type: "SET_VALIDATION_ERRORS"; errors: string[] }
   | { type: "SET_SAVE_SUCCESS"; value: boolean }
+  | { type: "CLEAR_SAVE_SUCCESS" }
   | { type: "UPDATE_SHA"; sha: string }
   | { type: "SET_PR_PROGRESS"; step: string }
   | { type: "SET_PR_RESULT"; result: PullRequestResult }
@@ -274,6 +275,8 @@ export function editorReducer(state: EditorState, action: EditorAction): EditorS
       return { ...state, validationErrors: action.errors, saving: false };
     case "SET_SAVE_SUCCESS":
       return { ...state, saveSuccess: action.value, saving: false, prProgress: null };
+    case "CLEAR_SAVE_SUCCESS":
+      return { ...state, saveSuccess: false };
     case "UPDATE_SHA":
       return { ...state, sha: action.sha, isNew: false };
     case "SET_PR_PROGRESS":

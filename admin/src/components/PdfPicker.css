@@ -1,0 +1,72 @@
+.pdf-picker {
+  position: relative;
+}
+
+.pdf-picker-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.pdf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e0e0e0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.pdf-chip-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+.pdf-chip-remove:hover {
+  color: #c00;
+}
+
+.pdf-picker-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.pdf-picker-dropdown {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  max-height: 240px;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pdf-picker-dropdown li button {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.pdf-picker-dropdown li button:hover {
+  background: #f0f0f0;
+}

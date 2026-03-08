@@ -9,11 +9,23 @@ repaircameras.org is a static site built with Eleventy (11ty) that hosts camera 
 ## Common Commands
 
 ```bash
-# Start development server with live reload
+# Start site development server with live reload
 npm start
 
 # Build the site for production
 npx @11ty/eleventy
+
+# Admin UI development
+npm run admin:dev       # Start admin dev server + OAuth proxy
+npm run admin:build     # Type-check and build admin app
+npm run admin:test      # Run admin unit tests (vitest)
+
+# Admin commands (from admin/ directory)
+cd admin
+npx vitest run          # Run unit tests once
+npx vitest              # Run unit tests in watch mode
+npx tsc --noEmit        # TypeScript check only
+npx playwright test     # Run e2e tests
 ```
 
 ## Architecture
@@ -42,6 +54,10 @@ relatedFiles:
   - pentax-mx-service-manual  # ID without .pdf extension
 relatedLinks:
   - pentax-k1000-youtube      # ID from site/_data/links/
+troubleshooting:
+  - symptom: Shutter stuck
+    cause: Old lubricant
+    solution: CLA needed
 ---
 ```
 
@@ -75,10 +91,55 @@ These data files are available globally in all templates as `files` and `links` 
 - **`tsconfig.json`**: JSX configuration with `jsx-async-runtime` for async component rendering
 - Output directory: `_site/` (default Eleventy output)
 
+### Shared Library (`lib/`)
+
+- Type definitions: `lib/types/` — `File.ts`, `Link.ts`, `PageMetadata.ts`, `ImageMetadata.ts`, `cameraPage.ts`
+- `lib/frontmatter.ts` — YAML frontmatter parse/stringify for camera markdown files
+- Shared between site (via tsx at runtime) and admin (via `@shared/*` path alias)
+
 ### TypeScript
 
-- Type definitions in `lib/types/`: `File.ts`, `Link.ts`, `PageMetadata.ts`, `ImageMetadata.ts`
-- No compilation step needed - tsx handles TypeScript at runtime
+- No compilation step needed for site — tsx handles TypeScript at runtime
+- Admin uses Vite with `tsc -b` type-checking before build
+
+### Admin UI (`admin/`)
+
+A React single-page app for managing site content via GitHub's API. Built with Vite, deployed to `/admin/`.
+
+#### Architecture
+
+- **React 19** with **React Router 7** for client-side routing
+- **GitHub OAuth** authentication via Cloudflare Worker (`cloudflare-worker/`)
+- Fork/PR workflow: changes are saved to a fork branch, then submitted as a pull request
+
+#### Key Patterns
+
+- **State management**: `useReducer` with dedicated reducer files (`editorReducer.ts`, `cameraEditorReducer.ts`). Each reducer has a companion `buildAndValidate()` function using Zod schemas
+- **Data loading hooks**: `useTutorialLoader.ts`, `useCameraLoader.ts` — handle auto-resume from existing fork branches
+- **GitHub service layer**: `github.ts` (shared Git tree API utilities), `github-camera.ts` (camera-specific operations)
+- **Path alias**: `@shared/*` maps to `../lib/*` (configured in both `tsconfig.json` and `vite.config.ts`)
+
+#### Structure
+
+```
+admin/src/
+├── components/       # Reusable UI (PdfPicker, TroubleshootingEditor, LinkCreator, AnnotationEditor, PhotoManager)
+├── hooks/            # useAuth
+├── pages/            # Route components (TutorialList/Editor, CameraList/Editor, StepEditor) + reducers + loaders
+├── services/         # GitHub API clients, image resize, frontmatter
+├── App.tsx           # Routing & auth gate
+├── config.ts         # Environment config (repo owner/name/branch, OAuth endpoints)
+└── test-setup.ts     # Vitest setup (@testing-library/jest-dom)
+```
+
+#### Routes
+
+- `/tutorials` — Tutorial list
+- `/tutorials/new` — New tutorial editor
+- `/tutorials/:id` — Edit existing tutorial
+- `/cameras` — Camera page list
+- `/cameras/new` — New camera page editor
+- `/cameras/:manufacturer/:model` — Edit existing camera page
 
 ## Adding New Content
 
@@ -115,6 +176,15 @@ These data files are available globally in all templates as `files` and `links` 
    ```
 2. Add matching thumbnail as `site/_data/links/{id}.jpg`
 3. Reference in camera frontmatter `relatedLinks` array using the ID
+
+## Testing
+
+- **Every feature must have tests.** Write unit tests for all new functionality — reducers, services, components, and utilities.
+- Admin unit tests use **Vitest** with **@testing-library/react** and **@testing-library/user-event**
+- Test files live alongside source files with `.test.ts` / `.test.tsx` suffix
+- Mock external services (GitHub API, config) using `vi.mock()`
+- Run tests with `npm run admin:test` or `cd admin && npx vitest run`
+- Run the TypeScript check (`cd admin && npx tsc --noEmit`) and ensure the site builds (`npm run build`) after changes
 
 ## Notes
 

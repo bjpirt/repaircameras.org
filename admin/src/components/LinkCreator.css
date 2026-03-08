@@ -1,0 +1,88 @@
+.link-creator {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #fafafa;
+}
+
+.link-creator-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.link-creator-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.link-creator-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.link-creator-fields input,
+.link-creator-fields textarea {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: normal;
+}
+
+.link-creator-thumbnail label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.thumbnail-hint {
+  font-size: 13px;
+  color: #666;
+  margin: 4px 0;
+}
+
+.thumbnail-hint a {
+  color: #1e88e5;
+}
+
+.thumbnail-paste-zone {
+  position: relative;
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnail-paste-zone:focus {
+  border-color: #1e88e5;
+  outline: none;
+}
+
+.thumbnail-paste-zone img {
+  max-width: 200px;
+  max-height: 120px;
+}
+
+.thumbnail-paste-zone span {
+  color: #999;
+  font-size: 14px;
+}
+
+.thumbnail-file-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}

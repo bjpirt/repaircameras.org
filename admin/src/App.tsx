@@ -2,6 +2,8 @@ import { createBrowserRouter, RouterProvider, Outlet, Link } from "react-router"
 import { useAuth } from "./hooks/useAuth";
 import TutorialList from "./pages/TutorialList";
 import TutorialEditor from "./pages/TutorialEditor";
+import CameraList from "./pages/CameraList";
+import CameraEditor from "./pages/CameraEditor";
 import "./App.css";
 
 function Home() {
@@ -9,6 +11,7 @@ function Home() {
     <div>
       <h2>Welcome</h2>
       <p><Link to="/tutorials">View tutorials</Link></p>
+      <p><Link to="/cameras">View camera pages</Link></p>
     </div>
   );
 }
@@ -79,6 +82,18 @@ function TutorialEditorPage() {
   );
 }
 
+function CameraListPage() {
+  const { state } = useAuth();
+  if (state.status !== "authenticated") return null;
+  return <CameraList token={state.token} username={state.user.login} />;
+}
+
+function CameraEditorPage() {
+  const { state } = useAuth();
+  if (state.status !== "authenticated") return null;
+  return <CameraEditor token={state.token} username={state.user.login} />;
+}
+
 const router = createBrowserRouter(
   [
     {
@@ -88,6 +103,9 @@ const router = createBrowserRouter(
         { index: true, element: <HomePage /> },
         { path: "tutorials", element: <TutorialListPage /> },
         { path: "tutorials/:id", element: <TutorialEditorPage /> },
+        { path: "cameras", element: <CameraListPage /> },
+        { path: "cameras/new", element: <CameraEditorPage /> },
+        { path: "cameras/:manufacturer/:model", element: <CameraEditorPage /> },
       ],
     },
   ],
