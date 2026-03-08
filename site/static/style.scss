@@ -133,6 +133,34 @@ main {
     font-size: 160%;
     margin: 24px 0 8px;
   }
+
+  #content {
+    max-width: 1000px;
+  }
+}
+
+.troubleshooting {
+  table {
+    thead {
+      background: #ddd;
+    }
+
+    th,
+    td {
+      padding: 6px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    td.symptom,
+    td.cause {
+      width: 25%;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #e8e8e8;
+    }
+  }
 }
 
 /* File Link */

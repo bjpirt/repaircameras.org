@@ -2,9 +2,14 @@ import File from "../lib/types/File";
 import Link from "../lib/types/Link";
 import { MainTemplate } from "@components/MainTemplate";
 import PageMetadata, { Page } from "../lib/types/PageMetadata";
-import { ImageCollection } from "../lib/types/ImageMetadata";
 import { ResourceLink } from "@components/ResourceLink";
 import { ProcessedTutorial } from "../lib/types/tutorial";
+
+type TroubleshootingEntry = {
+  symptom: string;
+  cause: string;
+  solution: string;
+};
 
 type ViewProps = {
   content: string;
@@ -17,6 +22,7 @@ type ViewProps = {
   relatedFiles: string[];
   relatedLinks: string[];
   relatedTutorials?: string[];
+  troubleshooting?: TroubleshootingEntry[];
   page: Page;
   collections: {
     all: PageMetadata[];
@@ -64,7 +70,7 @@ const linksSection = (relatedLinks: string[], links: Record<string, Link>) => {
 
 const tutorialsSection = (
   relatedTutorials: string[],
-  tutorials: ProcessedTutorial[]
+  tutorials: ProcessedTutorial[],
 ) => {
   return (
     <div class="files">
@@ -87,6 +93,32 @@ const tutorialsSection = (
   );
 };
 
+const troubleshootingSection = (entries: TroubleshootingEntry[]) => {
+  return (
+    <div class="troubleshooting">
+      <h3>Troubleshooting</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Symptom</th>
+            <th>Cause</th>
+            <th>Solution</th>
+          </tr>
+        </thead>
+        <tbody>
+          {entries.map((entry) => (
+            <tr>
+              <td class="symptom">{entry.symptom}</td>
+              <td class="cause">{entry.cause}</td>
+              <td class="solution">{entry.solution}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 export function item({
   content,
   title,
@@ -97,22 +129,29 @@ export function item({
   links,
   relatedLinks,
   relatedTutorials,
+  troubleshooting,
   tutorials,
   page,
   collections: { all: allPages },
 }: ViewProps): JSX.Element {
   return (
     <MainTemplate title={title} page={page} allPages={allPages}>
-      <h2>{`${manufacturer} ${model}`}</h2>
-      {content}
+      <div id="content">
+        <h2>{`${manufacturer} ${model}`}</h2>
+        {content}
 
-      {relatedFiles?.length > 0 ? filesSection(relatedFiles, files) : undefined}
-
-      {relatedLinks?.length > 0 ? linksSection(relatedLinks, links) : undefined}
+        {troubleshooting?.length > 0
+          ? troubleshootingSection(troubleshooting)
+          : undefined}
+      </div>
 
       {relatedTutorials?.length > 0
         ? tutorialsSection(relatedTutorials, tutorials)
         : undefined}
+
+      {relatedFiles?.length > 0 ? filesSection(relatedFiles, files) : undefined}
+
+      {relatedLinks?.length > 0 ? linksSection(relatedLinks, links) : undefined}
     </MainTemplate>
   );
 }
