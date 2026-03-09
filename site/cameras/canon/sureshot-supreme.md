@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: Sureshot Supreme
 relatedFiles:
-  - canon-sureshot-supreme-service-manual
+  - canon/canon-sureshot-supreme-service-manual
 relatedLinks:
 ---
 

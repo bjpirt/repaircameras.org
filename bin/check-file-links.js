@@ -19,9 +19,13 @@ async function getDirList(dir) {
 }
 
 const allFiles = fs
-  .readdirSync("site/files")
-  .filter((f) => f.endsWith(".pdf"))
-  .map((f) => f.replace(".pdf", ""));
+  .readdirSync("site/files", { withFileTypes: true })
+  .filter((d) => d.isDirectory())
+  .flatMap((d) =>
+    fs.readdirSync(`site/files/${d.name}`)
+      .filter((f) => f.endsWith(".pdf"))
+      .map((f) => `${d.name}/${f.replace(".pdf", "")}`)
+  );
 
 const allPages = (await getDirList("site/cameras")).map((f) => {
   return fs.readFileSync(f);

@@ -5,7 +5,7 @@ tags:
 manufacturer: Minolta
 model: Autocord
 relatedFiles:
-  - minolta-autocord-service-manual
+  - minolta/minolta-autocord-service-manual
 relatedLinks:
 ---
 

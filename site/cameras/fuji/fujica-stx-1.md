@@ -5,7 +5,7 @@ tags:
 manufacturer: Fuji
 model: Fujica STX-1
 relatedFiles:
-  - fuji-fujica-stx-1-exposure-meter-service-manual
+  - fuji/fuji-fujica-stx-1-exposure-meter-service-manual
 relatedLinks:
 ---
 

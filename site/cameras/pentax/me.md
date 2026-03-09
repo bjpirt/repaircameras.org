@@ -5,7 +5,7 @@ tags:
 manufacturer: Pentax
 model: ME
 relatedFiles:
-  - pentax-me-service-manual
+  - pentax/pentax-me-service-manual
 relatedLinks:
 ---
 

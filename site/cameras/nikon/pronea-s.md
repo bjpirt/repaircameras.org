@@ -5,6 +5,6 @@ tags:
 manufacturer: Nikon
 model: Pronea S
 relatedFiles:
-  - nikon-pronea-s-parts-list
+  - nikon/nikon-pronea-s-parts-list
 relatedLinks:
 ---

@@ -5,6 +5,6 @@ tags:
 manufacturer: Contax
 model: Rangefinder
 relatedFiles:
-  - contax-rangefinder-exploded-diagrams
+  - contax/contax-rangefinder-exploded-diagrams
 relatedLinks:
 ---

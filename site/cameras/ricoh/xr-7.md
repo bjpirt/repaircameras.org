@@ -5,7 +5,7 @@ tags:
 manufacturer: Ricoh
 model: XR-7
 relatedFiles:
-  - ricoh-xr-7-repair-manual
+  - ricoh/ricoh-xr-7-repair-manual
 relatedLinks:
 ---
 

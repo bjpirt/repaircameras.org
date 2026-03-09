@@ -5,7 +5,7 @@ tags:
 manufacturer: Bolsey
 model: B
 relatedFiles:
-  - bolsey-b-2-ground-camera-service-manual
+  - bolsey/bolsey-b-2-ground-camera-service-manual
 relatedLinks:
 ---
 

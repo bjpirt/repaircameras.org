@@ -5,6 +5,6 @@ tags:
 manufacturer: Leica
 model: Leicaflex
 relatedFiles:
-  - leica-leicaflex-service-manual
+  - leica/leica-leicaflex-service-manual
 relatedLinks:
 ---

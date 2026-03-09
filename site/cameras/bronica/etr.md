@@ -5,9 +5,9 @@ tags:
 manufacturer: Bronica
 model: ETR
 relatedFiles:
-  - bronica-etr-repair-manual
-  - bronica-etr-ae-finder-e-repair-manual
-  - bronica-etr-accessories-parts-list
+  - bronica/bronica-etr-repair-manual
+  - bronica/bronica-etr-ae-finder-e-repair-manual
+  - bronica/bronica-etr-accessories-parts-list
 relatedLinks:
 ---
 

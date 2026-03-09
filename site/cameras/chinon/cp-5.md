@@ -5,7 +5,7 @@ tags:
 manufacturer: Chinon
 model: CP-5
 relatedFiles:
-  - chinon-cp-5-twin-program-service-manual
+  - chinon/chinon-cp-5-twin-program-service-manual
 relatedLinks:
 ---
 

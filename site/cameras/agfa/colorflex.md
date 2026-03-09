@@ -5,7 +5,7 @@ tags:
 manufacturer: Agfa
 model: Colorflex
 relatedFiles:
-  - agfa-colorflex-parts-list
+  - agfa/agfa-colorflex-parts-list
 relatedLinks:
 ---
 

@@ -5,7 +5,7 @@ tags:
 manufacturer: Olympus
 model: Pen FT
 relatedFiles:
-  - olympus-pen-ft-exploded-diagram
+  - olympus/olympus-pen-ft-exploded-diagram
 relatedLinks:
 ---
 

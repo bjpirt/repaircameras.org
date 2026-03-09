@@ -5,7 +5,7 @@ tags:
 manufacturer: Minox
 model: EC
 relatedFiles:
-  - minox-ec-repair-manual
+  - minox/minox-ec-repair-manual
 relatedLinks:
 ---
 

@@ -5,7 +5,7 @@ tags:
 manufacturer: Calumet
 model: 8X10 View Camera
 relatedFiles:
-  - calumet-8x10-parts-drawings
+  - calumet/calumet-8x10-parts-drawings
 relatedLinks:
 ---
 

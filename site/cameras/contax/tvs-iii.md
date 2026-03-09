@@ -5,6 +5,6 @@ tags:
 manufacturer: Contax
 model: TVS III
 relatedFiles:
-  - contax-tvs-iii-repair-manual
+  - contax/contax-tvs-iii-repair-manual
 relatedLinks:
 ---

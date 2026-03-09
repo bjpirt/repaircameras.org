@@ -293,7 +293,7 @@ tags:
 manufacturer: ${manufacturer}
 model: ${model}
 relatedFiles:
-  - ${fileId}
+  - ${manPageSlug}/${fileId}
 relatedLinks:
 ---
 `;
@@ -308,6 +308,7 @@ const addFileToCameraPage = (model, manufacturer, fileId) => {
   const manPageSlug = manufacturer.toLowerCase().replace(/ /g, "-");
   const modelPageSlug = model.toLowerCase().replace(/ /g, "-");
   const pageName = `site/cameras/${manPageSlug}/${modelPageSlug}.md`;
+  const fullFileId = `${manPageSlug}/${fileId}`;
 
   console.log(`Adding file to existing camera page: ${manufacturer} ${model}`);
 
@@ -315,7 +316,7 @@ const addFileToCameraPage = (model, manufacturer, fileId) => {
   const content = fs.readFileSync(pageName, 'utf8');
 
   // Check if file is already listed
-  if (content.includes(`- ${fileId}`)) {
+  if (content.includes(`- ${fullFileId}`)) {
     console.log(`⚠️  File already listed in camera page`);
     return;
   }
@@ -326,12 +327,12 @@ const addFileToCameraPage = (model, manufacturer, fileId) => {
   if (relatedFilesMatch) {
     // Add to existing relatedFiles list
     const existingList = relatedFilesMatch[0];
-    const newList = existingList.trimEnd() + `\n  - ${fileId}\n`;
+    const newList = existingList.trimEnd() + `\n  - ${fullFileId}\n`;
     const newContent = content.replace(existingList, newList);
     fs.writeFileSync(pageName, newContent);
   } else {
     // No relatedFiles section exists, add one before relatedLinks or at end of frontmatter
-    const newRelatedFiles = `relatedFiles:\n  - ${fileId}\n`;
+    const newRelatedFiles = `relatedFiles:\n  - ${fullFileId}\n`;
 
     if (content.includes('relatedLinks:')) {
       const newContent = content.replace('relatedLinks:', `${newRelatedFiles}relatedLinks:`);
@@ -366,7 +367,11 @@ const importFile = async (filename, manufacturer, model, documentType) => {
     fileId = newFileId.trim();
   }
 
-  const targetPath = path.join('site/files', `${fileId}.pdf`);
+  const targetDir = path.join('site/files', manSlug);
+  if (!fs.existsSync(targetDir)) {
+    fs.mkdirSync(targetDir, { recursive: true });
+  }
+  const targetPath = path.join(targetDir, `${fileId}.pdf`);
 
   // Check if file already exists
   if (fs.existsSync(targetPath)) {
@@ -604,7 +609,7 @@ const processFile = async (filename) => {
   const manSlug = manufacturer.toLowerCase().replace(/\s+/g, '-');
   const modelSlug = model.toLowerCase().replace(/\s+/g, '-');
   const targetFilename = `${manSlug}-${modelSlug}-${documentType}.pdf`;
-  const targetPath = path.join('site/files', targetFilename);
+  const targetPath = path.join('site/files', manSlug, targetFilename);
 
   // Check if file already exists
   if (fs.existsSync(targetPath)) {

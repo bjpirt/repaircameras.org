@@ -5,6 +5,6 @@ tags:
 manufacturer: Miranda
 model: Auto Sensorex EE
 relatedFiles:
-  - miranda-auto-sensorex-ee-service-manual
+  - miranda/miranda-auto-sensorex-ee-service-manual
 relatedLinks:
 ---

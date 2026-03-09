@@ -5,6 +5,6 @@ tags:
 manufacturer: Mamiya
 model: M645 Super
 relatedFiles:
-  - mamiya-m645-super-repair-manual
+  - mamiya/mamiya-m645-super-repair-manual
 relatedLinks:
 ---

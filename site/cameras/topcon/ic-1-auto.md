@@ -5,6 +5,6 @@ tags:
 manufacturer: Topcon
 model: IC-1 Auto
 relatedFiles:
-  - topcon-ic-1-auto-repair-manual
+  - topcon/topcon-ic-1-auto-repair-manual
 relatedLinks:
 ---

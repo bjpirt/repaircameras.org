@@ -5,7 +5,7 @@ tags:
 manufacturer: Rollei
 model: Rolleiflex TLR
 relatedFiles:
-  - rollei-rolleiflex-tlr-parts-list
+  - rollei/rollei-rolleiflex-tlr-parts-list
 relatedLinks:
 ---
 

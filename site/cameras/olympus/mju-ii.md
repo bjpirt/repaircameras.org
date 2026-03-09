@@ -5,7 +5,7 @@ tags:
 manufacturer: Olympus
 model: Mju-ii
 relatedFiles:
-  - olympus-mju-ii-exploded-diagram
+  - olympus/olympus-mju-ii-exploded-diagram
 relatedLinks:
 ---
 

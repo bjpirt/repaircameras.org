@@ -5,7 +5,7 @@ tags:
 manufacturer: FED
 model: Micron 2
 relatedFiles:
-  - fed-micron-2-parts-list
+  - fed/fed-micron-2-parts-list
 relatedLinks:
 ---
 

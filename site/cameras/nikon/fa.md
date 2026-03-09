@@ -5,7 +5,7 @@ tags:
 manufacturer: Nikon
 model: FA
 relatedFiles:
-  - nikon-fa-service-manual
+  - nikon/nikon-fa-service-manual
 relatedLinks:
 ---
 

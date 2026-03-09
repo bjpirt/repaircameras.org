@@ -5,7 +5,7 @@ tags:
 manufacturer: Graflex
 model: Anniversary Speed Graphic
 relatedFiles:
-  - graflex-anniversary-speed-graphic-service-manual
+  - graflex/graflex-anniversary-speed-graphic-service-manual
 relatedLinks:
 ---
 

@@ -5,6 +5,6 @@ tags:
 manufacturer: Kodak
 model: Medalist II
 relatedFiles:
-  - kodak-medalist-ii-service-manual
+  - kodak/kodak-medalist-ii-service-manual
 relatedLinks:
 ---

@@ -5,8 +5,8 @@ tags:
 manufacturer: Leica
 model: CL
 relatedFiles:
-  - leica-cl-service-manual
-  - leica-shutter-national-camera-manual
+  - leica/leica-cl-service-manual
+  - leica/leica-shutter-national-camera-manual
 relatedLinks:
 ---
 

@@ -5,7 +5,7 @@ tags:
 manufacturer: Nikon
 model: Nikonos-III
 relatedFiles:
-  - nikon-nikonos-iii-service-manual
+  - nikon/nikon-nikonos-iii-service-manual
 relatedLinks:
 ---
 

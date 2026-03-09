@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: E-F
 relatedFiles:
-  - canon-e-f-repair-manual
+  - canon/canon-e-f-repair-manual
 relatedLinks:
 ---
 

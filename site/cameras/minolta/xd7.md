@@ -5,7 +5,7 @@ tags:
 manufacturer: Minolta
 model: XD7
 relatedFiles:
-  - minolta-xd7-xd11-service-manual
+  - minolta/minolta-xd7-xd11-service-manual
 relatedLinks:
 ---
 

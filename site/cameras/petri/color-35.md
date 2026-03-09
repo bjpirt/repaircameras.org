@@ -5,7 +5,7 @@ tags:
 manufacturer: Petri
 model: Color 35
 relatedFiles:
-  - petri-color-35-service-manual
+  - petri/petri-color-35-service-manual
 relatedLinks:
 ---
 

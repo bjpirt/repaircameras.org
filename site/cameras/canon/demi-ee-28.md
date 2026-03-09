@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: Demi EE 28
 relatedFiles:
-  - canon-demi-ee-28-repair-manual
+  - canon/canon-demi-ee-28-repair-manual
 relatedLinks:
 ---
 

@@ -5,7 +5,7 @@ tags:
 manufacturer: Minolta
 model: XG-M
 relatedFiles:
-  - minolta-xg-m-service-manual
+  - minolta/minolta-xg-m-service-manual
 relatedLinks:
 ---
 

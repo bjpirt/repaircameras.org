@@ -5,8 +5,8 @@ tags:
 manufacturer: Canon
 model: Canonet
 relatedFiles:
-  - canon-canonet-service-manual
-  - canon-canonet-full-service-manual
+  - canon/canon-canonet-service-manual
+  - canon/canon-canonet-full-service-manual
 relatedLinks:
 ---
 

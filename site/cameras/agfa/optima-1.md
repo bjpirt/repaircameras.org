@@ -5,7 +5,7 @@ tags:
 manufacturer: Agfa
 model: Optima 1
 relatedFiles:
-  - agfa-optima-1-repair-manual-german
+  - agfa/agfa-optima-1-repair-manual-german
 relatedLinks:
 ---
 

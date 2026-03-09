@@ -5,7 +5,7 @@ tags:
 manufacturer: Ilex
 model: Universal Leaf Shutter
 relatedFiles:
-  - ilex-universal-leaf-shutter-diagram
+  - ilex/ilex-universal-leaf-shutter-diagram
 relatedLinks:
 ---
 

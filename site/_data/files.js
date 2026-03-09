@@ -11,9 +11,18 @@ const exists = async (file) =>
     .catch(() => false);
 
 const images = async () => {
-  const allFiles = (await fs.promises.readdir("site/files"))
-    .filter((f) => f.endsWith(".pdf"))
-    .map((i) => `site/files/${i}`);
+  const subdirs = (await fs.promises.readdir("site/files", { withFileTypes: true }))
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name);
+
+  const allFiles = [];
+  for (const subdir of subdirs) {
+    const pdfs = (await fs.promises.readdir(`site/files/${subdir}`))
+      .filter((f) => f.endsWith(".pdf"));
+    for (const pdf of pdfs) {
+      allFiles.push(`site/files/${subdir}/${pdf}`);
+    }
+  }
 
   const thumbnailDirExists = await exists("_site/img/thumbnails/");
 
@@ -24,9 +33,11 @@ const images = async () => {
   const output = {};
 
   for (const file of allFiles) {
-    const id = Path.parse(file).name;
+    const subdir = Path.basename(Path.dirname(file));
+    const filename = Path.parse(file).name;
+    const id = `${subdir}/${filename}`;
 
-    const screenshotPath = `_site/img/thumbnails/${id}-full.jpg`;
+    const screenshotPath = `_site/img/thumbnails/${filename}-full.jpg`;
 
     const screenshotExists = await exists(screenshotPath);
     const pdfData = await fs.promises.readFile(file);

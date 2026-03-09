@@ -5,8 +5,8 @@ tags:
 manufacturer: Canon
 model: Canonet Giii
 relatedFiles:
-  - canon-canonet-giii-repair-manual
-  - canon-canonet-full-service-manual
+  - canon/canon-canonet-giii-repair-manual
+  - canon/canon-canonet-full-service-manual
 relatedLinks:
 ---
 

@@ -5,7 +5,7 @@ tags:
 manufacturer: Fuji
 model: Fujica DL-100
 relatedFiles:
-  - fuji-fujica-dl-100-repair-manual
+  - fuji/fuji-fujica-dl-100-repair-manual
 relatedLinks:
 ---
 

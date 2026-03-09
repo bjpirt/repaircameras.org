@@ -5,7 +5,7 @@ tags:
 manufacturer: Linhof
 model: Technica V
 relatedFiles:
-  - linhof-technika-v-parts-list
+  - linhof/linhof-technika-v-parts-list
 relatedLinks:
 ---
 

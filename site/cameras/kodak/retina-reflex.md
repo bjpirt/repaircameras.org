@@ -5,7 +5,7 @@ tags:
 manufacturer: Kodak
 model: Retina Reflex
 relatedFiles:
-  - kodak-retina-reflex-parts-list
-  - kodak-retina-reflex-service-manual
+  - kodak/kodak-retina-reflex-parts-list
+  - kodak/kodak-retina-reflex-service-manual
 relatedLinks:
 ---

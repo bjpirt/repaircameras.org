@@ -5,7 +5,7 @@ tags:
 manufacturer: Pentacon
 model: Six
 relatedFiles:
-  - pentacon-six-service-manual
+  - pentacon/pentacon-six-service-manual
 relatedLinks:
 ---
 

@@ -5,7 +5,7 @@ tags:
 manufacturer: Mamiya
 model: Seiko Shutter
 relatedFiles:
-  - mamiya-seiko-shutter-service-manual
+  - mamiya/mamiya-seiko-shutter-service-manual
 relatedLinks:
 ---
 

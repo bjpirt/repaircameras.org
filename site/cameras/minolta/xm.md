@@ -5,7 +5,7 @@ tags:
 manufacturer: Minolta
 model: XM
 relatedFiles:
-  - minolta-xm-ae-finder-service-manual
+  - minolta/minolta-xm-ae-finder-service-manual
 relatedLinks:
 ---
 

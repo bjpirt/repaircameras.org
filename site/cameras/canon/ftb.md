@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: FTb
 relatedFiles:
-  - canon-ftb-service-manual
+  - canon/canon-ftb-service-manual
 relatedLinks:
 ---
 

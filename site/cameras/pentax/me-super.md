@@ -5,7 +5,7 @@ tags:
 manufacturer: Pentax
 model: ME Super
 relatedFiles:
-  - pentax-me-super-service-manual
+  - pentax/pentax-me-super-service-manual
 relatedLinks:
 ---
 

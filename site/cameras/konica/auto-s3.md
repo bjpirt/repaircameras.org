@@ -5,7 +5,7 @@ tags:
 manufacturer: Konica
 model: Auto S3
 relatedFiles:
-  - konica-auto-s3-service-manual
+  - konica/konica-auto-s3-service-manual
 relatedLinks:
 ---
 

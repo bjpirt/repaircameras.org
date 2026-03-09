@@ -5,6 +5,6 @@ tags:
 manufacturer: Yashica
 model: Dental Eye 3
 relatedFiles:
-  - yashica-dental-eye-3-repair-manual
+  - yashica/yashica-dental-eye-3-repair-manual
 relatedLinks:
 ---

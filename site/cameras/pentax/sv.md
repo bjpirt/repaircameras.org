@@ -5,7 +5,7 @@ tags:
 manufacturer: Pentax
 model: SV
 relatedFiles:
-  - pentax-sv-exploded-diagram
+  - pentax/pentax-sv-exploded-diagram
 relatedLinks:
 ---
 

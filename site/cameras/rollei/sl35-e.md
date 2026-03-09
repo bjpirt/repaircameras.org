@@ -5,7 +5,7 @@ tags:
 manufacturer: Rollei
 model: SL35 E
 relatedFiles:
-  - rollei-sl35-e-service-manual
+  - rollei/rollei-sl35-e-service-manual
 relatedLinks:
 ---
 

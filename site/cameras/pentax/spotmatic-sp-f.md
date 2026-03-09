@@ -5,10 +5,10 @@ tags:
 manufacturer: Pentax
 model: Spotmatic SP F
 relatedFiles:
-  - pentax-spotmatic-service-manual
-  - pentax-spotmatic-meter
-  - pentax-spotmatic-exploded-diagram
-  - pentax-spotmatic-k1000-meter-substitution
+  - pentax/pentax-spotmatic-service-manual
+  - pentax/pentax-spotmatic-meter
+  - pentax/pentax-spotmatic-exploded-diagram
+  - pentax/pentax-spotmatic-k1000-meter-substitution
 relatedLinks:
 ---
 

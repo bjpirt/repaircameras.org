@@ -5,7 +5,7 @@ tags:
 manufacturer: Konica
 model: Koni-Omega
 relatedFiles:
-  - konica-koni-omega-repair-manual
+  - konica/konica-koni-omega-repair-manual
 relatedLinks:
 ---
 

@@ -5,7 +5,7 @@ tags:
 manufacturer: Graflex
 model: XL
 relatedFiles:
-  - graflex-xl-service-manual
+  - graflex/graflex-xl-service-manual
 relatedLinks:
 ---
 

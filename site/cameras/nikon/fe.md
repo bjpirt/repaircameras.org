@@ -5,9 +5,9 @@ tags:
 manufacturer: Nikon
 model: FE
 relatedFiles:
-  - nikon-fe-wiring-diagram
-  - nikon-fe-exploded-diagrams
-  - nikon-fe-fe2-service-manual
+  - nikon/nikon-fe-wiring-diagram
+  - nikon/nikon-fe-exploded-diagrams
+  - nikon/nikon-fe-fe2-service-manual
 relatedLinks:
   - nikon-fe-richard-haw
 troubleshooting:

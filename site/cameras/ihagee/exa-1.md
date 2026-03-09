@@ -5,7 +5,7 @@ tags:
 manufacturer: Ihagee
 model: Exa 1
 relatedFiles:
-  - ihagee-exa-1-repair-manual
+  - ihagee/ihagee-exa-1-repair-manual
 relatedLinks:
 ---
 

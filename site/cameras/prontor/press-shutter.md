@@ -5,7 +5,7 @@ tags:
 manufacturer: Prontor
 model: Press Shutter
 relatedFiles:
-  - prontor-press-shutter-repair-manual
+  - prontor/prontor-press-shutter-repair-manual
 relatedLinks:
 ---
 

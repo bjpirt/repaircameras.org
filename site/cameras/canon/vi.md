@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: VI
 relatedFiles:
-  - canon-vi-p-service-manual
+  - canon/canon-vi-p-service-manual
 relatedLinks:
 ---
 

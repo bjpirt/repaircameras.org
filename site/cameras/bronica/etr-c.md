@@ -5,7 +5,7 @@ tags:
 manufacturer: Bronica
 model: ETR-C
 relatedFiles:
-  - bronica-etr-c-service-manual
+  - bronica/bronica-etr-c-service-manual
 relatedLinks:
 ---
 

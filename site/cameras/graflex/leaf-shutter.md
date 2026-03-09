@@ -5,7 +5,7 @@ tags:
 manufacturer: Graflex
 model: Leaf Shutter
 relatedFiles:
-  - graflex-leaf-shutter-service-manual
+  - graflex/graflex-leaf-shutter-service-manual
 relatedLinks:
 ---
 

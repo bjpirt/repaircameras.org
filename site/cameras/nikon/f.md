@@ -5,11 +5,11 @@ tags:
 manufacturer: Nikon
 model: F
 relatedFiles:
-  - nikon-f-service-manual
-  - nikon-f-photomic-ftn-meter-adjustmment
-  - nikon-f-photomic-ftn-finder-repair-manual
-  - nikon-f-photomic-t-finder-repair-manual
-  - nikon-f-photomic-tn-finder-repair-manual
+  - nikon/nikon-f-service-manual
+  - nikon/nikon-f-photomic-ftn-meter-adjustmment
+  - nikon/nikon-f-photomic-ftn-finder-repair-manual
+  - nikon/nikon-f-photomic-t-finder-repair-manual
+  - nikon/nikon-f-photomic-tn-finder-repair-manual
 relatedLinks:
 ---
 

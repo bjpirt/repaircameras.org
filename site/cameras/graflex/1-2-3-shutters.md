@@ -5,6 +5,6 @@ tags:
 manufacturer: Graflex
 model: 1, 2 and 3 Shutters
 relatedFiles:
-  - graflex-1-2-3-shutters-service-manual
+  - graflex/graflex-1-2-3-shutters-service-manual
 relatedLinks:
 ---

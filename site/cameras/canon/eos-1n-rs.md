@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: EOS 1N RS
 relatedFiles:
-  - canon-eos-1n-rs-service-manual
+  - canon/canon-eos-1n-rs-service-manual
 relatedLinks:
 ---
 

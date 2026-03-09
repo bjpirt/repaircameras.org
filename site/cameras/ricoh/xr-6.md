@@ -5,7 +5,7 @@ tags:
 manufacturer: Ricoh
 model: XR-6
 relatedFiles:
-  - ricoh-xr-6-repair-manual
+  - ricoh/ricoh-xr-6-repair-manual
 relatedLinks:
 ---
 
