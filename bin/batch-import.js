@@ -526,30 +526,14 @@ const processFile = async (filename) => {
   const detectedManufacturer = mfrMatch ? mfrMatch.name : '';
 
   // Ask for manufacturer confirmation
-  let manufacturer = detectedManufacturer;
-  if (detectedManufacturer) {
-    const mfrAnswer = await ask(`Manufacturer [${detectedManufacturer}] (or 'm' for menu): `);
-    const trimmedAnswer = mfrAnswer.trim();
+  const mfrAnswer = await ask('Manufacturer (or \'m\' for menu): ', detectedManufacturer);
+  const trimmedMfr = mfrAnswer.trim();
 
-    // Check if user wants the menu
-    if (trimmedAnswer.toLowerCase() === 'm') {
-      return await showMenu(filename, '', '', '');
-    }
-
-    if (trimmedAnswer) {
-      manufacturer = trimmedAnswer;
-    }
-  } else {
-    const mfrAnswer = await ask('Manufacturer (or \'m\' for menu): ');
-    const trimmedAnswer = mfrAnswer.trim();
-
-    // Check if user wants the menu
-    if (trimmedAnswer.toLowerCase() === 'm') {
-      return await showMenu(filename, '', '', '');
-    }
-
-    manufacturer = trimmedAnswer;
+  if (trimmedMfr.toLowerCase() === 'm') {
+    return await showMenu(filename, '', '', '');
   }
+
+  let manufacturer = trimmedMfr;
 
   if (!manufacturer) {
     console.log('Manufacturer is required. Skipping file.\n');
@@ -567,16 +551,8 @@ const processFile = async (filename) => {
   const detectedModel = findModel(baseName, manufacturer, mfrMatch ? mfrMatch.matchLength : 0);
 
   // Ask for model confirmation
-  let model = detectedModel;
-  if (detectedModel) {
-    const modelAnswer = await ask(`Model [${detectedModel}]: `);
-    if (modelAnswer.trim()) {
-      model = modelAnswer.trim();
-    }
-  } else {
-    const modelAnswer = await ask('Model: ');
-    model = modelAnswer.trim();
-  }
+  const modelAnswer = await ask('Model: ', detectedModel);
+  let model = modelAnswer.trim();
 
   if (!model) {
     console.log('Model is required. Skipping file.\n');
@@ -588,13 +564,13 @@ const processFile = async (filename) => {
   const detectedDocType = findDocumentType(baseName);
 
   // Ask for document type confirmation
-  let documentType = detectedDocType;
+  let documentType;
   if (detectedDocType) {
-    const docAnswer = await ask(`Document type [${detectedDocType}] (or 's' to select): `);
+    const docAnswer = await ask('Document type (or \'s\' to select): ', detectedDocType);
     const trimmedDoc = docAnswer.trim();
     if (trimmedDoc.toLowerCase() === 's') {
       documentType = await selectDocumentType();
-    } else if (trimmedDoc) {
+    } else {
       documentType = trimmedDoc;
     }
   } else {
@@ -609,7 +585,7 @@ const processFile = async (filename) => {
 
   // Get and confirm description
   const defaultDescription = getDefaultDescription(documentType, manufacturer, model);
-  const descAnswer = await ask(`Description [${defaultDescription}]: `);
+  const descAnswer = await ask('Description: ', defaultDescription);
   const description = descAnswer.trim() || defaultDescription;
 
   console.log(`\nConfirmed: ${manufacturer} ${model} - ${documentType}`)
