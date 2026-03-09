@@ -5,7 +5,7 @@ tags:
 manufacturer: Olympus
 model: OM-PC
 relatedFiles:
-  - olympus-om-pc-service-manual
+  - olympus/olympus-om-pc-service-manual
 relatedLinks:
 ---
 

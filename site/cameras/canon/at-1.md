@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: AT-1
 relatedFiles:
-  - canon-at-1-service-manual
+  - canon/canon-at-1-service-manual
 relatedLinks:
 ---
 

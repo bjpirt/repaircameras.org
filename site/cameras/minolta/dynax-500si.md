@@ -5,7 +5,7 @@ tags:
 manufacturer: Minolta
 model: Dynax 500si
 relatedFiles:
-  - minolta-dynax-500si-service-manual
+  - minolta/minolta-dynax-500si-service-manual
 relatedLinks:
 ---
 

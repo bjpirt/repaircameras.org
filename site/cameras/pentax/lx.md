@@ -5,7 +5,7 @@ tags:
 manufacturer: Pentax
 model: LX
 relatedFiles:
-  - pentax-lx-service-manual
+  - pentax/pentax-lx-service-manual
 relatedLinks:
 ---
 

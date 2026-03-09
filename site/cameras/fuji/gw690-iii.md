@@ -5,7 +5,7 @@ tags:
 manufacturer: Fuji
 model: GW690-III
 relatedFiles:
-  - fuji-gw690-iii-service-manual
+  - fuji/fuji-gw690-iii-service-manual
 relatedLinks:
 ---
 

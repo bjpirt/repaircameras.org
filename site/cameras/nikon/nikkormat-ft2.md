@@ -5,7 +5,7 @@ tags:
 manufacturer: Nikon
 model: Nikkormat FT2
 relatedFiles:
-  - nikon-nikkormat-ft2-service
+  - nikon/nikon-nikkormat-ft2-service
 relatedLinks:
 ---
 

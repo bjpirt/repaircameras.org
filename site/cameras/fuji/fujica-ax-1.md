@@ -5,7 +5,7 @@ tags:
 manufacturer: Fuji
 model: Fujica AX-1
 relatedFiles:
-  - fuji-fujica-ax-1-repair-manual
+  - fuji/fuji-fujica-ax-1-repair-manual
 relatedLinks:
 ---
 

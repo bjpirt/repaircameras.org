@@ -5,7 +5,7 @@ tags:
 manufacturer: Olympus
 model: OM-4Ti
 relatedFiles:
-  - olympus-om-4ti-service-manual
+  - olympus/olympus-om-4ti-service-manual
 relatedLinks:
 ---
 

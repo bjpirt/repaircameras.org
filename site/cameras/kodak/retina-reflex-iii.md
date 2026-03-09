@@ -5,7 +5,7 @@ tags:
 manufacturer: Kodak
 model: Retina Reflex III
 relatedFiles:
-  - kodak-retina-reflex-iii-parts-list
-  - kodak-retina-reflex-iii-service-manual
+  - kodak/kodak-retina-reflex-iii-parts-list
+  - kodak/kodak-retina-reflex-iii-service-manual
 relatedLinks:
 ---

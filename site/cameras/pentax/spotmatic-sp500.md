@@ -5,9 +5,9 @@ tags:
 manufacturer: Pentax
 model: Spotmatic SP 500
 relatedFiles:
-  - pentax-spotmatic-service-manual
-  - pentax-spotmatic-exploded-diagram
-  - pentax-spotmatic-meter
+  - pentax/pentax-spotmatic-service-manual
+  - pentax/pentax-spotmatic-exploded-diagram
+  - pentax/pentax-spotmatic-meter
 relatedLinks:
 ---
 

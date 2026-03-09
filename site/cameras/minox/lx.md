@@ -5,7 +5,7 @@ tags:
 manufacturer: Minox
 model: LX
 relatedFiles:
-  - minox-lx-service-manual
+  - minox/minox-lx-service-manual
 relatedLinks:
 ---
 

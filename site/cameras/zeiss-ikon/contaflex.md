@@ -5,7 +5,7 @@ tags:
 manufacturer: Zeiss Ikon
 model: Contaflex
 relatedFiles:
-  - zeiss-ikon-contaflex-service-manual
+  - zeiss-ikon/zeiss-ikon-contaflex-service-manual
 relatedLinks:
 ---
 

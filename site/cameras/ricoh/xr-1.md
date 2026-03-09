@@ -5,7 +5,7 @@ tags:
 manufacturer: Ricoh
 model: XR-1
 relatedFiles:
-  - ricoh-xr-1-repair-manual
+  - ricoh/ricoh-xr-1-repair-manual
 relatedLinks:
 ---
 

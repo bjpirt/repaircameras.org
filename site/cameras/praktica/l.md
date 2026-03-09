@@ -5,7 +5,7 @@ tags:
 manufacturer: Praktica
 model: L
 relatedFiles:
-  - praktica-l-german-service-manual
+  - praktica/praktica-l-german-service-manual
 relatedLinks:
 ---
 

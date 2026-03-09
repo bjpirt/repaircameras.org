@@ -5,7 +5,7 @@ tags:
 manufacturer: Rollei
 model: Rolleiflex SL 66
 relatedFiles:
-  - rollei-rolleiflex-sl-66-service-manual
+  - rollei/rollei-rolleiflex-sl-66-service-manual
 relatedLinks:
 ---
 

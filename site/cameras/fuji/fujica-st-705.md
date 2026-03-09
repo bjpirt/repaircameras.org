@@ -5,7 +5,7 @@ tags:
 manufacturer: Fuji
 model: Fujica ST-705
 relatedFiles:
-  - fuji-fujica-st-705-repair-manual
+  - fuji/fuji-fujica-st-705-repair-manual
 relatedLinks:
 ---
 

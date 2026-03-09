@@ -5,7 +5,7 @@ tags:
 manufacturer: Minolta
 model: XG-A
 relatedFiles:
-  - minolta-xg-a-service-manual
+  - minolta/minolta-xg-a-service-manual
 relatedLinks:
 aliases:
   - XG-1(n)

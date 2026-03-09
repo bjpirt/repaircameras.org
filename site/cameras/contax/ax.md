@@ -5,6 +5,6 @@ tags:
 manufacturer: Contax
 model: AX
 relatedFiles:
-  - contax-ax-repair-manual
+  - contax/contax-ax-repair-manual
 relatedLinks:
 ---

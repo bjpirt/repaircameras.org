@@ -5,7 +5,7 @@ tags:
 manufacturer: Bronica
 model: ETRS
 relatedFiles:
-  - bronica-etrs-repair-manual
+  - bronica/bronica-etrs-repair-manual
 relatedLinks:
 ---
 

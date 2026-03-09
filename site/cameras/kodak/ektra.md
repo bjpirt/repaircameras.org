@@ -5,7 +5,7 @@ tags:
 manufacturer: Kodak
 model: Ektra
 relatedFiles:
-  - kodak-ektra-repair-manual
+  - kodak/kodak-ektra-repair-manual
 relatedLinks:
 ---
 

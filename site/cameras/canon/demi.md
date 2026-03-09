@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: Demi
 relatedFiles:
-  - canon-demi-service-manual
+  - canon/canon-demi-service-manual
 relatedLinks:
 ---
 

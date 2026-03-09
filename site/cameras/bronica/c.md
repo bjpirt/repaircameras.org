@@ -5,7 +5,7 @@ tags:
 manufacturer: Bronica
 model: C
 relatedFiles:
-  - bronica-s2-c-repair-manual
+  - bronica/bronica-s2-c-repair-manual
 relatedLinks:
 ---
 

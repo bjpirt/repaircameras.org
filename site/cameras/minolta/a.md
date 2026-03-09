@@ -5,7 +5,7 @@ tags:
 manufacturer: Minolta
 model: A
 relatedFiles:
-  - minolta-a-exploded-diagram
+  - minolta/minolta-a-exploded-diagram
 relatedLinks:
 ---
 

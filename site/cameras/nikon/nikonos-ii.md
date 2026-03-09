@@ -5,7 +5,7 @@ tags:
 manufacturer: Nikon
 model: Nikonos-II
 relatedFiles:
-  - nikon-nikonos-ii-service-manual
+  - nikon/nikon-nikonos-ii-service-manual
 relatedLinks:
 ---
 

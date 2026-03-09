@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: Canonet QL
 relatedFiles:
-  - canon-canonet-full-service-manual
+  - canon/canon-canonet-full-service-manual
 relatedLinks:
 ---
 

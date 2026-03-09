@@ -5,7 +5,7 @@ tags:
 manufacturer: Chinon
 model: CP-7m
 relatedFiles:
-  - chinon-cp-7m-service-manual
+  - chinon/chinon-cp-7m-service-manual
 relatedLinks:
 ---
 

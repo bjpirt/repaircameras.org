@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: EOS 50
 relatedFiles:
-  - canon-eos-50-service-manual
+  - canon/canon-eos-50-service-manual
 relatedLinks:
 aliases:
   - EOS ELAN II

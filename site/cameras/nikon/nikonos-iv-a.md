@@ -5,7 +5,7 @@ tags:
 manufacturer: Nikon
 model: Nikonos IV-A
 relatedFiles:
-  - nikon-nikonos-iv-a-service-manual
+  - nikon/nikon-nikonos-iv-a-service-manual
 relatedLinks:
 ---
 

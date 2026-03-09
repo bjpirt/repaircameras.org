@@ -5,8 +5,8 @@ tags:
 manufacturer: Olympus
 model: XA
 relatedFiles:
-  - olympus-xa-service-manual
-  - olympus-xa-exploded-diagram
+  - olympus/olympus-xa-service-manual
+  - olympus/olympus-xa-exploded-diagram
 relatedLinks:
 ---
 

@@ -5,6 +5,6 @@ tags:
 manufacturer: Zeiss Ikon
 model: Contaflex Super B
 relatedFiles:
-  - zeiss-ikon-contaflex-super-b-service-manual
+  - zeiss-ikon/zeiss-ikon-contaflex-super-b-service-manual
 relatedLinks:
 ---

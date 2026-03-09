@@ -5,7 +5,7 @@ tags:
 manufacturer: Nikon
 model: Nikkormat EL
 relatedFiles:
-  - nikon-nikkormat-el-repair-manual
+  - nikon/nikon-nikkormat-el-repair-manual
 relatedLinks:
 ---
 

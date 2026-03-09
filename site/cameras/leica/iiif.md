@@ -5,9 +5,9 @@ tags:
 manufacturer: Leica
 model: iiif
 relatedFiles:
-  - leica-iiif-service-manual
-  - leica-iiif-national-camera-manual
-  - leica-shutter-national-camera-manual
+  - leica/leica-iiif-service-manual
+  - leica/leica-iiif-national-camera-manual
+  - leica/leica-shutter-national-camera-manual
 relatedLinks:
 ---
 

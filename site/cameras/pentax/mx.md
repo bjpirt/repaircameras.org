@@ -5,7 +5,7 @@ tags:
 manufacturer: Pentax
 model: MX
 relatedFiles:
-  - pentax-mx-service-manual
+  - pentax/pentax-mx-service-manual
 relatedLinks:
 ---
 

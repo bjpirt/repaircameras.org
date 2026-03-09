@@ -5,7 +5,7 @@ tags:
 manufacturer: Agfa
 model: Ambiflex
 relatedFiles:
-  - agfa-ambiflex-parts-list
+  - agfa/agfa-ambiflex-parts-list
 relatedLinks:
 ---
 

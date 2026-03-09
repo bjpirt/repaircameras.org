@@ -5,6 +5,6 @@ tags:
 manufacturer: Nikon
 model: Nikkorex F
 relatedFiles:
-  - nikon-nikkorex-f-repair-manual
+  - nikon/nikon-nikkorex-f-repair-manual
 relatedLinks:
 ---

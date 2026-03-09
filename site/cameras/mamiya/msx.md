@@ -5,7 +5,7 @@ tags:
 manufacturer: Mamiya
 model: MSX
 relatedFiles:
-  - mamiya-msx-dsx-service-manual
+  - mamiya/mamiya-msx-dsx-service-manual
 relatedLinks:
 ---
 

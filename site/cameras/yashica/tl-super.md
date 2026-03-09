@@ -5,6 +5,6 @@ tags:
 manufacturer: Yashica
 model: TL Super
 relatedFiles:
-  - yashica-tl-super-exploded-diagram
+  - yashica/yashica-tl-super-exploded-diagram
 relatedLinks:
 ---

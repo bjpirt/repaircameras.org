@@ -5,6 +5,6 @@ tags:
 manufacturer: Kodak
 model: Retina
 relatedFiles:
-  - kodak-retina-iiis-parts-list
+  - kodak/kodak-retina-iiis-parts-list
 relatedLinks:
 ---

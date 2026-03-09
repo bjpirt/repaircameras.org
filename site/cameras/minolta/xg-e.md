@@ -5,7 +5,7 @@ tags:
 manufacturer: Minolta
 model: XG-E
 relatedFiles:
-  - minolta-xg-e-service-manual
+  - minolta/minolta-xg-e-service-manual
 relatedLinks:
 aliases:
   - XG-2

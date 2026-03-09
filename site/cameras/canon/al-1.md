@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: AL-1
 relatedFiles:
-  - canon-al-1-service-manual
+  - canon/canon-al-1-service-manual
 relatedLinks:
 ---
 

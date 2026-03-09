@@ -5,7 +5,7 @@ tags:
 manufacturer: Mamiya
 model: Press Super 23
 relatedFiles:
-  - mamiya-press-super-23-service-manual
+  - mamiya/mamiya-press-super-23-service-manual
 relatedLinks:
 ---
 

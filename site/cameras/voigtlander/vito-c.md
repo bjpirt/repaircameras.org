@@ -5,6 +5,6 @@ tags:
 manufacturer: Voigtländer
 model: Vito C
 relatedFiles:
-  - voigtlander-vito-c-repair-manual
+  - voigtlander/voigtlander-vito-c-repair-manual
 relatedLinks:
 ---

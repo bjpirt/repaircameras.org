@@ -74,8 +74,11 @@ const getDescription = async (fileId, manufacturer, model) => {
   return description;
 };
 
+const getManufacturerSlug = (manufacturer) => manufacturer.toLowerCase().replace(/ /g, "-");
+
 const updateMetadata = async (fileId, manufacturer, model, description) => {
-  const pdfFile = `site/files/${fileId}.pdf`;
+  const manSlug = getManufacturerSlug(manufacturer);
+  const pdfFile = `site/files/${manSlug}/${fileId}.pdf`;
 
   const pdfData = fs.readFileSync(pdfFile);
   const pdfDoc = await PDFDocument.load(pdfData);
@@ -120,6 +123,7 @@ const createCameraPage = (model, manufacturer, fileId) => {
   }
   console.log(`Creating camera page for ${model}`);
 
+  const manSlug = getManufacturerSlug(manufacturer);
   const content = `---
 layout: item.11ty.tsx
 tags:
@@ -127,7 +131,7 @@ tags:
 manufacturer: ${manufacturer}
 model: ${model}
 relatedFiles:
-  - ${fileId}
+  - ${manSlug}/${fileId}
 relatedLinks:
 ---
 `;
@@ -184,14 +188,26 @@ const getNames = async (fileId) => {
 };
 
 const getUnprocessedFiles = async () => {
-  const files = fs.readdirSync("site/files/");
+  const subdirs = fs.readdirSync("site/files/", { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name);
 
-  return files
-    .map((f) => `site/files/${f}`)
-    .filter((f) => f.endsWith(".pdf"))
-    .filter(
-      async (f) => (await getPdfProducer(f)) !== "https://repaircameras.org"
-    );
+  const allFiles = [];
+  for (const subdir of subdirs) {
+    const pdfs = fs.readdirSync(`site/files/${subdir}`)
+      .filter((f) => f.endsWith(".pdf"));
+    for (const pdf of pdfs) {
+      allFiles.push(`site/files/${subdir}/${pdf}`);
+    }
+  }
+
+  const results = [];
+  for (const f of allFiles) {
+    if ((await getPdfProducer(f)) !== "https://repaircameras.org") {
+      results.push(f);
+    }
+  }
+  return results;
 };
 
 const processFile = async (filePath) => {

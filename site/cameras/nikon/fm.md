@@ -5,10 +5,10 @@ tags:
 manufacturer: Nikon
 model: FM
 relatedFiles:
-  - nikon-fm-repair-manual
-  - nikon-fm-revised-service-manual
-  - nikon-fm-top-exploded-diagram
-  - nikon-fm-wiring-diagram
+  - nikon/nikon-fm-repair-manual
+  - nikon/nikon-fm-revised-service-manual
+  - nikon/nikon-fm-top-exploded-diagram
+  - nikon/nikon-fm-wiring-diagram
 relatedLinks:
 ---
 

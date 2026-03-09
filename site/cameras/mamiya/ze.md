@@ -5,6 +5,6 @@ tags:
 manufacturer: Mamiya
 model: ZE
 relatedFiles:
-  - mamiya-ze-service-manual
+  - mamiya/mamiya-ze-service-manual
 relatedLinks:
 ---

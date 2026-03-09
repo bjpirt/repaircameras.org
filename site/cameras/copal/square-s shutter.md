@@ -5,7 +5,7 @@ tags:
 manufacturer: Copal
 model: Square S Shutter
 relatedFiles:
-  - copal-square-s-shutter-repair-manual
+  - copal/copal-square-s-shutter-repair-manual
 relatedLinks:
 ---
 

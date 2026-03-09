@@ -5,6 +5,6 @@ tags:
 manufacturer: Rollei
 model: 35 LED
 relatedFiles:
-  - rollei-35-led-repair-manual
+  - rollei/rollei-35-led-repair-manual
 relatedLinks:
 ---

@@ -5,6 +5,6 @@ tags:
 manufacturer: Yashica
 model: T4 Super
 relatedFiles:
-  - yashica-t4-super-repair-manual
+  - yashica/yashica-t4-super-repair-manual
 relatedLinks:
 ---

@@ -5,6 +5,6 @@ tags:
 manufacturer: Zeiss Ikon
 model: Ikoflex Favorit
 relatedFiles:
-  - zeiss-ikon-ikoflex-ib-ic-favorit-service-manual
+  - zeiss-ikon/zeiss-ikon-ikoflex-ib-ic-favorit-service-manual
 relatedLinks:
 ---

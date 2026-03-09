@@ -5,7 +5,7 @@ tags:
 manufacturer: Canon
 model: FX
 relatedFiles:
-  - canon-fx-repair-manual
+  - canon/canon-fx-repair-manual
 relatedLinks:
 ---
 

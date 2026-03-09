@@ -5,7 +5,7 @@ tags:
 manufacturer: Nikon
 model: Nikonos V
 relatedFiles:
-  - nikon-nikonos-v-service-manual
+  - nikon/nikon-nikonos-v-service-manual
 relatedLinks:
 ---
 

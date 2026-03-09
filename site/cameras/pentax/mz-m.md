@@ -5,8 +5,8 @@ tags:
 manufacturer: Pentax
 model: MZ-M
 relatedFiles:
-  - pentax-mz-m-service-manual
-  - pentax-mz-m-parts-list
+  - pentax/pentax-mz-m-service-manual
+  - pentax/pentax-mz-m-parts-list
 relatedLinks:
 ---
 

@@ -5,7 +5,7 @@ tags:
 manufacturer: Graflex
 model: Grafmatic 23 Sheet Film Holder
 relatedFiles:
-  - graflex-grafmatic-23-sheet-film-holder-service-manual
+  - graflex/graflex-grafmatic-23-sheet-film-holder-service-manual
 relatedLinks:
 ---
 

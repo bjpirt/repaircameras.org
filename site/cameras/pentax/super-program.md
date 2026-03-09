@@ -5,7 +5,7 @@ tags:
 manufacturer: Pentax
 model: Super Program
 relatedFiles:
-  - pentax-super-program-service-manual
+  - pentax/pentax-super-program-service-manual
 relatedLinks:
 ---
 

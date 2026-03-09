@@ -5,9 +5,9 @@ tags:
 manufacturer: Leica
 model: iiig
 relatedFiles:
-  - leica-iiig-service-manual
-  - leica-iiig-rangefinder-adjustments
-  - leica-shutter-national-camera-manual
+  - leica/leica-iiig-service-manual
+  - leica/leica-iiig-rangefinder-adjustments
+  - leica/leica-shutter-national-camera-manual
 relatedLinks:
 ---
 

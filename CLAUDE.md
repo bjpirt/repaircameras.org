@@ -23,8 +23,9 @@ npx @11ty/eleventy
 - **Site content**: `site/` directory
   - Camera pages: `site/cameras/{manufacturer}/{model}.md` - Markdown files with frontmatter
   - Manufacturer indexes: `site/cameras/{manufacturer}/index.md`
-  - PDF manuals: `site/files/*.pdf` - Service manuals, repair guides, parts catalogs
-    - Naming convention: `{manufacturer}-{model}-{document-type}.pdf` (e.g., `pentax-mx-service-manual.pdf`, `nikon-fm2-repair-manual.pdf`)
+  - PDF manuals: `site/files/{manufacturer}/{filename}.pdf` - Service manuals, repair guides, parts catalogs
+    - Organised in manufacturer subfolders (e.g., `site/files/pentax/pentax-mx-service-manual.pdf`)
+    - Naming convention: `{manufacturer}-{model}-{document-type}.pdf`
     - Use kebab-case for all components
   - Static assets: `site/static/`
 
@@ -39,7 +40,7 @@ tags:
 manufacturer: Pentax
 model: MX
 relatedFiles:
-  - pentax-mx-service-manual  # ID without .pdf extension
+  - pentax/pentax-mx-service-manual  # {manufacturer}/{filename} without .pdf
 relatedLinks:
   - pentax-k1000-youtube      # ID from site/_data/links/
 ---
@@ -64,10 +65,10 @@ relatedLinks:
 
 The site uses Eleventy's global data system (`site/_data/`) to process PDFs and external links:
 
-- **`files.js`**: Reads all PDFs from `site/files/`, extracts metadata (title, description) from PDF properties, generates thumbnails at build time, stores in `_site/img/thumbnails/`
+- **`files.js`**: Recursively scans `site/files/{manufacturer}/` subdirectories, extracts metadata (title, description) from PDF properties, generates thumbnails at build time, stores in `_site/img/thumbnails/`
 - **`links.js`**: Reads JSON files from `site/_data/links/`, pairs with corresponding JPG thumbnails, processes images for display
 
-These data files are available globally in all templates as `files` and `links` objects, keyed by filename (without extension).
+These data files are available globally in all templates as `files` and `links` objects. Files are keyed by `{manufacturer}/{filename}` (e.g., `pentax/pentax-mx-service-manual`). Links are keyed by filename without extension.
 
 ### Build Configuration
 
@@ -85,18 +86,18 @@ These data files are available globally in all templates as `files` and `links` 
 ### Adding a camera page
 
 1. Create `site/cameras/{manufacturer}/{model}.md` with proper frontmatter
-2. Add any related PDF files to `site/files/` with descriptive filename (e.g., `pentax-mx-service-manual.pdf`)
-3. Reference PDFs in frontmatter `relatedFiles` array using filename without extension
+2. Add any related PDF files to `site/files/{manufacturer}/` with descriptive filename (e.g., `site/files/pentax/pentax-mx-service-manual.pdf`)
+3. Reference PDFs in frontmatter `relatedFiles` array using `{manufacturer}/{filename}` without extension (e.g., `pentax/pentax-mx-service-manual`)
 4. PDF metadata (title/description) should be embedded in the PDF itself
 
 ### Adding PDF files
 
-1. Place PDF in `site/files/` directory with a descriptive kebab-case filename
+1. Place PDF in `site/files/{manufacturer}/` directory with a descriptive kebab-case filename
 2. **Set PDF metadata properties** - the site reads and displays these:
    - **Title**: Displayed as the file title in the UI
    - **Subject**: Displayed as the file description
    - Use a PDF editor to set these properties (e.g., Preview on Mac: Tools → Show Inspector → Description tab)
-3. Reference the PDF in camera pages using `relatedFiles` array with filename (no extension)
+3. Reference the PDF in camera pages using `relatedFiles` array with `{manufacturer}/{filename}` (no extension)
 4. The build process automatically:
    - Extracts title/subject metadata from the PDF
    - Generates a thumbnail from the first page

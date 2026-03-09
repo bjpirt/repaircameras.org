@@ -5,8 +5,8 @@ tags:
 manufacturer: Bronica
 model: ETRSi
 relatedFiles:
-  - bronica-etrsi-repair-manual
-  - bronica-etrsi-film-back-repair-manual
+  - bronica/bronica-etrsi-repair-manual
+  - bronica/bronica-etrsi-film-back-repair-manual
 relatedLinks:
 ---
 

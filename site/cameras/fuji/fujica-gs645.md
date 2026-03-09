@@ -5,7 +5,7 @@ tags:
 manufacturer: Fuji
 model: Fujica GS645
 relatedFiles:
-  - fuji-fujica-gs645-service-manual
+  - fuji/fuji-fujica-gs645-service-manual
 relatedLinks:
 ---
 

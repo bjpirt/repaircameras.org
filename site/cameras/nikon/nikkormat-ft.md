@@ -5,6 +5,6 @@ tags:
 manufacturer: Nikon
 model: Nikkormat FT
 relatedFiles:
-  - nikon-nikkormat-fs-ft-service-manual
+  - nikon/nikon-nikkormat-fs-ft-service-manual
 relatedLinks:
 ---

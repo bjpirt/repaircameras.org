@@ -5,6 +5,6 @@ tags:
 manufacturer: Petri
 model: Racer
 relatedFiles:
-  - petri-racer-repair-manual
+  - petri/petri-racer-repair-manual
 relatedLinks:
 ---

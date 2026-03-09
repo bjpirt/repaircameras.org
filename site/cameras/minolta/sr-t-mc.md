@@ -5,7 +5,7 @@ tags:
 manufacturer: Minolta
 model: SR-T MC
 relatedFiles:
-  - minolta-sr-t-303-102-super-service-manual
+  - minolta/minolta-sr-t-303-102-super-service-manual
 relatedLinks:
 ---
 
