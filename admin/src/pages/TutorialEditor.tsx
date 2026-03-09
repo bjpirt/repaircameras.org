@@ -14,6 +14,7 @@ import {
 } from "./editorReducer";
 import { useTutorialLoader } from "./useTutorialLoader";
 import StepEditor from "./StepEditor";
+import EditorMessages from "../components/EditorMessages";
 import "./TutorialEditor.css";
 
 interface Props {
@@ -148,7 +149,7 @@ export default function TutorialEditor({ token, username }: Props) {
 
       <div className="editor-status">
         {state.branchName && (
-          <span className="status-branch">Branch: {state.branchName}</span>
+          <span className="status-branch">Branch: <a href={`https://github.com/${state.forkOwner}/${config.repoName}/tree/${state.branchName}`} target="_blank" rel="noopener noreferrer">{state.branchName}</a></span>
         )}
         {state.isDirty ? (
           <span className="status-dirty">Unsaved changes</span>
@@ -157,32 +158,15 @@ export default function TutorialEditor({ token, username }: Props) {
         ) : null}
       </div>
 
-      {state.saveSuccess && (
-        <div className="save-success">
-          Saved to branch successfully.
-        </div>
-      )}
-      {state.prResult && (
-        <div className="save-success">
-          Pull request created:{" "}
-          <a href={state.prResult.html_url} target="_blank" rel="noopener noreferrer">
-            #{state.prResult.number}
-          </a>
-        </div>
-      )}
-      {state.error && (
-        <div className="save-error">{state.error}</div>
-      )}
-      {state.validationErrors.length > 0 && (
-        <div className="validation-errors">
-          <strong>Please fix the following:</strong>
-          <ul>
-            {state.validationErrors.map((err, i) => (
-              <li key={i}>{err}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <EditorMessages
+        error={state.error}
+        validationErrors={state.validationErrors}
+        saveSuccess={state.saveSuccess}
+        saveSuccessMessage="Saved to branch successfully."
+        prResult={state.prResult}
+        prProgress={null}
+        onClearSaveSuccess={() => dispatch({ type: "CLEAR_SAVE_SUCCESS" })}
+      />
 
       {/* Metadata */}
       <section className="editor-section">

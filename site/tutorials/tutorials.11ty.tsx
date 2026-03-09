@@ -240,7 +240,10 @@ export function render({
       allPages={allPages}
       pageScripts={<script src="/static/js/tutorials.js" defer></script>}
     >
-      <h2>{tutorial.title}</h2>
+      <div class="page-title-row">
+        <h2>{tutorial.title}</h2>
+        <a href={`/admin/tutorials/${tutorial.id}`} class="edit-page-link">&#x270E; Edit this page</a>
+      </div>
       <p class="tutorial-description">
         {tutorial.manufacturer} {tutorial.model} &mdash; {tutorial.description}
       </p>

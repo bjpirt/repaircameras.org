@@ -133,6 +133,57 @@ main {
     font-size: 160%;
     margin: 24px 0 8px;
   }
+
+  #content {
+    max-width: 1000px;
+  }
+}
+
+.page-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.edit-page-link {
+  font-size: 14px;
+  color: #666;
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  &:hover {
+    color: #333;
+    border-color: #999;
+    background: #f5f5f5;
+  }
+}
+
+.troubleshooting {
+  table {
+    thead {
+      background: #ddd;
+    }
+
+    th,
+    td {
+      padding: 6px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    td.symptom,
+    td.cause {
+      width: 25%;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #e8e8e8;
+    }
+  }
 }
 
 /* File Link */

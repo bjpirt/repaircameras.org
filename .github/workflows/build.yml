@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            admin/package-lock.json
+
+      - name: Install OS packages
+        run: sudo apt-get update && sudo apt-get install -y imagemagick ghostscript
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm ci --prefix admin
+
+      - name: Build admin
+        run: npm run admin:build
+        env:
+          VITE_GITHUB_CLIENT_ID: placeholder
+
+      - name: Build site
+        run: npm run build

@@ -12,15 +12,81 @@ body {
 
 .login-screen {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  gap: 16px;
+  padding: 24px;
 }
 
-.login-screen h1 {
-  font-size: 24px;
+.login-card {
+  background: #fff;
+  max-width: 520px;
+  width: 100%;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-card h1 {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+.login-intro {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.login-steps {
+  background: #f6f8fa;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.login-steps h2 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.login-steps ol {
+  list-style: none;
+  counter-reset: steps;
+  padding: 0;
+  margin: 0;
+}
+
+.login-steps li {
+  counter-increment: steps;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.login-steps li:last-child {
+  margin-bottom: 0;
+}
+
+.login-steps li::before {
+  content: counter(steps);
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background: #24292e;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .login-button {
@@ -31,10 +97,17 @@ body {
   font-size: 16px;
   border-radius: 6px;
   cursor: pointer;
+  margin-bottom: 16px;
 }
 
 .login-button:hover {
   background: #1a1e22;
+}
+
+.login-note {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.4;
 }
 
 .loading,

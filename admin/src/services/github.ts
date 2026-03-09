@@ -1,17 +1,17 @@
 import { TutorialSchema, type Tutorial } from "@shared/types/tutorial";
 import { config } from "../config";
 
-const API_BASE = "https://api.github.com";
+export const API_BASE = "https://api.github.com";
 const TUTORIALS_PATH = "site/tutorials";
 
-interface GitHubContentItem {
+export interface GitHubContentItem {
   name: string;
   path: string;
   sha: string;
   type: "file" | "dir";
 }
 
-interface GitHubFileContent {
+export interface GitHubFileContent {
   content: string;
   encoding: "base64";
   sha: string;
@@ -24,19 +24,19 @@ export interface TutorialFileEntry {
   sha: string;
 }
 
-function headers(token: string) {
+export function headers(token: string) {
   return {
     Authorization: `Bearer ${token}`,
     Accept: "application/vnd.github.v3+json",
   };
 }
 
-function repoUrl(path: string): string {
+export function repoUrl(path: string): string {
   const base = `${API_BASE}/repos/${config.repoOwner}/${config.repoName}/contents/${path}`;
   return `${base}?ref=${encodeURIComponent(config.repoBranch)}`;
 }
 
-function decodeBase64Utf8(base64: string): string {
+export function decodeBase64Utf8(base64: string): string {
   const binary = atob(base64.replace(/\n/g, ""));
   const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
   return new TextDecoder().decode(bytes);
@@ -48,7 +48,7 @@ function encodeBase64Utf8(str: string): string {
   return btoa(binary);
 }
 
-function contentUrl(path: string): string {
+export function contentUrl(path: string): string {
   return `${API_BASE}/repos/${config.repoOwner}/${config.repoName}/contents/${path}`;
 }
 
@@ -256,7 +256,7 @@ export async function createTutorial(
   return result.content.sha;
 }
 
-function blobToBase64(blob: Blob): Promise<string> {
+export function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
