@@ -1,4 +1,9 @@
-import { createBrowserRouter, RouterProvider, Outlet, Link } from "react-router";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Outlet,
+  Link,
+} from "react-router";
 import { useAuth } from "./hooks/useAuth";
 import TutorialList from "./pages/TutorialList";
 import TutorialEditor from "./pages/TutorialEditor";
@@ -10,8 +15,12 @@ function Home() {
   return (
     <div>
       <h2>Welcome</h2>
-      <p><Link to="/tutorials">View tutorials</Link></p>
-      <p><Link to="/cameras">View camera pages</Link></p>
+      <p>
+        <Link to="/tutorials">View tutorials</Link>
+      </p>
+      <p>
+        <Link to="/cameras">View camera pages</Link>
+      </p>
     </div>
   );
 }
@@ -22,11 +31,42 @@ function AuthGate() {
   if (state.status === "idle") {
     return (
       <div className="login-screen">
-        <h1>Repair Cameras Admin</h1>
-        <p>Sign in with GitHub to create and edit tutorials.</p>
-        <button onClick={login} className="login-button">
-          Sign in with GitHub
-        </button>
+        <div className="login-card">
+          <h1>Contribute to Repair Cameras</h1>
+          <p className="login-intro">
+            Help build a free resource for anyone repairing film cameras. You
+            can add new cameras, edit existing pages, or write step-by-step
+            repair tutorials.
+          </p>
+          <div className="login-steps">
+            <h2>How it works</h2>
+            <ol>
+              <li>
+                Sign in with a free{" "}
+                <a
+                  href="https://github.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub account
+                </a>
+              </li>
+              <li>Make your edits using the online editor</li>
+              <li>Submit your changes for review</li>
+              <li>
+                A site maintainer checks everything over and your changes go
+                live
+              </li>
+            </ol>
+          </div>
+          <button onClick={login} className="login-button">
+            Sign in with GitHub
+          </button>
+          <p className="login-note">
+            GitHub is free to sign up. It's used to identify contributors and
+            manage edits.
+          </p>
+        </div>
       </div>
     );
   }
@@ -74,12 +114,7 @@ function TutorialListPage() {
 function TutorialEditorPage() {
   const { state } = useAuth();
   if (state.status !== "authenticated") return null;
-  return (
-    <TutorialEditor
-      token={state.token}
-      username={state.user.login}
-    />
-  );
+  return <TutorialEditor token={state.token} username={state.user.login} />;
 }
 
 function CameraListPage() {

@@ -137,7 +137,10 @@ export function item({
   return (
     <MainTemplate title={title} page={page} allPages={allPages}>
       <div id="content">
-        <h2>{`${manufacturer} ${model}`}</h2>
+        <div class="page-title-row">
+          <h2>{`${manufacturer} ${model}`}</h2>
+          <a href={`/admin${page.url.replace(/\/$/, "")}`} class="edit-page-link">&#x270E; Edit this page</a>
+        </div>
         {content}
 
         {troubleshooting?.length > 0
