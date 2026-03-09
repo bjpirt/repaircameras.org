@@ -116,13 +116,13 @@ const findModel = (filename, manufacturer, matchLength) => {
  */
 const findDocumentType = (filename) => {
   const DOC_TYPES = [
-    { keywords: ['service'], type: 'service-manual' },
-    { keywords: ['repair'], type: 'repair-manual' },
-    { keywords: ['parts'], type: 'parts-list' },
-    { keywords: ['exploded', 'explode'], type: 'exploded-diagram' },
-    { keywords: ['guide'], type: 'guide' },
-    { keywords: ['article'], type: 'article' },
-    { keywords: ['wiring'], type: 'wiring-diagram' },
+    { keywords: ['service'], display: 'Service Manual' },
+    { keywords: ['repair'], display: 'Repair Manual' },
+    { keywords: ['parts'], display: 'Parts List' },
+    { keywords: ['exploded', 'explode'], display: 'Exploded Diagram' },
+    { keywords: ['guide'], display: 'Guide' },
+    { keywords: ['article'], display: 'Article' },
+    { keywords: ['wiring'], display: 'Wiring Diagram' },
   ];
 
   const lowerName = filename.toLowerCase();
@@ -130,7 +130,7 @@ const findDocumentType = (filename) => {
   for (const docType of DOC_TYPES) {
     for (const keyword of docType.keywords) {
       if (lowerName.includes(keyword)) {
-        return docType.type;
+        return docType.display;
       }
     }
   }
@@ -166,13 +166,13 @@ const getNextFile = (skipFiles = []) => {
  */
 const selectDocumentType = async () => {
   const docTypes = [
-    'service-manual',
-    'repair-manual',
-    'parts-list',
-    'exploded-diagram',
-    'guide',
-    'article',
-    'wiring-diagram',
+    'Service Manual',
+    'Repair Manual',
+    'Parts List',
+    'Exploded Diagram',
+    'Guide',
+    'Article',
+    'Wiring Diagram',
   ];
 
   console.log('\nSelect document type:');
@@ -205,31 +205,37 @@ const capitalise = (s) => {
 };
 
 /**
+ * Convert display name to slug (e.g., "Service Manual" -> "service-manual")
+ */
+const toSlug = (displayName) => displayName.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+
+/**
  * Get default description based on file type
  */
-const getDefaultDescription = (fileId, manufacturer, model) => {
-  if (fileId.includes("service")) {
-    return `Service manual for the ${manufacturer} ${model}`;
-  }
-  if (fileId.includes("repair-guide")) {
-    return `Repair guide for the ${manufacturer} ${model}`;
-  }
-  if (fileId.includes("national-camera-service-manual")) {
+const getDefaultDescription = (documentType, manufacturer, model) => {
+  const lowerType = documentType.toLowerCase();
+  if (lowerType.includes("national camera") && lowerType.includes("service")) {
     return `Service manual for the ${manufacturer} ${model} from National Camera`;
   }
-  if (fileId.includes("repair")) {
+  if (lowerType.includes("service")) {
+    return `Service manual for the ${manufacturer} ${model}`;
+  }
+  if (lowerType.includes("repair") && lowerType.includes("guide")) {
+    return `Repair guide for the ${manufacturer} ${model}`;
+  }
+  if (lowerType.includes("repair")) {
     return `Repair manual for the ${manufacturer} ${model}`;
   }
-  if (fileId.includes("explode")) {
+  if (lowerType.includes("explode") || lowerType.includes("exploded")) {
     return `Exploded diagrams for the ${manufacturer} ${model}`;
   }
-  if (fileId.includes("parts")) {
+  if (lowerType.includes("parts")) {
     return `Parts list for the ${manufacturer} ${model}`;
   }
-  if (fileId.includes("ccm-article")) {
+  if (lowerType.includes("ccm") && lowerType.includes("article")) {
     return `Camera Craftsman Magazine article on the ${manufacturer} ${model}`;
   }
-  if (fileId.includes("article")) {
+  if (lowerType.includes("article")) {
     return `Article on the ${manufacturer} ${model}`;
   }
   return `Document for the ${manufacturer} ${model}`;
@@ -256,7 +262,7 @@ const updateMetadata = async (filePath, fileId, manufacturer, model, description
  * Create manufacturer index page
  */
 const createManufacturerIndex = (name) => {
-  const pageSlug = name.toLowerCase().replace(/ /g, "-");
+  const pageSlug = toSlug(name);
 
   if (fs.existsSync(`site/cameras/${pageSlug}/index.md`)) {
     return;
@@ -280,8 +286,8 @@ manufacturer: ${name}
  * Create a new camera page
  */
 const createCameraPage = (model, manufacturer, fileId) => {
-  const manPageSlug = manufacturer.toLowerCase().replace(/ /g, "-");
-  const modelPageSlug = model.toLowerCase().replace(/ /g, "-");
+  const manPageSlug = toSlug(manufacturer);
+  const modelPageSlug = toSlug(model);
   const pageName = `site/cameras/${manPageSlug}/${modelPageSlug}.md`;
 
   console.log(`Creating camera page for ${manufacturer} ${model}`);
@@ -305,8 +311,8 @@ relatedLinks:
  * Add file to existing camera page
  */
 const addFileToCameraPage = (model, manufacturer, fileId) => {
-  const manPageSlug = manufacturer.toLowerCase().replace(/ /g, "-");
-  const modelPageSlug = model.toLowerCase().replace(/ /g, "-");
+  const manPageSlug = toSlug(manufacturer);
+  const modelPageSlug = toSlug(model);
   const pageName = `site/cameras/${manPageSlug}/${modelPageSlug}.md`;
   const fullFileId = `${manPageSlug}/${fileId}`;
 
@@ -347,13 +353,14 @@ const addFileToCameraPage = (model, manufacturer, fileId) => {
 /**
  * Import the file - move it to site/files and create/update camera page
  */
-const importFile = async (filename, manufacturer, model, documentType) => {
+const importFile = async (filename, manufacturer, model, documentType, description) => {
   const sourcePath = path.join('import/incoming', filename);
 
   // Generate target filename and fileId
-  let manSlug = manufacturer.toLowerCase().replace(/\s+/g, '-');
-  let modelSlug = model.toLowerCase().replace(/\s+/g, '-');
-  let fileId = `${manSlug}-${modelSlug}-${documentType}`;
+  let manSlug = toSlug(manufacturer);
+  let modelSlug = toSlug(model);
+  let documentTypeSlug = toSlug(documentType);
+  let fileId = `${manSlug}-${modelSlug}-${documentTypeSlug}`;
 
   // Show and allow editing of the target filename
   console.log('\n' + '='.repeat(60));
@@ -379,12 +386,6 @@ const importFile = async (filename, manufacturer, model, documentType) => {
     console.log('Cannot import duplicate file.\n');
     return false;
   }
-
-  // Get and confirm description
-  const defaultDescription = getDefaultDescription(fileId, manufacturer, model);
-  const customDesc = await ask(`Description: `, defaultDescription);
-
-  let description = customDesc.trim() || defaultDescription;
 
   // Show final import details
   console.log('\n' + '-'.repeat(60));
@@ -589,9 +590,12 @@ const processFile = async (filename) => {
   // Ask for document type confirmation
   let documentType = detectedDocType;
   if (detectedDocType) {
-    const docAnswer = await ask(`Document type [${detectedDocType}] (y/n): `);
-    if (docAnswer.trim().toLowerCase() === 'n') {
+    const docAnswer = await ask(`Document type [${detectedDocType}] (or 's' to select): `);
+    const trimmedDoc = docAnswer.trim();
+    if (trimmedDoc.toLowerCase() === 's') {
       documentType = await selectDocumentType();
+    } else if (trimmedDoc) {
+      documentType = trimmedDoc;
     }
   } else {
     documentType = await selectDocumentType();
@@ -603,12 +607,18 @@ const processFile = async (filename) => {
     return answer.trim().toLowerCase();
   }
 
-  console.log(`\nConfirmed: ${manufacturer} ${model} - ${documentType}\n`);
+  // Get and confirm description
+  const defaultDescription = getDefaultDescription(documentType, manufacturer, model);
+  const descAnswer = await ask(`Description [${defaultDescription}]: `);
+  const description = descAnswer.trim() || defaultDescription;
+
+  console.log(`\nConfirmed: ${manufacturer} ${model} - ${documentType}`)
+  console.log(`Description: ${description}\n`);
 
   // Generate target filename
-  const manSlug = manufacturer.toLowerCase().replace(/\s+/g, '-');
-  const modelSlug = model.toLowerCase().replace(/\s+/g, '-');
-  const targetFilename = `${manSlug}-${modelSlug}-${documentType}.pdf`;
+  const manSlug = toSlug(manufacturer);
+  const modelSlug = toSlug(model);
+  const targetFilename = `${manSlug}-${modelSlug}-${toSlug(documentType)}.pdf`;
   const targetPath = path.join('site/files', manSlug, targetFilename);
 
   // Check if file already exists
@@ -690,7 +700,7 @@ const processFile = async (filename) => {
 
     // Check if user wants to import
     if (action === 'i' || action === 'import') {
-      const imported = await importFile(filename, manufacturer, model, documentType);
+      const imported = await importFile(filename, manufacturer, model, documentType, description);
       // If import was successful or cancelled, move to next file
       // If import failed (e.g., duplicate file), show prompt again
       if (imported) {
