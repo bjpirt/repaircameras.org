@@ -32,5 +32,8 @@ jobs:
         env:
           VITE_GITHUB_CLIENT_ID: placeholder
 
+      - name: Check file links
+        run: node bin/check-links.js
+
       - name: Build site
         run: npm run build
