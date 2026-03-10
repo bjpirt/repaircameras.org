@@ -8,6 +8,7 @@ relatedFiles:
   - pentax/pentax-spotmatic-service-manual
   - pentax/pentax-spotmatic-exploded-diagram
   - pentax/pentax-spotmatic-meter
+  - pentax/pentax-spotmatic-sp500-parts-list
 relatedLinks:
 ---
 

@@ -6,6 +6,7 @@ manufacturer: Praktica
 model: L
 relatedFiles:
   - praktica/praktica-l-german-service-manual
+  - praktica/praktica-l-service-manual-german
 relatedLinks:
 ---
 
