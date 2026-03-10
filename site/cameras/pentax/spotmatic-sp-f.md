@@ -9,6 +9,7 @@ relatedFiles:
   - pentax/pentax-spotmatic-meter
   - pentax/pentax-spotmatic-exploded-diagram
   - pentax/pentax-spotmatic-k1000-meter-substitution
+  - pentax/pentax-spotmatic-sp-f-parts-list
 relatedLinks:
 ---
 
