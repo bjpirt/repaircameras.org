@@ -29,6 +29,7 @@ const sampleTutorial = {
   model: "OM-1",
   description: "A basic CLA of the Olympus OM-1.",
   tools: [],
+  prerequisites: [],
   steps: [{ title: "Step 1", substeps: [], photos: [] }],
 };
 

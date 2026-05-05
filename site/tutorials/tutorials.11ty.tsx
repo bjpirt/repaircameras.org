@@ -259,7 +259,35 @@ export function render({
         </div>
       ) : undefined}
       <ol class="tutorial-steps">
-        {tutorial.steps.map(renderStep)}
+        {tutorial.steps.map((step, i) => {
+          const prevSource = i > 0 ? tutorial.steps[i - 1].source?.tutorialId : undefined;
+          const currentSource = step.source?.tutorialId;
+          const sourceChanged = currentSource !== prevSource;
+
+          if (sourceChanged && step.source) {
+            return (
+              <>
+                <li class="tutorial-section-header">
+                  <span>From: <a href={`/tutorials/${step.source.tutorialId}/`}>{step.source.tutorialTitle}</a></span>
+                </li>
+                {renderStep(step)}
+              </>
+            );
+          }
+
+          if (sourceChanged && !step.source && i > 0) {
+            return (
+              <>
+                <li class="tutorial-section-header">
+                  <span>{tutorial.title}</span>
+                </li>
+                {renderStep(step)}
+              </>
+            );
+          }
+
+          return renderStep(step);
+        })}
       </ol>
     </MainTemplate>
   );

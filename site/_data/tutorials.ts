@@ -2,10 +2,77 @@ import fs from "fs";
 import Path from "path";
 import Image from "@11ty/eleventy-img";
 import { TutorialSchema } from "../../lib/types/tutorial.ts";
+import type { ProcessedStep, ProcessedTutorial } from "../../lib/types/tutorial.ts";
 
 const TUTORIALS_DIR = "site/tutorials";
 const IMAGE_OUTPUT_DIR = "_site/img/tutorials";
 const IMAGE_URL_PATH = "/img/tutorials/";
+
+async function processSteps(id: string, steps: any[]): Promise<ProcessedStep[]> {
+  const file = `${TUTORIALS_DIR}/${id}/tutorial.json`;
+  return Promise.all(
+    steps.map(async (step) => {
+      const processedPhotos = await Promise.all(
+        step.photos.map(async (photo: any) => {
+          const imagePath = `${TUTORIALS_DIR}/${id}/images/${photo.filename}`;
+          const imageExists = await fs.promises
+            .access(imagePath, fs.constants.F_OK)
+            .then(() => true)
+            .catch(() => false);
+
+          if (!imageExists) {
+            throw new Error(
+              `Tutorial image not found: ${imagePath} (referenced in ${file})`
+            );
+          }
+
+          const image = await Image(imagePath, {
+            widths: [400, 800, 1200],
+            outputDir: IMAGE_OUTPUT_DIR,
+            urlPath: IMAGE_URL_PATH,
+          });
+
+          return { ...photo, image };
+        })
+      );
+
+      return { ...step, photos: processedPhotos };
+    })
+  );
+}
+
+function resolvePrerequisites(
+  tutorial: ProcessedTutorial,
+  allTutorials: Map<string, ProcessedTutorial>,
+  visited: Set<string> = new Set()
+): ProcessedStep[] {
+  if (visited.has(tutorial.id)) {
+    throw new Error(`Circular prerequisite dependency detected: ${[...visited, tutorial.id].join(" -> ")}`);
+  }
+  visited.add(tutorial.id);
+
+  const prerequisiteSteps: ProcessedStep[] = [];
+  for (const prereqId of tutorial.prerequisites) {
+    const prereq = allTutorials.get(prereqId);
+    if (!prereq) {
+      throw new Error(`Tutorial "${tutorial.id}" has prerequisite "${prereqId}" which does not exist`);
+    }
+    // Recursively resolve the prerequisite's own prerequisites first
+    const resolved = resolvePrerequisites(prereq, allTutorials, new Set(visited));
+    prerequisiteSteps.push(...resolved);
+
+    // Then add this prerequisite's own steps, tagged with their source
+    const taggedSteps = prereq.steps
+      .filter((s) => !s.source) // only the prereq's own steps, not its prerequisites (already resolved above)
+      .map((step) => ({
+        ...step,
+        source: { tutorialId: prereq.id, tutorialTitle: prereq.title },
+      }));
+    prerequisiteSteps.push(...taggedSteps);
+  }
+
+  return prerequisiteSteps;
+}
 
 const tutorials = async () => {
   const entries = await fs.promises.readdir(TUTORIALS_DIR, {
@@ -15,7 +82,8 @@ const tutorials = async () => {
     .filter((e) => e.isDirectory())
     .map((e) => e.name);
 
-  const output = [];
+  // First pass: load and process all tutorials
+  const allTutorials = new Map<string, ProcessedTutorial>();
 
   for (const id of tutorialDirs) {
     const file = `${TUTORIALS_DIR}/${id}/tutorial.json`;
@@ -28,38 +96,35 @@ const tutorials = async () => {
     }
 
     const tutorial = result.data;
+    const processedSteps = await processSteps(id, tutorial.steps);
 
-    const processedSteps = await Promise.all(
-      tutorial.steps.map(async (step) => {
-        const processedPhotos = await Promise.all(
-          step.photos.map(async (photo) => {
-            const imagePath = `${TUTORIALS_DIR}/${id}/images/${photo.filename}`;
-            const imageExists = await fs.promises
-              .access(imagePath, fs.constants.F_OK)
-              .then(() => true)
-              .catch(() => false);
+    allTutorials.set(id, { ...tutorial, steps: processedSteps });
+  }
 
-            if (!imageExists) {
-              throw new Error(
-                `Tutorial image not found: ${imagePath} (referenced in ${file})`
-              );
-            }
+  // Second pass: resolve prerequisites and merge steps
+  const output: ProcessedTutorial[] = [];
 
-            const image = await Image(imagePath, {
-              widths: [400, 800, 1200],
-              outputDir: IMAGE_OUTPUT_DIR,
-              urlPath: IMAGE_URL_PATH,
-            });
+  for (const tutorial of allTutorials.values()) {
+    if (tutorial.prerequisites.length === 0) {
+      output.push(tutorial);
+      continue;
+    }
 
-            return { ...photo, image };
-          })
-        );
+    const prerequisiteSteps = resolvePrerequisites(tutorial, allTutorials);
 
-        return { ...step, photos: processedPhotos };
-      })
-    );
+    // Deduplicate tools while preserving order
+    const mergedTools = [
+      ...new Set([
+        ...tutorial.prerequisites.flatMap((id) => allTutorials.get(id)?.tools ?? []),
+        ...tutorial.tools,
+      ]),
+    ];
 
-    output.push({ ...tutorial, steps: processedSteps });
+    output.push({
+      ...tutorial,
+      tools: mergedTools,
+      steps: [...prerequisiteSteps, ...tutorial.steps],
+    });
   }
 
   return output;

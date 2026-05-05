@@ -64,6 +64,7 @@ const sampleTutorialJson = {
   model: "OM-1",
   description: "A basic CLA of the Olympus OM-1.",
   tools: ["JIS screwdrivers"],
+  prerequisites: [],
   steps: [
     {
       title: "Remove the bottom plate",

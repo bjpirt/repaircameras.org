@@ -7,6 +7,7 @@ import TutorialEditor from "./TutorialEditor";
 vi.mock("../services/github", () => ({
   fetchTutorialJson: vi.fn(),
   fetchTutorialJsonFromRef: vi.fn(),
+  listTutorialFiles: vi.fn().mockResolvedValue([]),
   listTutorialImages: vi.fn(),
   listTutorialImagesFromRef: vi.fn(),
   saveToForkBranch: vi.fn(),
@@ -49,6 +50,7 @@ const sampleTutorial = {
   model: "OM-1",
   description: "A basic CLA of the Olympus OM-1.",
   tools: ["JIS screwdrivers", "Spanner wrench"],
+  prerequisites: [],
   steps: [],
 };
 

@@ -192,4 +192,65 @@ describe("editorReducer", () => {
     expect(next.isDirty).toBe(true);
     expect(next.saveSuccess).toBe(false);
   });
+
+  it("ADD_PREREQUISITE adds a prerequisite and marks dirty", () => {
+    const state = makeState();
+    const next = editorReducer(state, { type: "ADD_PREREQUISITE", id: "om10-remove-top-cover" });
+    expect(next.prerequisites).toEqual(["om10-remove-top-cover"]);
+    expect(next.isDirty).toBe(true);
+  });
+
+  it("ADD_PREREQUISITE does not add duplicates", () => {
+    const state = makeState({ prerequisites: ["om10-remove-top-cover"] });
+    const next = editorReducer(state, { type: "ADD_PREREQUISITE", id: "om10-remove-top-cover" });
+    expect(next.prerequisites).toEqual(["om10-remove-top-cover"]);
+  });
+
+  it("REMOVE_PREREQUISITE removes by index", () => {
+    const state = makeState({ prerequisites: ["a", "b", "c"] });
+    const next = editorReducer(state, { type: "REMOVE_PREREQUISITE", index: 1 });
+    expect(next.prerequisites).toEqual(["a", "c"]);
+    expect(next.isDirty).toBe(true);
+  });
+
+  it("LOAD_TUTORIAL populates prerequisites", () => {
+    const base = initialState(false, "test");
+    const next = editorReducer(base, {
+      type: "LOAD_TUTORIAL",
+      tutorial: {
+        id: "test",
+        title: "Test",
+        manufacturer: "Test",
+        model: "T1",
+        description: "desc",
+        tools: [],
+        prerequisites: ["om10-remove-top-cover"],
+        steps: [{ title: "Step 1", substeps: [{ text: "Do thing." }], photos: [] }],
+      },
+      images: [],
+      sha: "abc",
+    });
+    expect(next.prerequisites).toEqual(["om10-remove-top-cover"]);
+  });
+});
+
+describe("buildAndValidate with prerequisites", () => {
+  it("includes prerequisites in validated output", () => {
+    const state = makeState({ prerequisites: ["om10-remove-top-cover"] });
+    const result = buildAndValidate(state);
+    expect("data" in result).toBe(true);
+    if ("data" in result) {
+      expect(result.data.prerequisites).toEqual(["om10-remove-top-cover"]);
+    }
+  });
+
+  it("omits prerequisites when empty", () => {
+    const state = makeState({ prerequisites: [] });
+    const result = buildAndValidate(state);
+    expect("data" in result).toBe(true);
+    if ("data" in result) {
+      // Default from Zod will apply
+      expect(result.data.prerequisites).toEqual([]);
+    }
+  });
 });

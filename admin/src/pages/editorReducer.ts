@@ -32,6 +32,7 @@ export interface EditorState {
   model: string;
   description: string;
   tools: string[];
+  prerequisites: string[];
   steps: StepFormState[];
   sha: string | null;
   images: TutorialImageEntry[];
@@ -53,9 +54,11 @@ export interface PullRequestResult {
 }
 
 export type EditorAction =
-  | { type: "LOAD_TUTORIAL"; tutorial: { id: string; title: string; manufacturer: string; model: string; description: string; tools: string[]; steps: { title: string; intro?: string; substeps: { text: string; bulletStyle?: BulletStyle }[]; photos: { filename: string; alt: string; annotations: Annotation[] }[] }[] }; images: TutorialImageEntry[]; sha: string }
+  | { type: "LOAD_TUTORIAL"; tutorial: { id: string; title: string; manufacturer: string; model: string; description: string; tools: string[]; prerequisites?: string[]; steps: { title: string; intro?: string; substeps: { text: string; bulletStyle?: BulletStyle }[]; photos: { filename: string; alt: string; annotations: Annotation[] }[] }[] }; images: TutorialImageEntry[]; sha: string }
   | { type: "SET_FIELD"; field: "title" | "manufacturer" | "model" | "description"; value: string }
   | { type: "SET_ID"; value: string }
+  | { type: "ADD_PREREQUISITE"; id: string }
+  | { type: "REMOVE_PREREQUISITE"; index: number }
   | { type: "ADD_TOOL" }
   | { type: "REMOVE_TOOL"; index: number }
   | { type: "UPDATE_TOOL"; index: number; value: string }
@@ -98,6 +101,7 @@ export function initialState(isNew: boolean, id: string): EditorState {
     model: "",
     description: "",
     tools: [],
+    prerequisites: [],
     steps: [],
     sha: null,
     images: [],
@@ -128,6 +132,7 @@ export function editorReducer(state: EditorState, action: EditorAction): EditorS
         model: action.tutorial.model,
         description: action.tutorial.description,
         tools: action.tutorial.tools,
+        prerequisites: action.tutorial.prerequisites ?? [],
         steps: action.tutorial.steps.map((step) => ({
           title: step.title,
           intro: step.intro ?? "",
@@ -149,6 +154,11 @@ export function editorReducer(state: EditorState, action: EditorAction): EditorS
       return { ...state, [action.field]: action.value, saveSuccess: false, isDirty: true };
     case "SET_ID":
       return { ...state, id: action.value, saveSuccess: false, isDirty: true };
+    case "ADD_PREREQUISITE":
+      if (state.prerequisites.includes(action.id)) return state;
+      return { ...state, prerequisites: [...state.prerequisites, action.id], saveSuccess: false, isDirty: true };
+    case "REMOVE_PREREQUISITE":
+      return { ...state, prerequisites: state.prerequisites.filter((_, i) => i !== action.index), saveSuccess: false, isDirty: true };
     case "ADD_TOOL":
       return { ...state, tools: [...state.tools, ""], saveSuccess: false, isDirty: true };
     case "REMOVE_TOOL":
@@ -306,6 +316,7 @@ export function buildAndValidate(state: EditorState): { data: Tutorial } | { err
     model: state.model,
     description: state.description,
     tools: state.tools.filter((t) => t.trim() !== ""),
+    prerequisites: state.prerequisites.length > 0 ? state.prerequisites : undefined,
     steps: state.steps.map((step) => ({
       title: step.title,
       intro: step.intro || undefined,

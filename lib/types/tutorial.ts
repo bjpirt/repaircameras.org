@@ -53,6 +53,7 @@ export const TutorialSchema = z.object({
   model: z.string(),
   description: z.string(),
   tools: z.array(z.string()),
+  prerequisites: z.array(z.string()).optional().default([]),
   steps: z.array(TutorialStepSchema),
 });
 
@@ -71,6 +72,7 @@ export type ProcessedPhoto = TutorialPhoto & {
 
 export type ProcessedStep = Omit<TutorialStep, "photos"> & {
   photos: ProcessedPhoto[];
+  source?: { tutorialId: string; tutorialTitle: string };
 };
 
 export type ProcessedTutorial = Omit<Tutorial, "steps"> & {

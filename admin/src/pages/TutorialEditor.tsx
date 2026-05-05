@@ -1,8 +1,9 @@
-import { useEffect, useReducer, useCallback } from "react";
+import { useEffect, useReducer, useCallback, useState } from "react";
 import { useParams, Link, useBlocker } from "react-router";
 import {
   saveToForkBranch,
   createPullRequest,
+  listTutorialFiles,
   type PullRequestResult,
 } from "../services/github";
 import { config } from "../config";
@@ -28,6 +29,12 @@ export default function TutorialEditor({ token, username }: Props) {
   const [state, dispatch] = useReducer(editorReducer, initialState(isNew, isNew ? "" : paramId!));
 
   useTutorialLoader(token, username, paramId, isNew, dispatch);
+
+  // Load available tutorials for prerequisite picker
+  const [availableTutorials, setAvailableTutorials] = useState<{ id: string }[]>([]);
+  useEffect(() => {
+    listTutorialFiles(token).then(setAvailableTutorials).catch(() => {});
+  }, [token]);
 
   // Warn on browser navigation with unsaved changes
   useEffect(() => {
@@ -250,6 +257,43 @@ export default function TutorialEditor({ token, username }: Props) {
         >
           + Add tool
         </button>
+      </section>
+
+      {/* Prerequisites */}
+      <section className="editor-section">
+        <h3>Prerequisites</h3>
+        <p className="section-hint">Steps from prerequisite tutorials will be included at the start of this tutorial.</p>
+        {state.prerequisites.map((prereqId, i) => (
+          <div key={prereqId} className="list-item-row">
+            <span>{prereqId}</span>
+            <button
+              type="button"
+              className="btn-icon btn-danger"
+              onClick={() => dispatch({ type: "REMOVE_PREREQUISITE", index: i })}
+              title="Remove prerequisite"
+            >
+              ×
+            </button>
+          </div>
+        ))}
+        {(() => {
+          const options = availableTutorials
+            .filter((t) => t.id !== state.id && !state.prerequisites.includes(t.id));
+          if (options.length === 0) return null;
+          return (
+            <select
+              value=""
+              onChange={(e) => {
+                if (e.target.value) dispatch({ type: "ADD_PREREQUISITE", id: e.target.value });
+              }}
+            >
+              <option value="">+ Add prerequisite...</option>
+              {options.map((t) => (
+                <option key={t.id} value={t.id}>{t.id}</option>
+              ))}
+            </select>
+          );
+        })()}
       </section>
 
       {/* Steps */}
