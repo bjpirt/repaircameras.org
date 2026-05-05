@@ -6,5 +6,6 @@ manufacturer: Fuji
 model: Fujica ST801
 relatedFiles:
   - fuji/fuji-fujica-st801-service-manual
+  - articles/fuji-fujica-st-topcoverremoval
 relatedLinks:
 ---

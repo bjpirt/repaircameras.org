@@ -6,6 +6,7 @@ manufacturer: Olympus
 model: OM-1
 relatedFiles:
   - olympus/olympus-om-1-repair-manual
+  - olympus/olympus-om-1-ccm-article
 relatedLinks:
 ---
 

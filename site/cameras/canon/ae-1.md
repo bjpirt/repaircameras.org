@@ -7,6 +7,7 @@ model: AE-1
 relatedFiles:
   - canon/canon-ae-1-ccm-article
   - canon/canon-ae-1-article
+  - canon/canon-ae-1-spt-article
 relatedLinks:
 ---
 

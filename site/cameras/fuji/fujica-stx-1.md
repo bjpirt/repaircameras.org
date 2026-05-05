@@ -6,6 +6,7 @@ manufacturer: Fuji
 model: Fujica STX-1
 relatedFiles:
   - fuji/fuji-fujica-stx-1-exposure-meter-service-manual
+  - articles/fuji-fujica-st-topcoverremoval
 relatedLinks:
 ---
 

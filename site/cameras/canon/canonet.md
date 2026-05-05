@@ -7,6 +7,7 @@ model: Canonet
 relatedFiles:
   - canon/canon-canonet-service-manual
   - canon/canon-canonet-full-service-manual
+  - canon/canon-canonet-article
 relatedLinks:
 ---
 
