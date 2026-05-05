@@ -19,7 +19,23 @@ function ask(question, prefill = '') {
   });
 }
 
-// Get list of known manufacturers from site/cameras directory
+const capitalise = (s) => s && String(s[0]).toUpperCase() + String(s).slice(1);
+
+const toSlug = (displayName) =>
+  displayName.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+
+/**
+ * Read a frontmatter scalar field from a markdown file (e.g. `manufacturer: Pentax`)
+ */
+const readFrontmatterField = (filePath, field) => {
+  if (!fs.existsSync(filePath)) return '';
+  const content = fs.readFileSync(filePath, 'utf8');
+  const match = content.match(new RegExp(`^${field}:\\s*(.+)$`, 'm'));
+  return match ? match[1].trim() : '';
+};
+
+// Get list of known manufacturers from site/cameras directory.
+// Display name comes from index.md frontmatter; falls back to a slug-derived name.
 const getKnownManufacturers = () => {
   const camerasDir = 'site/cameras';
   if (!fs.existsSync(camerasDir)) return [];
@@ -29,40 +45,73 @@ const getKnownManufacturers = () => {
       const stat = fs.statSync(path.join(camerasDir, f));
       return stat.isDirectory();
     })
-    .map(name => ({
-      slug: name,
-      name: name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-      lowerName: name.replace(/-/g, '').toLowerCase()
-    }));
+    .map(slug => {
+      const fromIndex = readFrontmatterField(path.join(camerasDir, slug, 'index.md'), 'manufacturer');
+      const name = fromIndex || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      return {
+        slug,
+        name,
+        lowerName: slug.replace(/-/g, '').toLowerCase()
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
 };
 
 const KNOWN_MANUFACTURERS = getKnownManufacturers();
 
 /**
- * Try to find manufacturer name in the filename
+ * List existing camera models for a manufacturer, by reading frontmatter
+ * `model:` fields from site/cameras/{slug}/*.md.
+ */
+const getExistingModels = (manufacturerName) => {
+  const slug = toSlug(manufacturerName);
+  const dir = path.join('site/cameras', slug);
+  if (!fs.existsSync(dir)) return [];
+
+  return fs.readdirSync(dir)
+    .filter(f => f.endsWith('.md') && f !== 'index.md')
+    .map(f => {
+      const fromFrontmatter = readFrontmatterField(path.join(dir, f), 'model');
+      return fromFrontmatter || path.parse(f).name;
+    })
+    .sort((a, b) => a.localeCompare(b));
+};
+
+/**
+ * Try to find manufacturer name in the filename.
+ *
+ * Three passes, in order of confidence:
+ *   1. Prefix match against the delimiter-stripped filename (e.g. `pentax-mx-...`).
+ *   2. Token-level match anywhere in the filename (e.g. `Camera-Craftsman-Konica-...`).
+ *   3. Fallback to the first delimiter-separated word.
  */
 const findManufacturer = (filename) => {
   const lowerFilename = filename.toLowerCase().replace(/[-_\s]/g, '');
 
   // Special case: OM-* files are Olympus
   if (/^om[-_]/i.test(filename)) {
-    return {
-      name: 'Olympus',
-      matchLength: 0
-    };
+    return { name: 'Olympus', matchLength: 0 };
   }
 
-  // Try to match against known manufacturers
+  // 1. Prefix match
   for (const mfr of KNOWN_MANUFACTURERS) {
     if (lowerFilename.startsWith(mfr.lowerName)) {
-      return {
-        name: mfr.name,
-        matchLength: mfr.lowerName.length
-      };
+      return { name: mfr.name, matchLength: mfr.lowerName.length };
     }
   }
 
-  // Fallback: try first part before delimiter
+  // 2. Token-level match anywhere in the filename
+  const tokens = filename.toLowerCase().split(/[-_\s]+/).filter(Boolean);
+  for (const token of tokens) {
+    const cleaned = token.replace(/[^a-z0-9]/g, '');
+    const mfr = KNOWN_MANUFACTURERS.find(m => m.lowerName === cleaned);
+    if (mfr) {
+      // matchLength = 0 signals "not at start"; findModel handles this.
+      return { name: mfr.name, matchLength: 0 };
+    }
+  }
+
+  // 3. Fallback: first part before delimiter
   const parts = filename.split(/[-_]/);
   if (parts.length > 0) {
     const firstPart = parts[0];
@@ -76,56 +125,88 @@ const findManufacturer = (filename) => {
 };
 
 /**
- * Extract model name from filename after removing manufacturer and doc type
+ * Extract model name from a filename by tokenising and filtering out
+ * the manufacturer name, doc-type keywords, and publication-prefix words
+ * (so e.g. `Camera-Craftsman-Konica-Autoreflex-T3` yields `Autoreflex T3`).
  */
-const findModel = (filename, manufacturer, matchLength) => {
-  let remaining = filename;
+const findModel = (filename, manufacturer /*, matchLength */) => {
+  const noiseWords = new Set([
+    // doc types
+    'service', 'repair', 'manual', 'guide', 'parts', 'exploded',
+    'diagram', 'article', 'wiring', 'list', 'sm', 'rm',
+    // publication prefixes
+    'camera', 'craftsman', 'ccm', 'spt', 'journal', 'issue',
+  ]);
 
-  // Remove manufacturer from beginning (if it was in the filename)
-  if (manufacturer && matchLength > 0) {
-    const mfrLower = manufacturer.toLowerCase().replace(/\s+/g, '');
-    const fileStart = filename.toLowerCase().replace(/[-_\s]/g, '').substring(0, mfrLower.length);
-    if (fileStart === mfrLower) {
-      remaining = filename.substring(manufacturer.replace(/\s+/g, '').length);
-    }
-  }
+  const mfrTokens = manufacturer
+    ? manufacturer.toLowerCase().split(/[\s-]+/).filter(Boolean)
+    : [];
 
-  // Remove leading delimiters
-  remaining = remaining.replace(/^[-_\s]+/, '');
+  const tokens = filename.split(/[-_\s]+/).filter(Boolean);
 
-  // Remove document type keywords from the end
-  let modelParts = remaining.split(/[-_\s]/);
-
-  // Filter out common document type words
-  const typeWords = ['service', 'repair', 'manual', 'guide', 'parts', 'exploded',
-                     'diagram', 'article', 'wiring', 'list', 'sm', 'rm'];
-
-  modelParts = modelParts.filter(part => {
-    const lower = part.toLowerCase();
-    return lower && !typeWords.includes(lower);
+  const filtered = tokens.filter(t => {
+    const lower = t.toLowerCase();
+    if (!lower) return false;
+    if (mfrTokens.includes(lower)) return false;
+    if (noiseWords.has(lower)) return false;
+    return true;
   });
 
-  if (modelParts.length === 0) return '';
-
-  // Join the model parts and normalize spacing
-  return modelParts.join(' ').trim().replace(/\s+/g, ' ');
+  if (filtered.length === 0) return '';
+  return filtered.join(' ').trim().replace(/\s+/g, ' ');
 };
 
 /**
- * Find document type in filename
+ * Document type definitions.
+ * - `slug`: filename suffix (overrides toSlug(display) when set)
+ * - `keywords`: filename substrings that hint this type
+ * - `requiresIssueDate`: prompt for "months and year" after type selection
+ * - `singleCameraOnly`: this type cannot be linked to multiple cameras
+ */
+const DOC_TYPES = [
+  { display: 'Service Manual',           keywords: ['service'] },
+  { display: 'Repair Guide',             keywords: ['repair-guide', 'repair_guide'] },
+  { display: 'Repair Manual',            keywords: ['repair'] },
+  { display: 'Parts List',               keywords: ['parts'] },
+  { display: 'Exploded Diagram',         keywords: ['exploded', 'explode'] },
+  { display: 'Guide',                    keywords: ['guide'] },
+  { display: 'Article',                  keywords: ['article'] },
+  { display: 'Wiring Diagram',           keywords: ['wiring'] },
+  { display: 'SPT Journal',              keywords: [],                  slug: 'spt-journal' },
+  { display: 'SPT Journal Article',      keywords: ['spt'],             slug: 'spt-article' },
+  { display: 'Camera Craftsman Article', keywords: ['ccm-article'],     slug: 'ccm-article' },
+  { display: 'Camera Craftsman Issue',   keywords: ['ccm-issue'],       slug: 'ccm-issue', requiresIssueDate: true },
+];
+
+const findDocType = (display) => DOC_TYPES.find(t => t.display === display);
+
+const docTypeSlug = (display) => {
+  const t = findDocType(display);
+  return t?.slug || toSlug(display);
+};
+
+/**
+ * Find document type in filename. Order matters — more specific keywords
+ * should be matched first. CCM Issue is checked before "article", and SPT
+ * before everything else, so e.g. "spt-pentax-mx-service.pdf" detects SPT.
  */
 const findDocumentType = (filename) => {
-  const DOC_TYPES = [
-    { keywords: ['service'], display: 'Service Manual' },
-    { keywords: ['repair'], display: 'Repair Manual' },
-    { keywords: ['parts'], display: 'Parts List' },
-    { keywords: ['exploded', 'explode'], display: 'Exploded Diagram' },
-    { keywords: ['guide'], display: 'Guide' },
-    { keywords: ['article'], display: 'Article' },
-    { keywords: ['wiring'], display: 'Wiring Diagram' },
-  ];
-
   const lowerName = filename.toLowerCase();
+
+  // CCM Issue: filename contains "ccm" or "camera-craftsman" plus a year.
+  if (/\b(ccm|camera-craftsman)\b/.test(lowerName) && /\b(19|20)\d{2}\b/.test(lowerName)) {
+    return 'Camera Craftsman Issue';
+  }
+  if (/\b(ccm|camera-craftsman)\b/.test(lowerName)) {
+    return 'Camera Craftsman Article';
+  }
+  // SPT Journal "issue" is full-volume — has a year. Otherwise treat as a single article.
+  if (/\bspt\b/.test(lowerName) && /\b(19|20)\d{2}\b/.test(lowerName)) {
+    return 'SPT Journal';
+  }
+  if (/\bspt\b/.test(lowerName)) {
+    return 'SPT Journal Article';
+  }
 
   for (const docType of DOC_TYPES) {
     for (const keyword of docType.keywords) {
@@ -165,15 +246,7 @@ const getNextFile = (skipFiles = []) => {
  * Let user select a document type from a menu
  */
 const selectDocumentType = async () => {
-  const docTypes = [
-    'Service Manual',
-    'Repair Manual',
-    'Parts List',
-    'Exploded Diagram',
-    'Guide',
-    'Article',
-    'Wiring Diagram',
-  ];
+  const docTypes = DOC_TYPES.map(t => t.display);
 
   console.log('\nSelect document type:');
   docTypes.forEach((type, index) => {
@@ -198,16 +271,116 @@ const selectDocumentType = async () => {
 };
 
 /**
- * Helper function to capitalize strings
+ * Interactive selector: prefill detected value, accept Enter to confirm,
+ * type to override, or 's' to choose from a numbered list of existing items.
+ * If the typed value isn't in the list, asks before adding it as new.
+ *
+ * Returns the canonical name string, or '' if cancelled.
  */
-const capitalise = (s) => {
-  return s && String(s[0]).toUpperCase() + String(s).slice(1);
+const selectFromList = async (label, items, detected = '') => {
+  // Only prefill if the detected value matches an existing item — otherwise
+  // a bad detection forces the user to delete the prefill before typing.
+  const detectedCanonical = (() => {
+    if (!detected) return '';
+    const detectedSlug = toSlug(detected);
+    const match = items.find(item =>
+      toSlug(item) === detectedSlug || item.toLowerCase() === detected.toLowerCase()
+    );
+    return match || '';
+  })();
+
+  while (true) {
+    const answer = await ask(`${label} (Enter to accept, 's' for list): `, detectedCanonical);
+    const trimmed = answer.trim();
+
+    if (trimmed.toLowerCase() === 's') {
+      if (items.length === 0) {
+        console.log('  (no existing entries)');
+      } else {
+        console.log('');
+        items.forEach((item, i) => console.log(`  ${i + 1}. ${item}`));
+      }
+      console.log(`  ${items.length + 1}. Add new`);
+      console.log('');
+      const choice = (await ask('Select: ')).trim();
+      const num = parseInt(choice);
+      if (num >= 1 && num <= items.length) {
+        return items[num - 1];
+      }
+      if (num === items.length + 1) {
+        const newName = (await ask('New name: ')).trim();
+        if (newName) return newName;
+      }
+      console.log('Invalid selection.\n');
+      continue;
+    }
+
+    if (!trimmed) return '';
+
+    // Match against existing items (case-insensitive / slug equivalent)
+    const match = items.find(item =>
+      toSlug(item) === toSlug(trimmed) || item.toLowerCase() === trimmed.toLowerCase()
+    );
+    if (match) return match;
+
+    // New entry — confirm.
+    const confirm = (await ask(`"${trimmed}" not found. Add new? [Y/n]: `)).trim().toLowerCase();
+    if (confirm === '' || confirm === 'y') return trimmed;
+    // else loop and re-prompt
+  }
+};
+
+const selectManufacturer = async (detected = '') => {
+  const names = KNOWN_MANUFACTURERS.map(m => m.name);
+  return selectFromList('Manufacturer', names, detected);
+};
+
+const selectModel = async (manufacturerName, detected = '') => {
+  const models = getExistingModels(manufacturerName);
+  return selectFromList('Model', models, detected);
+};
+
+const MONTH_ABBR = {
+  january: 'jan', february: 'feb', march: 'mar', april: 'apr', may: 'may', june: 'jun',
+  july: 'jul', august: 'aug', september: 'sep', october: 'oct', november: 'nov', december: 'dec',
+  jan: 'jan', feb: 'feb', mar: 'mar', apr: 'apr', jun: 'jun', jul: 'jul', aug: 'aug',
+  sept: 'sep', sep: 'sep', oct: 'oct', nov: 'nov', dec: 'dec',
 };
 
 /**
- * Convert display name to slug (e.g., "Service Manual" -> "service-manual")
+ * Parse "Mar - Apr 1974" / "march-april 1974" / "mar 1974" etc into a normalised
+ * slug like "mar-apr-1974" or "mar-1974". Returns '' if no year is found.
  */
-const toSlug = (displayName) => displayName.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+const parseIssueDate = (input) => {
+  if (!input) return '';
+  const lower = input.toLowerCase();
+
+  const yearMatch = lower.match(/\b(19|20)\d{2}\b/);
+  if (!yearMatch) return '';
+  const year = yearMatch[0];
+
+  const sortedKeys = Object.keys(MONTH_ABBR).sort((a, b) => b.length - a.length);
+  const monthRegex = new RegExp(`\\b(${sortedKeys.join('|')})\\b`, 'g');
+  const months = [];
+  for (const m of lower.matchAll(monthRegex)) {
+    const abbr = MONTH_ABBR[m[1]];
+    if (months[months.length - 1] !== abbr) months.push(abbr);
+  }
+
+  if (months.length === 0) return year;
+  return [...months, year].join('-');
+};
+
+/**
+ * Format a date slug back for display: "mar-apr-1974" -> "Mar-Apr 1974".
+ */
+const formatIssueDate = (slug) => {
+  if (!slug) return '';
+  const parts = slug.split('-');
+  const year = parts[parts.length - 1];
+  const months = parts.slice(0, -1).map(p => p.charAt(0).toUpperCase() + p.slice(1));
+  return months.length ? `${months.join('-')} ${year}` : year;
+};
 
 /**
  * Get default description based on file type
@@ -232,8 +405,11 @@ const getDefaultDescription = (documentType, manufacturer, model) => {
   if (lowerType.includes("parts")) {
     return `Parts list for the ${manufacturer} ${model}`;
   }
-  if (lowerType.includes("ccm") && lowerType.includes("article")) {
+  if (documentType === 'Camera Craftsman Article' || (lowerType.includes("ccm") && lowerType.includes("article"))) {
     return `Camera Craftsman Magazine article on the ${manufacturer} ${model}`;
+  }
+  if (documentType === 'SPT Journal' || documentType === 'SPT Journal Article') {
+    return `SPT Journal article on the ${manufacturer} ${model}`;
   }
   if (lowerType.includes("article")) {
     return `Article on the ${manufacturer} ${model}`;
@@ -242,13 +418,29 @@ const getDefaultDescription = (documentType, manufacturer, model) => {
 };
 
 /**
+ * Default description when a single file covers multiple cameras.
+ */
+const getMultiCameraDescription = (documentType, issueDateSlug = '') => {
+  if (documentType === 'Camera Craftsman Issue') {
+    const formatted = formatIssueDate(issueDateSlug);
+    return formatted
+      ? `Camera Craftsman Magazine issue from ${formatted}`
+      : `Camera Craftsman Magazine issue`;
+  }
+  if (documentType === 'SPT Journal' || documentType === 'SPT Journal Article') {
+    return `SPT Journal article`;
+  }
+  return `Article`;
+};
+
+/**
  * Update PDF metadata
  */
-const updateMetadata = async (filePath, fileId, manufacturer, model, description) => {
+const updateMetadata = async (filePath, fileId, description, titleOverride = null) => {
   const pdfData = fs.readFileSync(filePath);
   const pdfDoc = await PDFDocument.load(pdfData);
 
-  const title = fileId.split("-").map(capitalise).join(" ");
+  const title = titleOverride || fileId.split("-").map(capitalise).join(" ");
   pdfDoc.setTitle(title, { showInWindowTitleBar: true });
   pdfDoc.setSubject(description);
   pdfDoc.setCreator("");
@@ -283,12 +475,14 @@ manufacturer: ${name}
 };
 
 /**
- * Create a new camera page
+ * Create a new camera page.
+ * `fileFolder` is the storage folder under site/files (defaults to the manufacturer slug).
  */
-const createCameraPage = (model, manufacturer, fileId) => {
+const createCameraPage = (model, manufacturer, fileId, fileFolder = null) => {
   const manPageSlug = toSlug(manufacturer);
   const modelPageSlug = toSlug(model);
   const pageName = `site/cameras/${manPageSlug}/${modelPageSlug}.md`;
+  const folder = fileFolder || manPageSlug;
 
   console.log(`Creating camera page for ${manufacturer} ${model}`);
 
@@ -299,7 +493,7 @@ tags:
 manufacturer: ${manufacturer}
 model: ${model}
 relatedFiles:
-  - ${manPageSlug}/${fileId}
+  - ${folder}/${fileId}
 relatedLinks:
 ---
 `;
@@ -308,13 +502,15 @@ relatedLinks:
 };
 
 /**
- * Add file to existing camera page
+ * Add file to existing camera page.
+ * `fileFolder` is the storage folder under site/files (defaults to the manufacturer slug).
  */
-const addFileToCameraPage = (model, manufacturer, fileId) => {
+const addFileToCameraPage = (model, manufacturer, fileId, fileFolder = null) => {
   const manPageSlug = toSlug(manufacturer);
   const modelPageSlug = toSlug(model);
   const pageName = `site/cameras/${manPageSlug}/${modelPageSlug}.md`;
-  const fullFileId = `${manPageSlug}/${fileId}`;
+  const folder = fileFolder || manPageSlug;
+  const fullFileId = `${folder}/${fileId}`;
 
   console.log(`Adding file to existing camera page: ${manufacturer} ${model}`);
 
@@ -351,22 +547,28 @@ const addFileToCameraPage = (model, manufacturer, fileId) => {
 };
 
 /**
- * Import the file - move it to site/files and create/update camera page
+ * Import the file - move it to site/files and create/update camera pages.
+ *
+ * @param {string} filename     Source filename in import/incoming
+ * @param {Array<{manufacturer: string, model: string}>} cameras   One or more camera pages to link to
+ * @param {string} documentType Display name of the document type
+ * @param {string} description  PDF description (subject)
+ * @param {string} fileFolder   Storage folder under site/files
+ * @param {string} suggestedFileId Default filename (without .pdf)
+ * @param {string|null} titleOverride Optional PDF title; defaults to slug-derived
  */
-const importFile = async (filename, manufacturer, model, documentType, description) => {
+const importFile = async (filename, cameras, documentType, description, fileFolder, suggestedFileId, titleOverride = null) => {
   const sourcePath = path.join('import/incoming', filename);
 
-  // Generate target filename and fileId
-  let manSlug = toSlug(manufacturer);
-  let modelSlug = toSlug(model);
-  let documentTypeSlug = toSlug(documentType);
-  let fileId = `${manSlug}-${modelSlug}-${documentTypeSlug}`;
+  let fileId = suggestedFileId;
 
   // Show and allow editing of the target filename
   console.log('\n' + '='.repeat(60));
   console.log('Import Preview');
   console.log('='.repeat(60));
   console.log(`Source file:  ${filename}`);
+  console.log(`Folder:       site/files/${fileFolder}/`);
+  console.log(`Cameras:      ${cameras.map(c => `${c.manufacturer} ${c.model}`).join(', ')}`);
   console.log('');
 
   const newFileId = await ask(`Target filename (without .pdf): `, fileId);
@@ -374,7 +576,7 @@ const importFile = async (filename, manufacturer, model, documentType, descripti
     fileId = newFileId.trim();
   }
 
-  const targetDir = path.join('site/files', manSlug);
+  const targetDir = path.join('site/files', fileFolder);
   if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true });
   }
@@ -387,47 +589,46 @@ const importFile = async (filename, manufacturer, model, documentType, descripti
     return false;
   }
 
+  const finalTitle = titleOverride || fileId.split("-").map(capitalise).join(" ");
+
   // Show final import details
   console.log('\n' + '-'.repeat(60));
   console.log('Final Import Details:');
   console.log('-'.repeat(60));
-  console.log(`Filename:     ${fileId}.pdf`);
-  console.log(`Title:        ${fileId.split("-").map(capitalise).join(" ")}`);
+  console.log(`Filename:     ${fileFolder}/${fileId}.pdf`);
+  console.log(`Title:        ${finalTitle}`);
   console.log(`Description:  ${description}`);
+  console.log(`Linking to:`);
+  cameras.forEach(c => console.log(`  - ${c.manufacturer} ${c.model}`));
   console.log('-'.repeat(60));
-
-  const confirmAnswer = await ask('\nProceed with import? [Y/n]: ');
-  const trimmedConfirm = confirmAnswer.trim().toLowerCase();
-  if (trimmedConfirm && trimmedConfirm !== 'y') {
-    console.log('\nImport cancelled.\n');
-    return false;
-  }
 
   console.log('\nImporting file...');
 
   // Move the file
-  console.log(`Moving ${filename} -> ${fileId}.pdf`);
+  console.log(`Moving ${filename} -> ${fileFolder}/${fileId}.pdf`);
   fs.renameSync(sourcePath, targetPath);
 
   // Update PDF metadata
   console.log('Updating PDF metadata...');
-  await updateMetadata(targetPath, fileId, manufacturer, model, description);
+  await updateMetadata(targetPath, fileId, description, finalTitle);
 
-  // Create manufacturer index if needed
-  createManufacturerIndex(manufacturer);
-
-  // Create or update camera page
-  const cameraPagePath = path.join('site/cameras', manSlug, `${modelSlug}.md`);
-  if (fs.existsSync(cameraPagePath)) {
-    addFileToCameraPage(model, manufacturer, fileId);
-  } else {
-    createCameraPage(model, manufacturer, fileId);
+  // For each camera: ensure manufacturer index exists, then create or update camera page.
+  for (const { manufacturer, model } of cameras) {
+    createManufacturerIndex(manufacturer);
+    const cameraPagePath = path.join('site/cameras', toSlug(manufacturer), `${toSlug(model)}.md`);
+    if (fs.existsSync(cameraPagePath)) {
+      addFileToCameraPage(model, manufacturer, fileId, fileFolder);
+    } else {
+      createCameraPage(model, manufacturer, fileId, fileFolder);
+    }
   }
 
-  console.log(`\n✓ Import complete: ${fileId}.pdf\n`);
+  console.log(`\n✓ Import complete: ${fileFolder}/${fileId}.pdf\n`);
 
   // Copy commit message to clipboard
-  const commitMessage = `Adding files for ${manufacturer} ${model}`;
+  const commitMessage = cameras.length === 1
+    ? `Adding files for ${cameras[0].manufacturer} ${cameras[0].model}`
+    : `Adding ${documentType}: ${fileId}`;
   try {
     execSync(`echo "${commitMessage}" | pbcopy`);
     console.log(`📋 Commit message copied to clipboard: "${commitMessage}"\n`);
@@ -502,6 +703,77 @@ const showMenu = async (filename, manufacturer, model, documentType) => {
 };
 
 /**
+ * Read existing relatedFiles entries from a camera page (for the "open existing file"
+ * helper prompt). Returns [] if the page doesn't exist.
+ */
+const readRelatedFiles = (manufacturer, model) => {
+  const pagePath = path.join('site/cameras', toSlug(manufacturer), `${toSlug(model)}.md`);
+  if (!fs.existsSync(pagePath)) return [];
+  const content = fs.readFileSync(pagePath, 'utf8');
+  const match = content.match(/relatedFiles:\s*\n((?:\s+-\s+.+\n)*)/);
+  if (!match || !match[1]) return [];
+  return match[1]
+    .split('\n')
+    .filter(line => line.trim().startsWith('-'))
+    .map(line => line.replace(/^\s*-\s*/, '').trim());
+};
+
+/**
+ * Decide where the file should live, what its default fileId should be, and
+ * what title/description make sense, based on the (camera count, type, ccmDate).
+ */
+const buildImportPlan = ({ documentType, cameras, ccmDateSlug, sourceBasename }) => {
+  const isMulti = cameras.length > 1;
+  const typeSlug = docTypeSlug(documentType);
+
+  if (documentType === 'Camera Craftsman Issue') {
+    const dateSlug = ccmDateSlug || 'undated';
+    const dateDisplay = formatIssueDate(ccmDateSlug);
+    return {
+      folder: 'camera-craftsman',
+      fileId: `camera-craftsman-${dateSlug}`,
+      title: dateDisplay
+        ? `Camera Craftsman Magazine: ${dateDisplay}`
+        : `Camera Craftsman Magazine`,
+      description: getMultiCameraDescription(documentType, ccmDateSlug),
+    };
+  }
+
+  if (isMulti) {
+    // Multi-camera: pick a publication folder based on type, fall back to articles/.
+    let folder = 'articles';
+    let fileIdPrefix = '';
+    if (documentType === 'SPT Journal' || documentType === 'SPT Journal Article') {
+      folder = 'spt-journal';
+      fileIdPrefix = 'spt-journal-';
+    } else if (documentType === 'Camera Craftsman Article') {
+      folder = 'camera-craftsman';
+      fileIdPrefix = 'camera-craftsman-';
+    }
+    // Default fileId from source filename, slugified.
+    const baseSlug = toSlug(sourceBasename).replace(/^[-_]+|[-_]+$/g, '') || 'untitled';
+    const fileId = !fileIdPrefix || baseSlug.startsWith(fileIdPrefix)
+      ? baseSlug
+      : `${fileIdPrefix}${baseSlug}`;
+    return {
+      folder,
+      fileId,
+      title: null,
+      description: getMultiCameraDescription(documentType),
+    };
+  }
+
+  // Single camera: existing convention {mfr}-{model}-{type}.
+  const { manufacturer, model } = cameras[0];
+  return {
+    folder: toSlug(manufacturer),
+    fileId: `${toSlug(manufacturer)}-${toSlug(model)}-${typeSlug}`,
+    title: null,
+    description: getDefaultDescription(documentType, manufacturer, model),
+  };
+};
+
+/**
  * Process a single file
  */
 const processFile = async (filename) => {
@@ -510,6 +782,7 @@ const processFile = async (filename) => {
   console.log('='.repeat(60) + '\n');
 
   const filePath = path.join('import/incoming', filename);
+  const baseName = path.parse(filename).name;
 
   // Open the file in VS Code
   try {
@@ -519,60 +792,75 @@ const processFile = async (filename) => {
     console.log('Warning: Could not open file in VS Code\n');
   }
 
-  const baseName = path.parse(filename).name;
-
-  // Extract manufacturer
+  // ---- Step 1: collect one or more (manufacturer, model) pairs ----
   const mfrMatch = findManufacturer(baseName);
   const detectedManufacturer = mfrMatch ? mfrMatch.name : '';
+  const detectedModel = findModel(baseName, detectedManufacturer, mfrMatch ? mfrMatch.matchLength : 0);
 
-  // Ask for manufacturer confirmation
-  const mfrAnswer = await ask('Manufacturer (or \'m\' for menu): ', detectedManufacturer);
-  const trimmedMfr = mfrAnswer.trim();
+  console.log('Cameras (leave manufacturer blank to open the file-actions menu)\n');
 
-  if (trimmedMfr.toLowerCase() === 'm') {
-    return await showMenu(filename, '', '', '');
-  }
+  const cameras = [];
+  let isFirst = true;
 
-  let manufacturer = trimmedMfr;
+  while (true) {
+    const detMfr = isFirst ? detectedManufacturer : '';
+    const detModel = isFirst ? detectedModel : '';
 
-  if (!manufacturer) {
-    console.log('Manufacturer is required. Skipping file.\n');
-    const answer = await ask('Press [n] for next file, [m] for menu, [q] to quit: ');
-    const action = answer.trim().toLowerCase();
-
-    if (action === 'm') {
-      return await showMenu(filename, '', '', '');
+    const manufacturer = await selectManufacturer(detMfr);
+    if (!manufacturer) {
+      if (cameras.length === 0) {
+        const answer = await ask('Press [n] for next file, [m] for menu, [q] to quit: ');
+        const a = answer.trim().toLowerCase();
+        if (a === 'm') return await showMenu(filename, '', '', '');
+        return a;
+      }
+      break;
     }
 
-    return action;
+    const model = await selectModel(manufacturer, detModel);
+    if (!model) {
+      console.log('Model required — skipping this camera.\n');
+      if (cameras.length === 0) continue;
+      break;
+    }
+
+    cameras.push({ manufacturer, model });
+
+    // Show existing files for this camera (helpful context).
+    const existing = readRelatedFiles(manufacturer, model);
+    if (existing.length > 0) {
+      console.log(`\nExisting files for ${manufacturer} ${model}:`);
+      existing.forEach((f, i) => console.log(`  ${i + 1}. ${f}.pdf`));
+      console.log('');
+    } else {
+      const pageExists = fs.existsSync(path.join('site/cameras', toSlug(manufacturer), `${toSlug(model)}.md`));
+      if (!pageExists) {
+        console.log(`(camera page will be created at site/cameras/${toSlug(manufacturer)}/${toSlug(model)}.md)\n`);
+      }
+    }
+
+    const more = (await ask('Add another camera? [y/N]: ')).trim().toLowerCase();
+    if (more !== 'y' && more !== 'yes') break;
+    isFirst = false;
   }
 
-  // Extract model
-  const detectedModel = findModel(baseName, manufacturer, mfrMatch ? mfrMatch.matchLength : 0);
-
-  // Ask for model confirmation
-  const modelAnswer = await ask('Model: ', detectedModel);
-  let model = modelAnswer.trim();
-
-  if (!model) {
-    console.log('Model is required. Skipping file.\n');
-    const answer = await ask('Press [n] for next file, [q] to quit: ');
-    return answer.trim().toLowerCase();
+  if (cameras.length === 0) {
+    const answer = await ask('Press [n] for next file, [m] for menu, [q] to quit: ');
+    const a = answer.trim().toLowerCase();
+    if (a === 'm') return await showMenu(filename, '', '', '');
+    return a;
   }
 
-  // Extract document type
+  // ---- Step 2: select file type ----
   const detectedDocType = findDocumentType(baseName);
 
-  // Ask for document type confirmation
   let documentType;
   if (detectedDocType) {
-    const docAnswer = await ask('Document type (or \'s\' to select): ', detectedDocType);
+    const docAnswer = await ask("Document type (or 's' to select): ", detectedDocType);
     const trimmedDoc = docAnswer.trim();
-    if (trimmedDoc.toLowerCase() === 's') {
-      documentType = await selectDocumentType();
-    } else {
-      documentType = trimmedDoc;
-    }
+    documentType = trimmedDoc.toLowerCase() === 's'
+      ? await selectDocumentType()
+      : trimmedDoc;
   } else {
     documentType = await selectDocumentType();
   }
@@ -583,124 +871,58 @@ const processFile = async (filename) => {
     return answer.trim().toLowerCase();
   }
 
-  // Get and confirm description
-  const defaultDescription = getDefaultDescription(documentType, manufacturer, model);
-  const descAnswer = await ask('Description: ', defaultDescription);
-  const description = descAnswer.trim() || defaultDescription;
+  // ---- Step 3: extra prompt for CCM Issue (months and year) ----
+  let ccmDateSlug = '';
+  if (findDocType(documentType)?.requiresIssueDate) {
+    const detected = parseIssueDate(baseName);
+    while (!ccmDateSlug) {
+      const answer = await ask('Months and year (e.g. Mar - Apr 1974): ', formatIssueDate(detected));
+      ccmDateSlug = parseIssueDate(answer.trim());
+      if (!ccmDateSlug) {
+        console.log("Couldn't parse a year — please include a 4-digit year.\n");
+      }
+    }
+  }
 
-  console.log(`\nConfirmed: ${manufacturer} ${model} - ${documentType}`)
+  // ---- Step 4: build defaults and confirm description ----
+  const plan = buildImportPlan({
+    documentType,
+    cameras,
+    ccmDateSlug,
+    sourceBasename: baseName,
+  });
+
+  const descAnswer = await ask('Description: ', plan.description);
+  const description = descAnswer.trim() || plan.description;
+
+  console.log('');
+  console.log(`Confirmed: ${cameras.map(c => `${c.manufacturer} ${c.model}`).join(', ')} — ${documentType}`);
   console.log(`Description: ${description}\n`);
 
-  // Generate target filename
-  const manSlug = toSlug(manufacturer);
-  const modelSlug = toSlug(model);
-  const targetFilename = `${manSlug}-${modelSlug}-${toSlug(documentType)}.pdf`;
-  const targetPath = path.join('site/files', manSlug, targetFilename);
-
-  // Check if file already exists
-  if (fs.existsSync(targetPath)) {
-    console.log(`⚠️  WARNING: File already exists: ${targetFilename}`);
-    console.log('This appears to be a duplicate!\n');
-  } else {
-    console.log(`✓ New file: ${targetFilename}\n`);
-  }
-
-  // Check for existing files for this camera
-  const cameraPagePath = path.join('site/cameras', manSlug, `${modelSlug}.md`);
-  let existingFiles = [];
-
-  if (fs.existsSync(cameraPagePath)) {
-    console.log(`Camera page exists: site/cameras/${manSlug}/${modelSlug}.md`);
-
-    // Read the camera page to find existing files
-    const cameraContent = fs.readFileSync(cameraPagePath, 'utf8');
-    const relatedFilesMatch = cameraContent.match(/relatedFiles:\s*\n((?:\s+-\s+.+\n)*)/);
-
-    if (relatedFilesMatch && relatedFilesMatch[1]) {
-      existingFiles = relatedFilesMatch[1]
-        .split('\n')
-        .filter(line => line.trim().startsWith('-'))
-        .map(line => line.replace(/^\s*-\s*/, '').trim());
-
-      if (existingFiles.length > 0) {
-        console.log('Existing files for this camera:');
-        existingFiles.forEach((file, index) => {
-          console.log(`  ${index + 1}. ${file}.pdf`);
-        });
-      } else {
-        console.log('No existing files for this camera.');
-      }
-    } else {
-      console.log('No existing files for this camera.');
-    }
-  } else {
-    console.log(`Camera page does NOT exist yet.`);
-    console.log(`Will be created at: site/cameras/${manSlug}/${modelSlug}.md`);
-  }
-  console.log('');
-
-  // Prompt with option to open existing files - loop until user chooses action
-  let promptText = 'Press [i] to import, [n] for next file, [m] for menu';
-  if (existingFiles.length > 0) {
-    promptText += ', [1-' + existingFiles.length + '] to open file';
-  }
-  promptText += ', [q] to quit: ';
-
+  // ---- Step 5: import ----
   while (true) {
-    const answer = await ask(promptText);
-    const action = answer.trim().toLowerCase();
+    const answer = (await ask('Proceed with import? [Y/n]: ')).trim().toLowerCase();
+    const proceed = answer === '' || answer === 'y' || answer === 'yes';
 
-    // Check if user wants to open an existing file
-    const fileNum = parseInt(action);
-    if (fileNum >= 1 && fileNum <= existingFiles.length) {
-      const fileToOpen = existingFiles[fileNum - 1];
-      const filePathToOpen = path.join('site/files', `${fileToOpen}.pdf`);
-      try {
-        console.log(`\nOpening: ${fileToOpen}.pdf\n`);
-        execSync(`code "${filePathToOpen}"`, { stdio: 'ignore' });
-
-        // Show the file list again and re-prompt
-        console.log('Existing files for this camera:');
-        existingFiles.forEach((file, index) => {
-          console.log(`  ${index + 1}. ${file}.pdf`);
-        });
-        console.log('');
-
-        // Continue the loop to prompt again
-        continue;
-      } catch (error) {
-        console.log('Warning: Could not open file\n');
-        continue;
-      }
+    if (proceed) {
+      const imported = await importFile(
+        filename,
+        cameras,
+        documentType,
+        description,
+        plan.folder,
+        plan.fileId,
+        plan.title,
+      );
+      if (imported) return 'n';
+      continue;
     }
 
-    // Check if user wants to import
-    if (action === 'i' || action === 'import') {
-      const imported = await importFile(filename, manufacturer, model, documentType, description);
-      // If import was successful or cancelled, move to next file
-      // If import failed (e.g., duplicate file), show prompt again
-      if (imported) {
-        return 'n';
-      } else {
-        // Show prompt again for another action
-        continue;
-      }
+    let menuAction = await showMenu(filename, cameras[0]?.manufacturer || '', cameras[0]?.model || '', documentType);
+    while (menuAction === 'm') {
+      menuAction = await showMenu(filename, cameras[0]?.manufacturer || '', cameras[0]?.model || '', documentType);
     }
-
-    // Check if user wants the menu
-    if (action === 'm' || action === 'menu') {
-      let menuAction = await showMenu(filename, manufacturer, model, documentType);
-
-      // Handle menu actions - if 'm' is returned, show menu again
-      while (menuAction === 'm') {
-        menuAction = await showMenu(filename, manufacturer, model, documentType);
-      }
-
-      return menuAction;
-    }
-
-    // Any other action (n, q, etc.) - return it
-    return action;
+    return menuAction;
   }
 };
 
