@@ -8,6 +8,7 @@ relatedFiles:
   - canon/canon-ae-1-ccm-article
   - canon/canon-ae-1-article
   - canon/canon-ae-1-spt-article
+  - canon/canon-ae-1-national-camera-article
 relatedLinks:
 ---
 

@@ -6,6 +6,7 @@ manufacturer: Minolta
 model: XG-M
 relatedFiles:
   - minolta/minolta-xg-m-service-manual
+  - minolta/minolta-xg-m-spt-article
 relatedLinks:
 ---
 

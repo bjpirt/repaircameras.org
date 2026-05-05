@@ -165,6 +165,7 @@ const findModel = (filename, manufacturer /*, matchLength */) => {
  */
 const DOC_TYPES = [
   { display: 'Service Manual',           keywords: ['service'] },
+  { display: 'National Camera Guide',    keywords: ['national-camera-guide', 'national_camera_guide'] },
   { display: 'Repair Guide',             keywords: ['repair-guide', 'repair_guide'] },
   { display: 'Repair Manual',            keywords: ['repair'] },
   { display: 'Parts List',               keywords: ['parts'] },
@@ -389,6 +390,9 @@ const getDefaultDescription = (documentType, manufacturer, model) => {
   const lowerType = documentType.toLowerCase();
   if (lowerType.includes("national camera") && lowerType.includes("service")) {
     return `Service manual for the ${manufacturer} ${model} from National Camera`;
+  }
+  if (lowerType.includes("national camera") && lowerType.includes("guide")) {
+    return `Repair guide for the ${manufacturer} ${model} from National Camera`;
   }
   if (lowerType.includes("service")) {
     return `Service manual for the ${manufacturer} ${model}`;

@@ -8,6 +8,7 @@ relatedFiles:
   - leica/leica-iiif-service-manual
   - leica/leica-iiif-national-camera-manual
   - leica/leica-shutter-national-camera-manual
+  - articles/leica-barnack-shutter-curtains
 relatedLinks:
 ---
 

@@ -6,6 +6,7 @@ manufacturer: Canon
 model: E-F
 relatedFiles:
   - canon/canon-e-f-repair-manual
+  - canon/canon-e-f-national-camera-service-manual
 relatedLinks:
 ---
 

@@ -6,6 +6,8 @@ manufacturer: Canon
 model: FTb
 relatedFiles:
   - canon/canon-ftb-service-manual
+  - canon/canon-ftb-national-camera-repair-guide
+  - canon/canon-ftb-spt-article
 relatedLinks:
 ---
 

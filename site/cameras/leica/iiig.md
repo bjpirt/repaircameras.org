@@ -8,6 +8,7 @@ relatedFiles:
   - leica/leica-iiig-service-manual
   - leica/leica-iiig-rangefinder-adjustments
   - leica/leica-shutter-national-camera-manual
+  - articles/leica-barnack-shutter-curtains
 relatedLinks:
 ---
 

@@ -6,6 +6,7 @@ manufacturer: Olympus
 model: OM-4
 relatedFiles:
   - olympus/olympus-om-4-service-manual
+  - olympus/olympus-om-4-article
 relatedLinks:
 ---
 

@@ -8,6 +8,7 @@ relatedFiles:
   - olympus/olympus-om-2-service-manual
   - olympus/olympus-om-2-exploded-diagram
   - olympus/olympus-om-2-om-2n-repair-manual
+  - olympus/olympus-om-2-spt-article
 relatedLinks:
 ---
 

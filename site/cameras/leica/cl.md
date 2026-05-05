@@ -7,6 +7,7 @@ model: CL
 relatedFiles:
   - leica/leica-cl-service-manual
   - leica/leica-shutter-national-camera-manual
+  - leica/leica-cl-spt-article
 relatedLinks:
 ---
 

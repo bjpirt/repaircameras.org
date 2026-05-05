@@ -7,6 +7,7 @@ model: FT-1
 relatedFiles:
   - konica/konica-ft-1-service-manual
   - konica/konica-ft-1-exploded-diagram
+  - konica/konica-ft-1-spt-article
 relatedLinks:
 ---
 

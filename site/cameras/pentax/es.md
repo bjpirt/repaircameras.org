@@ -7,5 +7,6 @@ model: ES
 relatedFiles:
   - pentax/pentax-es-parts-list
   - pentax/pentax-es-service-manual
+  - pentax/pentax-es-ccm-article
 relatedLinks:
 ---

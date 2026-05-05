@@ -6,6 +6,7 @@ manufacturer: Rollei
 model: Rolleiflex TLR
 relatedFiles:
   - rollei/rollei-rolleiflex-tlr-parts-list
+  - rollei/rollei-rolleiflex-tlr-national-camera-guide
 relatedLinks:
 ---
 

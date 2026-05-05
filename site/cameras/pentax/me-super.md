@@ -6,6 +6,7 @@ manufacturer: Pentax
 model: ME Super
 relatedFiles:
   - pentax/pentax-me-super-service-manual
+  - pentax/pentax-me-super-guide
 relatedLinks:
 ---
 

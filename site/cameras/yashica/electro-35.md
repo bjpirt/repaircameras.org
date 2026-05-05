@@ -6,6 +6,7 @@ manufacturer: Yashica
 model: Electro 35
 relatedFiles:
   - yashica/yashica-electro-35-repair-manual
+  - yashica/yashica-electro-35-national-camera-guide
 relatedLinks:
 ---
 

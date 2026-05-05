@@ -10,6 +10,7 @@ relatedFiles:
   - nikon/nikon-f-photomic-ftn-finder-repair-manual
   - nikon/nikon-f-photomic-t-finder-repair-manual
   - nikon/nikon-f-photomic-tn-finder-repair-manual
+  - nikon/nikon-f-national-camera-guide
 relatedLinks:
 ---
 

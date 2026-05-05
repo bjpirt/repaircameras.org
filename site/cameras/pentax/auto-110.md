@@ -6,6 +6,7 @@ manufacturer: Pentax
 model: Auto 110
 relatedFiles:
   - pentax/pentax-auto-110-service-manual
+  - pentax/pentax-auto-110-spt-article
 relatedLinks:
 ---
 

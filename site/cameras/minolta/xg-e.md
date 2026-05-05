@@ -6,6 +6,9 @@ manufacturer: Minolta
 model: XG-E
 relatedFiles:
   - minolta/minolta-xg-e-service-manual
+  - minolta/minolta-xg-e-national-camera-guide
+  - spt-journal/spt-minolta-xg-update-spt-journal
+  - minolta/minolta-xg-e-spt-article
 relatedLinks:
 aliases:
   - XG-2
