@@ -27,4 +27,4 @@ That's it &mdash; no coding required.
 
 ## For developers
 
-The site is open source. If you prefer working with code directly, you can also contribute via a [pull request on GitHub](https://github.com/repaircameras/repaircameras.org).
+The site is open source. If you prefer working with code directly, you can also contribute via a [pull request on GitHub](https://github.com/bjpirt/repaircameras.org).
