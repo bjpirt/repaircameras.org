@@ -49,9 +49,20 @@ const getBreadcrumbPages = (
 };
 
 const getBreadcrumbs = (page: Page, allPages: PageMetadata[]): Breadcrumb[] => {
-  const breadcrumbs: Breadcrumb[] = getBreadcrumbPages(page.url, allPages, []);
+  const breadcrumbs: Breadcrumb[] = getBreadcrumbPages(
+    page.url,
+    allPages,
+    []
+  ).reverse();
 
-  return breadcrumbs.reverse();
+  // Pages with no parent page in the tree (e.g. /files/{id}/, which has no
+  // /files/ index) would otherwise lose their route back to the home page
+  const home = findFullPage("/", allPages);
+  if (home && breadcrumbs.length > 0 && breadcrumbs[0].url !== "/") {
+    breadcrumbs.unshift(breadcrumbForPage(home));
+  }
+
+  return breadcrumbs;
 };
 
 const Breadcrumbs = ({ page, allPages }: Props) => {

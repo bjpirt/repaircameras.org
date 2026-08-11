@@ -14,6 +14,7 @@ function makeState(overrides: Partial<CameraEditorState> = {}): CameraEditorStat
     body: "A classic SLR.",
     relatedFiles: [],
     relatedLinks: [],
+    relatedArchives: [],
     troubleshooting: [],
     sha: "abc123",
     loading: false,
@@ -125,6 +126,15 @@ describe("buildAndValidate", () => {
     }
   });
 
+  it("carries relatedArchives through unchanged", () => {
+    const state = makeState({ relatedArchives: ["nikon-f4-parts-list"] });
+    const result = buildAndValidate(state);
+    expect("data" in result).toBe(true);
+    if ("data" in result) {
+      expect(result.data.relatedArchives).toEqual(["nikon-f4-parts-list"]);
+    }
+  });
+
   it("does not duplicate link IDs already in relatedLinks", () => {
     const blob = new Blob(["img"]);
     const state = makeState({
@@ -154,6 +164,7 @@ describe("cameraEditorReducer", () => {
         body: "Description",
         relatedFiles: ["manual-1"],
         relatedLinks: ["link-1"],
+        relatedArchives: ["nikon-f4-parts-list"],
         troubleshooting: [{ symptom: "S", cause: "C", solution: "X" }],
       },
       sha: "abc123",
@@ -163,6 +174,7 @@ describe("cameraEditorReducer", () => {
     expect(next.body).toBe("Description");
     expect(next.relatedFiles).toEqual(["manual-1"]);
     expect(next.relatedLinks).toEqual(["link-1"]);
+    expect(next.relatedArchives).toEqual(["nikon-f4-parts-list"]);
     expect(next.troubleshooting).toHaveLength(1);
     expect(next.loading).toBe(false);
     expect(next.isDirty).toBe(false);

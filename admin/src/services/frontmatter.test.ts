@@ -105,6 +105,7 @@ describe("stringifyFrontmatter", () => {
       model: "F3",
       relatedFiles: ["nikon-f3-service-manual"],
       relatedLinks: ["nikon-f3-video"],
+      relatedArchives: ["nikon-f3-parts-list"],
       troubleshooting: [
         { symptom: "Meter off", cause: "Battery", solution: "Replace battery" },
       ],
@@ -118,6 +119,7 @@ describe("stringifyFrontmatter", () => {
     expect(parsed.attributes.model).toBe("F3");
     expect(parsed.attributes.relatedFiles).toEqual(["nikon-f3-service-manual"]);
     expect(parsed.attributes.relatedLinks).toEqual(["nikon-f3-video"]);
+    expect(parsed.attributes.relatedArchives).toEqual(["nikon-f3-parts-list"]);
     expect(parsed.attributes.troubleshooting).toEqual(original.troubleshooting);
     expect(parsed.body).toBe(body);
   });

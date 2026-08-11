@@ -9,6 +9,7 @@ type PageMetadata = {
     manufacturer?: string;
     model?: string;
     title?: string;
+    relatedArchives?: string[];
   };
 };
 

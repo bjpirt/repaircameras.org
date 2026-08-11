@@ -110,6 +110,7 @@ async function fetchAndParseCameraPage(
     body,
     relatedFiles: (attributes.relatedFiles as string[]) ?? [],
     relatedLinks: (attributes.relatedLinks as string[]) ?? [],
+    relatedArchives: (attributes.relatedArchives as string[]) ?? [],
     troubleshooting: (attributes.troubleshooting as unknown[]) ?? [],
   };
 
@@ -217,6 +218,7 @@ export async function saveCameraToForkBranch(
       model: frontmatterFields.model,
       relatedFiles: frontmatterFields.relatedFiles,
       relatedLinks: frontmatterFields.relatedLinks,
+      relatedArchives: frontmatterFields.relatedArchives,
       troubleshooting: frontmatterFields.troubleshooting,
     },
     body,

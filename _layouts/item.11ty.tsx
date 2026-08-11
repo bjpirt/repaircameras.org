@@ -1,5 +1,6 @@
 import File from "../lib/types/File";
 import Link from "../lib/types/Link";
+import IaFile from "../lib/types/IaFile";
 import { MainTemplate } from "@components/MainTemplate";
 import PageMetadata, { Page } from "../lib/types/PageMetadata";
 import { ResourceLink } from "@components/ResourceLink";
@@ -18,9 +19,11 @@ type ViewProps = {
   model: string;
   files: Record<string, File>;
   links: Record<string, Link>;
+  ia: Record<string, IaFile>;
   tutorials: ProcessedTutorial[];
   relatedFiles: string[];
   relatedLinks: string[];
+  relatedArchives?: string[];
   relatedTutorials?: string[];
   troubleshooting?: TroubleshootingEntry[];
   page: Page;
@@ -29,7 +32,14 @@ type ViewProps = {
   };
 };
 
-const filesSection = (relatedFiles: string[], files: Record<string, File>) => {
+// Locally hosted PDFs and Internet Archive files share one section — where a
+// file is hosted isn't something the reader should have to care about.
+const filesSection = (
+  relatedFiles: string[],
+  files: Record<string, File>,
+  relatedArchives: string[],
+  ia: Record<string, IaFile>,
+) => {
   return (
     <div class="files">
       <h3>Files</h3>
@@ -40,6 +50,21 @@ const filesSection = (relatedFiles: string[], files: Record<string, File>) => {
             return <ResourceLink id={file} url={url} file={files[file]} />;
           }
           throw new Error(`File not found: ${file}`);
+        })}
+        {relatedArchives.map((id) => {
+          if (ia[id]) {
+            return (
+              <ResourceLink
+                id={id}
+                url={ia[id].url}
+                file={ia[id]}
+                badge="Internet Archive"
+                size={ia[id].size}
+                newTab={false}
+              />
+            );
+          }
+          throw new Error(`Archived file not found: ${id}`);
         })}
       </div>
     </div>
@@ -127,7 +152,9 @@ export function item({
   relatedFiles,
   files,
   links,
+  ia,
   relatedLinks,
+  relatedArchives,
   relatedTutorials,
   troubleshooting,
   tutorials,
@@ -152,7 +179,14 @@ export function item({
         ? tutorialsSection(relatedTutorials, tutorials)
         : undefined}
 
-      {relatedFiles?.length > 0 ? filesSection(relatedFiles, files) : undefined}
+      {relatedFiles?.length > 0 || relatedArchives?.length > 0
+        ? filesSection(
+            relatedFiles ?? [],
+            files,
+            relatedArchives ?? [],
+            ia,
+          )
+        : undefined}
 
       {relatedLinks?.length > 0 ? linksSection(relatedLinks, links) : undefined}
     </MainTemplate>

@@ -28,6 +28,8 @@ export interface CameraEditorState {
   body: string;
   relatedFiles: string[];
   relatedLinks: string[];
+  // Preserved from the loaded page; not editable in the UI yet
+  relatedArchives: string[];
   troubleshooting: TroubleshootingEntry[];
 
   newLinks: NewLinkFormState[];
@@ -90,6 +92,7 @@ export function createInitialState(
     body: "",
     relatedFiles: [],
     relatedLinks: [],
+    relatedArchives: [],
     troubleshooting: [],
     newLinks: [],
     availablePdfs: [],
@@ -122,6 +125,7 @@ export function cameraEditorReducer(
         body: action.cameraPage.body,
         relatedFiles: action.cameraPage.relatedFiles,
         relatedLinks: action.cameraPage.relatedLinks,
+        relatedArchives: action.cameraPage.relatedArchives,
         troubleshooting: action.cameraPage.troubleshooting,
         sha: action.sha,
         loading: false,
@@ -292,6 +296,7 @@ export function buildAndValidate(
     body: state.body,
     relatedFiles: state.relatedFiles,
     relatedLinks: allRelatedLinks,
+    relatedArchives: state.relatedArchives,
     troubleshooting: state.troubleshooting,
   };
 
