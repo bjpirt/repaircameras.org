@@ -5,6 +5,7 @@ tags:
 manufacturer: Nikon
 model: FG
 relatedFiles:
-  - nikon/nikon-fg-spt-article
 relatedLinks:
+relatedArchives:
+  - nikon-fg-spt-article
 ---

@@ -5,6 +5,7 @@ tags:
 manufacturer: Yashica
 model: Dental Eye II
 relatedFiles:
-  - yashica/yashica-dental-eye-ii-exploded-diagram
 relatedLinks:
+relatedArchives:
+  - yashica-dental-eye-ii-exploded-diagram
 ---
