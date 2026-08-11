@@ -5,8 +5,9 @@ tags:
 manufacturer: Canon
 model: EOS 7
 relatedFiles:
-  - canon/canon-eos-7-parts-list
 relatedLinks:
+relatedArchives:
+  - canon-eos-7-parts-list
 aliases:
   - EOS Elan 7
   - EOS Elan 7E
