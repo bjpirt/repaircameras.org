@@ -12,6 +12,9 @@ export const CameraPageSchema = z.object({
   body: z.string(),
   relatedFiles: z.array(z.string()),
   relatedLinks: z.array(z.string()),
+  // Files hosted on the Internet Archive (site/_data/ia/{id}.json). Not yet
+  // editable in the admin UI, but carried through saves so edits don't drop it.
+  relatedArchives: z.array(z.string()).default([]),
   troubleshooting: z.array(TroubleshootingEntrySchema),
 });
 

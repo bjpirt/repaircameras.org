@@ -44,6 +44,7 @@ const sampleCameraPage = {
   body: "A classic SLR.",
   relatedFiles: ["nikon-fe-manual"],
   relatedLinks: ["nikon-fe-video"],
+  relatedArchives: ["nikon-fe-parts-list"],
   troubleshooting: [{ symptom: "Meter off", cause: "Battery", solution: "Replace battery" }],
 };
 
@@ -208,6 +209,28 @@ describe("CameraEditor — existing camera", () => {
       expect(screen.getByText("Changes saved to branch.")).toBeInTheDocument(),
     );
     expect(screen.getByText("Submit as PR")).not.toBeDisabled();
+  });
+
+  it("preserves relatedArchives through a save, though the UI cannot edit it", async () => {
+    const user = userEvent.setup();
+    vi.mocked(saveCameraToForkBranch).mockResolvedValue({
+      forkOwner: USERNAME,
+      branchName: "camera/edit/nikon/fe",
+    });
+    renderEditor("/cameras/nikon/fe");
+    await waitFor(() =>
+      expect(screen.getByDisplayValue("Nikon")).toBeInTheDocument(),
+    );
+
+    const manufacturerInput = screen.getByDisplayValue("Nikon");
+    await user.clear(manufacturerInput);
+    await user.type(manufacturerInput, "Nikon Corporation");
+
+    await user.click(screen.getByText("Save to branch"));
+    await waitFor(() => expect(saveCameraToForkBranch).toHaveBeenCalled());
+
+    const savedCameraPage = vi.mocked(saveCameraToForkBranch).mock.calls[0][7];
+    expect(savedCameraPage.relatedArchives).toEqual(["nikon-fe-parts-list"]);
   });
 
   it("submits a PR with 'Update camera' title for edits", async () => {

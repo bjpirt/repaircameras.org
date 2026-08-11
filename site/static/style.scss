@@ -226,6 +226,75 @@ main {
   }
 }
 
+.resourceMeta {
+  margin: 6px 0 0;
+  font-size: 85%;
+  color: #666;
+}
+
+/* Internet Archive hosted files */
+
+.iaReader {
+  margin: 20px 0;
+
+  .iaReader-facade {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #ddd;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+
+    &:hover .iaReader-cta {
+      text-decoration: underline;
+    }
+
+    img {
+      max-width: 110px;
+      filter: drop-shadow(3px 3px 5px #000000);
+    }
+  }
+
+  .iaReader-cta {
+    font-size: 110%;
+  }
+}
+
+.iaReader-embed {
+  width: 100%;
+  max-width: 720px;
+  height: 680px;
+  border: 1px solid #ccc;
+}
+
+.iaActions {
+  margin: 20px 0 10px;
+
+  .iaDownload {
+    display: inline-block;
+    padding: 10px 16px;
+    background: #333;
+    color: #fff;
+    text-decoration: none;
+
+    &:hover {
+      background: #555;
+    }
+  }
+}
+
+.iaAttribution {
+  font-size: 85%;
+  color: #666;
+}
+
+.iaUsedBy {
+  margin-top: 30px;
+}
+
 .content {
   width: 720px;
 }
