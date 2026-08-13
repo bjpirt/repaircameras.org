@@ -1,6 +1,7 @@
 import { MainTemplate } from "@components/MainTemplate";
 import PageMetadata, { Page } from "../lib/types/PageMetadata";
 import Link from "../lib/types/Link";
+import IaFile from "../lib/types/IaFile";
 
 type ViewProps = {
   collections: {
@@ -11,6 +12,7 @@ type ViewProps = {
   page: Page;
   files: Record<string, File>;
   links: Record<string, Link>;
+  ia: Record<string, IaFile>;
 };
 
 export function index({
@@ -18,8 +20,12 @@ export function index({
   page,
   files,
   links,
+  ia,
 }: ViewProps): JSX.Element {
-  const resourceCount = Object.keys(files).length + Object.keys(links).length;
+  const resourceCount =
+    Object.keys(files).length +
+    Object.keys(links).length +
+    Object.keys(ia).length;
   const preMain =
     page.url === "/" ? (
       <div id="banner">
