@@ -5,6 +5,7 @@ tags:
 manufacturer: Nikon
 model: EM
 relatedFiles:
-  - nikon/nikon-em-spt-article
 relatedLinks:
+relatedArchives:
+  - nikon-em-spt-article
 ---

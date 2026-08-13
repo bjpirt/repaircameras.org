@@ -5,6 +5,7 @@ tags:
 manufacturer: Pentax
 model: Spotmatic SP II
 relatedFiles:
-  - pentax/pentax-spotmatic-sp-ii-parts-list
 relatedLinks:
+relatedArchives:
+  - pentax-spotmatic-sp-ii-parts-list
 ---

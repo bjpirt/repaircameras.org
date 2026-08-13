@@ -5,6 +5,7 @@ tags:
 manufacturer: Kodak
 model: Flash Supermatic Shutter
 relatedFiles:
-  - kodak/kodak-flash-supermatic-shutter-repair-manual
 relatedLinks:
+relatedArchives:
+  - kodak-flash-supermatic-shutter-repair-manual
 ---

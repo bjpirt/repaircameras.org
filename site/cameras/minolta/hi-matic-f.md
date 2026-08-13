@@ -5,6 +5,7 @@ tags:
 manufacturer: Minolta
 model: Hi-Matic F
 relatedFiles:
-  - minolta/minolta-hi-matic-f-service-manual
 relatedLinks:
+relatedArchives:
+  - minolta-hi-matic-f-service-manual
 ---

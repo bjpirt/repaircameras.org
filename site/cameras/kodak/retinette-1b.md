@@ -5,6 +5,7 @@ tags:
 manufacturer: Kodak
 model: Retinette 1B
 relatedFiles:
-  - kodak/kodak-retinette-1b-repair-guide
 relatedLinks:
+relatedArchives:
+  - kodak-retinette-1b-repair-guide
 ---

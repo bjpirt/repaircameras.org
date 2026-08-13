@@ -5,6 +5,7 @@ tags:
 manufacturer: Zenit
 model: E
 relatedFiles:
-  - zenit/zenit-e-service-manual
 relatedLinks:
+relatedArchives:
+  - zenit-e-service-manual
 ---

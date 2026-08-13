@@ -5,6 +5,7 @@ tags:
 manufacturer: Canon
 model: EOS 3
 relatedFiles:
-  - canon/canon-eos-3-parts-list
 relatedLinks:
+relatedArchives:
+  - canon-eos-3-parts-list
 ---

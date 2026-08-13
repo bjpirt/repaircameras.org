@@ -5,8 +5,9 @@ tags:
 manufacturer: Pentax
 model: ES
 relatedFiles:
-  - pentax/pentax-es-parts-list
-  - pentax/pentax-es-service-manual
-  - pentax/pentax-es-ccm-article
 relatedLinks:
+relatedArchives:
+  - pentax-es-ccm-article
+  - pentax-es-service-manual
+  - pentax-es-parts-list
 ---

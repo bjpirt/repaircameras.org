@@ -5,6 +5,7 @@ tags:
 manufacturer: Prontor
 model: Compur No. 3 Shutter
 relatedFiles:
-  - prontor/prontor-compur-no-3-shutter-parts-list
 relatedLinks:
+relatedArchives:
+  - prontor-compur-no-3-shutter-parts-list
 ---

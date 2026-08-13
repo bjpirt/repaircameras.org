@@ -5,8 +5,9 @@ tags:
 manufacturer: Minolta
 model: Dynax 5
 relatedFiles:
-  - minolta/minolta-dynax-5-service-manual
 relatedLinks:
+relatedArchives:
+  - minolta-dynax-5-service-manual
 aliases:
   - Maxxum 5
 ---

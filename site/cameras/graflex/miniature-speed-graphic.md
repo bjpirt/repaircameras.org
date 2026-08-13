@@ -5,6 +5,7 @@ tags:
 manufacturer: Graflex
 model: Miniature Speed Graphic
 relatedFiles:
-  - graflex/graflex-miniature-speed-graphic-service-manual
 relatedLinks:
+relatedArchives:
+  - graflex-miniature-speed-graphic-service-manual
 ---

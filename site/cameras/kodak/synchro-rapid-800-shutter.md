@@ -5,6 +5,7 @@ tags:
 manufacturer: Kodak
 model: Synchro Rapid 800 Shutter
 relatedFiles:
-  - kodak/kodak-synchro-rapid-800-shutter-parts-list
 relatedLinks:
+relatedArchives:
+  - kodak-synchro-rapid-800-shutter-parts-list
 ---

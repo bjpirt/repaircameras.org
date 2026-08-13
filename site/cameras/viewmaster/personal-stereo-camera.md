@@ -5,6 +5,7 @@ tags:
 manufacturer: Viewmaster
 model: Personal Stereo Camera
 relatedFiles:
-  - viewmaster/viewmaster-personal-stereo-camera-repair-manual
 relatedLinks:
+relatedArchives:
+  - viewmaster-personal-stereo-camera-repair-manual
 ---

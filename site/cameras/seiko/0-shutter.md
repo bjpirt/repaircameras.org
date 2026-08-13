@@ -5,6 +5,7 @@ tags:
 manufacturer: Seiko
 model: #0 Shutter
 relatedFiles:
-  - seiko/seiko-0-shutter-article
 relatedLinks:
+relatedArchives:
+  - seiko-0-shutter-article
 ---

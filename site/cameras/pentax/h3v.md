@@ -5,6 +5,7 @@ tags:
 manufacturer: Pentax
 model: H3V
 relatedFiles:
-  - pentax/pentax-h3v-national-camera-guide
 relatedLinks:
+relatedArchives:
+  - pentax-h3v-national-camera-guide
 ---

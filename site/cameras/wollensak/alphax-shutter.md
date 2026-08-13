@@ -5,6 +5,7 @@ tags:
 manufacturer: Wollensak
 model: Alphax Shutter
 relatedFiles:
-  - wollensak/wollensak-alphax-shutter-diagram
 relatedLinks:
+relatedArchives:
+  - wollensak-alphax-shutter-diagram
 ---

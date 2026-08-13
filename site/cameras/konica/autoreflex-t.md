@@ -5,6 +5,7 @@ tags:
 manufacturer: Konica
 model: Autoreflex T
 relatedFiles:
-  - konica/konica-autoreflex-t-service-manual
 relatedLinks:
+relatedArchives:
+  - konica-autoreflex-t-service-manual
 ---

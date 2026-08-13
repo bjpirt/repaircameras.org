@@ -5,6 +5,7 @@ tags:
 manufacturer: Yashica
 model: D TLR
 relatedFiles:
-  - yashica/yashica-d-tlr-exploded-diagram
 relatedLinks:
+relatedArchives:
+  - yashica-d-tlr-exploded-diagram
 ---

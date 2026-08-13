@@ -5,11 +5,12 @@ tags:
 manufacturer: Nikon
 model: FE
 relatedFiles:
-  - nikon/nikon-fe-wiring-diagram
-  - nikon/nikon-fe-exploded-diagrams
-  - nikon/nikon-fe-fe2-service-manual
 relatedLinks:
   - nikon-fe-richard-haw
+relatedArchives:
+  - nikon-fe-exploded-diagrams
+  - nikon-fe-fe2-service-manual
+  - nikon-fe-wiring-diagram
 troubleshooting:
   - symptom: No power when using the power test switch
     cause: The battery holder has broken

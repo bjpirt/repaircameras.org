@@ -5,8 +5,9 @@ tags:
 manufacturer: Minolta
 model: XE
 relatedFiles:
-  - minolta/minolta-xe-service-manual
 relatedLinks:
+relatedArchives:
+  - minolta-xe-service-manual
 aliases:
   - XE-1
   - XE-7

@@ -5,6 +5,7 @@ tags:
 manufacturer: Konica
 model: FS-1
 relatedFiles:
-  - konica/konica-fs-1-spt-article
 relatedLinks:
+relatedArchives:
+  - konica-fs-1-spt-article
 ---

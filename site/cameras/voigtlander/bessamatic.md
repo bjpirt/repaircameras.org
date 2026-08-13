@@ -5,6 +5,7 @@ tags:
 manufacturer: Voigtlander
 model: Bessamatic
 relatedFiles:
-  - voigtlander/voigtlander-bessamatic-repair-manual
 relatedLinks:
+relatedArchives:
+  - voigtlander-bessamatic-repair-manual
 ---

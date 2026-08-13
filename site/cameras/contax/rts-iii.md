@@ -5,7 +5,8 @@ tags:
 manufacturer: Contax
 model: RTS III
 relatedFiles:
-  - contax/contax-rts-iii-repair-manual
-  - contax/contax-rts-iii-exploded-diagrams
 relatedLinks:
+relatedArchives:
+  - contax-rts-iii-exploded-diagrams
+  - contax-rts-iii-repair-manual
 ---

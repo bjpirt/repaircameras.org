@@ -5,6 +5,7 @@ tags:
 manufacturer: Pentax
 model: Program Plus
 relatedFiles:
-  - pentax/pentax-program-plus-spt-article
 relatedLinks:
+relatedArchives:
+  - pentax-program-plus-spt-article
 ---

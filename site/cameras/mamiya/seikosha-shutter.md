@@ -5,6 +5,7 @@ tags:
 manufacturer: Mamiya
 model: Seikosha Shutter
 relatedFiles:
-  - mamiya/mamiya-seikosha-shutter-design-changes
 relatedLinks:
+relatedArchives:
+  - mamiya-seikosha-shutter-design-changes
 ---

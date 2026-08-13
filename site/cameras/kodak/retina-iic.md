@@ -5,6 +5,7 @@ tags:
 manufacturer: Kodak
 model: Retina IIc
 relatedFiles:
-  - kodak/kodak-retina-iic-iiic-iiic-parts-list
 relatedLinks:
+relatedArchives:
+  - kodak-retina-iic-iiic-iiic-parts-list
 ---

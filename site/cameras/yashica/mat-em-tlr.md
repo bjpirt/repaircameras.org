@@ -5,6 +5,7 @@ tags:
 manufacturer: Yashica
 model: Mat EM TLR
 relatedFiles:
-  - yashica/yashica-mat-em-tlr-parts-list
 relatedLinks:
+relatedArchives:
+  - yashica-mat-em-tlr-parts-list
 ---

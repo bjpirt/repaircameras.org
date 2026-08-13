@@ -5,6 +5,7 @@ tags:
 manufacturer: Ricoh
 model: KR-10M
 relatedFiles:
-  - ricoh/ricoh-kr-10m-repair-manual
 relatedLinks:
+relatedArchives:
+  - ricoh-kr-10m-repair-manual
 ---

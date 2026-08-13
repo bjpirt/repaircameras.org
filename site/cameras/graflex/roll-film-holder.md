@@ -5,6 +5,7 @@ tags:
 manufacturer: Graflex
 model: Roll Film Holder
 relatedFiles:
-  - graflex/graflex-roll-film-holder-service-manual
 relatedLinks:
+relatedArchives:
+  - graflex-roll-film-holder-service-manual
 ---

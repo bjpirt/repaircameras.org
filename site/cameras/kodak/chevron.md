@@ -5,7 +5,8 @@ tags:
 manufacturer: Kodak
 model: Chevron
 relatedFiles:
-  - kodak/kodak-chevron-parts-list
-  - kodak/kodak-chevron-service-manual
 relatedLinks:
+relatedArchives:
+  - kodak-chevron-parts-list
+  - kodak-chevron-service-manual
 ---
