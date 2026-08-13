@@ -5,6 +5,7 @@ tags:
 manufacturer: Yashica
 model: FX-2
 relatedFiles:
-  - yashica/yashica-fx-2-exploded-diagram
 relatedLinks:
+relatedArchives:
+  - yashica-fx-2-exploded-diagram
 ---

@@ -5,6 +5,7 @@ tags:
 manufacturer: Kodak
 model: Kodamatic Shutters
 relatedFiles:
-  - kodak/kodak-supermatic-and-kodamatic-shutters-service-manual
 relatedLinks:
+relatedArchives:
+  - kodak-supermatic-and-kodamatic-shutters-service-manual
 ---

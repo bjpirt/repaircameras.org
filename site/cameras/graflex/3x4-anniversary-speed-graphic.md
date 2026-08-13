@@ -5,6 +5,7 @@ tags:
 manufacturer: Graflex
 model: 3x4 Anniversary Speed Graphic
 relatedFiles:
-  - graflex/graflex-3x4-anniversary-speed-graphic-service-manual
 relatedLinks:
+relatedArchives:
+  - graflex-3x4-anniversary-speed-graphic-service-manual
 ---

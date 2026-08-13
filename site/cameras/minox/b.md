@@ -5,6 +5,7 @@ tags:
 manufacturer: Minox
 model: B
 relatedFiles:
-  - minox/minox-b-ccm-article
 relatedLinks:
+relatedArchives:
+  - minox-b-ccm-article
 ---

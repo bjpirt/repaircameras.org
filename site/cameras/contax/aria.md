@@ -5,7 +5,8 @@ tags:
 manufacturer: Contax
 model: Aria
 relatedFiles:
-  - contax/contax-aria-repair-manual
-  - contax/contax-aria-exploded-diagrams
 relatedLinks:
+relatedArchives:
+  - contax-aria-exploded-diagrams
+  - contax-aria-repair-manual
 ---

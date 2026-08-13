@@ -5,6 +5,7 @@ tags:
 manufacturer: Contax
 model: TVS
 relatedFiles:
-  - contax/contax-tvs-repair-manual
 relatedLinks:
+relatedArchives:
+  - contax-tvs-repair-manual
 ---

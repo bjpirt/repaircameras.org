@@ -5,6 +5,7 @@ tags:
 manufacturer: Kiev
 model: 60 TTL
 relatedFiles:
-  - kiev/kiev-60-ttl-repair-manual-russian
 relatedLinks:
+relatedArchives:
+  - kiev-60-ttl-repair-manual-russian
 ---

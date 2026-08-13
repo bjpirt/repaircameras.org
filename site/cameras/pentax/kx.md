@@ -5,11 +5,12 @@ tags:
 manufacturer: Pentax
 model: KX
 relatedFiles:
-  - pentax/pentax-km-kx-service-manual
-  - pentax/pentax-kx-parts-diagram
-  - pentax/pentax-k1000-service-manual
-  - pentax/pentax-spotmatic-meter
 relatedLinks:
+relatedArchives:
+  - pentax-spotmatic-meter
+  - pentax-k1000-service-manual
+  - pentax-km-kx-service-manual
+  - pentax-kx-parts-diagram
 ---
 
 The Pentax KX, launched in 1975, is a fully mechanical 35mm SLR and a more advanced sibling to the K1000. It retains the K1000's robust build and manual operation but adds several features. These include a self-timer, depth-of-field preview, and mirror lock-up for critical shooting. Notably, the KX displays both the selected shutter speed and aperture within its bright viewfinder, offering more comprehensive shooting information compared to the K1000's match-needle system. Its K mount provides compatibility with a wide array of lenses.

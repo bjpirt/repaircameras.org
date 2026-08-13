@@ -6,6 +6,7 @@ manufacturer: Zeiss Ikon
 model: Contaflex Prima
 relatedFiles:
   - zeiss-ikon/zeiss-ikon-contaflex-super-rapid-prima-service-manual
-  - zeiss-ikon/zeiss-ikon-contaflex-rapid-super-prima-parts-list
 relatedLinks:
+relatedArchives:
+  - zeiss-ikon-contaflex-rapid-super-prima-parts-list
 ---

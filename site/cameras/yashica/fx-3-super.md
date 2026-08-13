@@ -5,6 +5,7 @@ tags:
 manufacturer: Yashica
 model: FX-3 Super
 relatedFiles:
-  - yashica/yashica-fx-3-super-exploded-diagram
 relatedLinks:
+relatedArchives:
+  - yashica-fx-3-super-exploded-diagram
 ---

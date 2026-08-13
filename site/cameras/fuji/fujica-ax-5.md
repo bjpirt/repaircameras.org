@@ -5,6 +5,7 @@ tags:
 manufacturer: Fuji
 model: Fujica AX-5
 relatedFiles:
-  - spt-journal/spt-journal-spt-fujica-ax5
 relatedLinks:
+relatedArchives:
+  - spt-journal-spt-fujica-ax5
 ---

@@ -5,6 +5,7 @@ tags:
 manufacturer: Kodak
 model: Signet 80
 relatedFiles:
-  - kodak/kodak-signet-80-repair-guide
 relatedLinks:
+relatedArchives:
+  - kodak-signet-80-repair-guide
 ---

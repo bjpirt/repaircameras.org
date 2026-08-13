@@ -5,7 +5,8 @@ tags:
 manufacturer: Konica
 model: Autoreflex T3
 relatedFiles:
-  - konica/konica-autoreflex-t3-repair-manual
-  - konica/konica-autoreflex-t3-ccm-article
 relatedLinks:
+relatedArchives:
+  - konica-autoreflex-t3-repair-manual
+  - konica-autoreflex-t3-ccm-article
 ---

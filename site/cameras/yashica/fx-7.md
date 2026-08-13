@@ -5,7 +5,8 @@ tags:
 manufacturer: Yashica
 model: FX-7
 relatedFiles:
-  - yashica/yashica-fx-3-fx-7-exploded-diagram
-  - yashica/yashica-fx-3-fx-7-repair-manual
 relatedLinks:
+relatedArchives:
+  - yashica-fx-3-fx-7-repair-manual
+  - yashica-fx-3-fx-7-exploded-diagram
 ---

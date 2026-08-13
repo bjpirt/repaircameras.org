@@ -5,6 +5,7 @@ tags:
 manufacturer: Kodak
 model: Stereo Camera
 relatedFiles:
-  - kodak/kodak-stereo-camera-parts-list
 relatedLinks:
+relatedArchives:
+  - kodak-stereo-camera-parts-list
 ---

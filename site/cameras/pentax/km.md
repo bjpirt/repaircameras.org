@@ -5,7 +5,8 @@ tags:
 manufacturer: Pentax
 model: KM
 relatedFiles:
-  - pentax/pentax-km-kx-service-manual
-  - pentax/pentax-km-parts-list
 relatedLinks:
+relatedArchives:
+  - pentax-km-parts-list
+  - pentax-km-kx-service-manual
 ---

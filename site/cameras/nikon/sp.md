@@ -5,6 +5,7 @@ tags:
 manufacturer: Nikon
 model: SP
 relatedFiles:
-  - nikon/nikon-sp-service-manual
 relatedLinks:
+relatedArchives:
+  - nikon-sp-service-manual
 ---

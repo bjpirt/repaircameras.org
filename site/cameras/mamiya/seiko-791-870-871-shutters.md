@@ -5,6 +5,7 @@ tags:
 manufacturer: Mamiya
 model: Seiko 791, 870, 871 Shutters
 relatedFiles:
-  - mamiya/mamiya-seiko-791-870-871-shutters-parts-list
 relatedLinks:
+relatedArchives:
+  - mamiya-seiko-791-870-871-shutters-parts-list
 ---

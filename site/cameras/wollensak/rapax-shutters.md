@@ -5,6 +5,7 @@ tags:
 manufacturer: Wollensak
 model: Rapax Shutters
 relatedFiles:
-  - wollensak/wollensak-rapax-shutters-disassembly-charts
 relatedLinks:
+relatedArchives:
+  - wollensak-rapax-shutters-disassembly-charts
 ---

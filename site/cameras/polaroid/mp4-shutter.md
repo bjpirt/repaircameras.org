@@ -5,6 +5,7 @@ tags:
 manufacturer: Polaroid
 model: MP4 Shutter
 relatedFiles:
-  - polaroid/polaroid-mp4-shutter-exploded-diagram
 relatedLinks:
+relatedArchives:
+  - polaroid-mp4-shutter-exploded-diagram
 ---

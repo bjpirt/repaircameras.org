@@ -5,6 +5,7 @@ tags:
 manufacturer: Graflex
 model: Rangefinder
 relatedFiles:
-  - graflex/graflex-rangefinder-service-manual
 relatedLinks:
+relatedArchives:
+  - graflex-rangefinder-service-manual
 ---

@@ -5,6 +5,7 @@ tags:
 manufacturer: Contax
 model: RTS
 relatedFiles:
-  - contax/contax-rts-spt-article
 relatedLinks:
+relatedArchives:
+  - contax-rts-spt-article
 ---

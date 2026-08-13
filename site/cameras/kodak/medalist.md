@@ -5,7 +5,8 @@ tags:
 manufacturer: Kodak
 model: Medalist
 relatedFiles:
-  - kodak/kodak-medalist-service-manual
-  - kodak/kodak-medalist-parts-list
 relatedLinks:
+relatedArchives:
+  - kodak-medalist-parts-list
+  - kodak-medalist-service-manual
 ---

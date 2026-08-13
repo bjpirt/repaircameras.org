@@ -7,9 +7,9 @@ model: AE-1 Program
 relatedFiles:
   - canon/canon-ae-1-program-national-camera-service-manual
   - canon/canon-ae-1-program-article
-  - canon/canon-ae-1-program-spt-article
 relatedLinks:
 relatedArchives:
+  - canon-ae-1-program-spt-article
   - canon-ae-1-program-service-manual
 ---
 

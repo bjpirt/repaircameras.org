@@ -5,7 +5,8 @@ tags:
 manufacturer: Pentax
 model: ESII
 relatedFiles:
-  - pentax/pentax-esii-parts-list
-  - pentax/pentax-esii-service-manual
 relatedLinks:
+relatedArchives:
+  - pentax-esii-service-manual
+  - pentax-esii-parts-list
 ---

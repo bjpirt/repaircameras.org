@@ -5,6 +5,7 @@ tags:
 manufacturer: Topcon
 model: Super D
 relatedFiles:
-  - topcon/topcon-super-d-repair-manual
 relatedLinks:
+relatedArchives:
+  - topcon-super-d-repair-manual
 ---

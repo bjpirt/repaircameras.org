@@ -5,6 +5,7 @@ tags:
 manufacturer: Minolta
 model: Maxxum 7
 relatedFiles:
-  - minolta/minolta-maxxum-7-parts-list
 relatedLinks:
+relatedArchives:
+  - minolta-maxxum-7-parts-list
 ---

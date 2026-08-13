@@ -5,6 +5,7 @@ tags:
 manufacturer: Yashica
 model: FX-1
 relatedFiles:
-  - yashica/yashica-fx-1-exploded-diagram
 relatedLinks:
+relatedArchives:
+  - yashica-fx-1-exploded-diagram
 ---

@@ -5,6 +5,7 @@ tags:
 manufacturer: Praktica
 model: IV
 relatedFiles:
-  - praktica/praktica-iv-exploded-diagram
 relatedLinks:
+relatedArchives:
+  - praktica-iv-exploded-diagram
 ---

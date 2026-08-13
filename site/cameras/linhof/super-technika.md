@@ -5,6 +5,7 @@ tags:
 manufacturer: Linhof
 model: Super Technika
 relatedFiles:
-  - linhof/linhof-super-technika-exploded-diagram
 relatedLinks:
+relatedArchives:
+  - linhof-super-technika-exploded-diagram
 ---

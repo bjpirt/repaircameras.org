@@ -5,6 +5,7 @@ tags:
 manufacturer: Graflex
 model: Super Graphic Version 1
 relatedFiles:
-  - graflex/graflex-super-graphic-version-1-service-manual
 relatedLinks:
+relatedArchives:
+  - graflex-super-graphic-version-1-service-manual
 ---
