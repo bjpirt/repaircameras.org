@@ -5,9 +5,9 @@ tags:
 manufacturer: Olympus
 model: OM-1
 relatedFiles:
-  - olympus/olympus-om-1-repair-manual
 relatedLinks:
 relatedArchives:
+  - olympus-om-1-repair-manual
   - olympus-om-1-ccm-article
 ---
 

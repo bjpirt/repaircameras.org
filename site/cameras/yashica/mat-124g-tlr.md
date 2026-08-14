@@ -5,6 +5,7 @@ tags:
 manufacturer: Yashica
 model: Mat-124G TLR
 relatedFiles:
-  - yashica/yashica-mat-124g-tlr-exploded-diagram
 relatedLinks:
+relatedArchives:
+  - yashica-mat-124g-tlr-exploded-diagram
 ---

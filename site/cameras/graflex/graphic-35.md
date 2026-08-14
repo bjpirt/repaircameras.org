@@ -5,6 +5,7 @@ tags:
 manufacturer: Graflex
 model: Graphic 35
 relatedFiles:
-  - graflex/graflex-graphic-35-service-manual
 relatedLinks:
+relatedArchives:
+  - graflex-graphic-35-service-manual
 ---

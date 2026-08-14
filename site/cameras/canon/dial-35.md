@@ -5,6 +5,7 @@ tags:
 manufacturer: Canon
 model: Dial 35
 relatedFiles:
-  - canon/canon-dial-35-repair-manual
 relatedLinks:
+relatedArchives:
+  - canon-dial-35-repair-manual
 ---

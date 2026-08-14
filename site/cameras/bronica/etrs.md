@@ -5,9 +5,9 @@ tags:
 manufacturer: Bronica
 model: ETRS
 relatedFiles:
-  - bronica/bronica-etrs-repair-manual
 relatedLinks:
 relatedArchives:
+  - bronica-etrs-repair-manual
   - bronica-etrs-aeii-finder-e-repair-manual
 ---
 

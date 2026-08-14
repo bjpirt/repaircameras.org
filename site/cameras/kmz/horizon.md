@@ -5,6 +5,7 @@ tags:
 manufacturer: KMZ
 model: Horizon
 relatedFiles:
-  - kmz/kmz-horizon-article
 relatedLinks:
+relatedArchives:
+  - kmz-horizon-article
 ---

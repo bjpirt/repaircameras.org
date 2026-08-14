@@ -5,6 +5,7 @@ tags:
 manufacturer: Olympus
 model: IS-3
 relatedFiles:
-  - olympus/olympus-is-3-repair-manual
 relatedLinks:
+relatedArchives:
+  - olympus-is-3-repair-manual
 ---

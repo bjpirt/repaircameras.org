@@ -5,8 +5,8 @@ tags:
 manufacturer: Fuji
 model: Fujica ST605
 relatedFiles:
-  - articles/fuji-fujica-st-topcoverremoval
 relatedLinks:
 relatedArchives:
+  - fuji-fujica-st-topcoverremoval
   - fuji-fujica-st605-repair-manual
 ---

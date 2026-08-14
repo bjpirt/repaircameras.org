@@ -5,6 +5,7 @@ tags:
 manufacturer: Minolta
 model: Hi-Matic E
 relatedFiles:
-  - minolta/minolta-hi-matic-e-national-camera-guide
 relatedLinks:
+relatedArchives:
+  - minolta-hi-matic-e-national-camera-guide
 ---

@@ -5,8 +5,9 @@ tags:
 manufacturer: Canon
 model: EOS A2
 relatedFiles:
-  - canon/canon-eos-a2-parts-list
 relatedLinks:
+relatedArchives:
+  - canon-eos-a2-parts-list
 aliases:
   - EOS A2E
   - EOS 5

@@ -5,9 +5,9 @@ tags:
 manufacturer: Minolta
 model: XG-A
 relatedFiles:
-  - minolta/minolta-xg-a-service-manual
 relatedLinks:
 relatedArchives:
+  - minolta-xg-a-service-manual
   - spt-minolta-xg-update-spt-journal
 aliases:
   - XG-1(n)

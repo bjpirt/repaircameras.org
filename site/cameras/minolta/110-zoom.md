@@ -5,6 +5,7 @@ tags:
 manufacturer: Minolta
 model: 110 Zoom
 relatedFiles:
-  - minolta/minolta-110-zoom-spt-article
 relatedLinks:
+relatedArchives:
+  - minolta-110-zoom-spt-article
 ---

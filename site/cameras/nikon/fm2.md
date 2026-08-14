@@ -5,9 +5,9 @@ tags:
 manufacturer: Nikon
 model: FM2 / FM2n
 relatedFiles:
-  - nikon/nikon-fm2-repair-manual
 relatedLinks:
 relatedArchives:
+  - nikon-fm2-repair-manual
   - nikon-fm2-shutter-bulletin
   - nikon-fm2n-repair-manual
 ---

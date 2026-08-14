@@ -5,6 +5,7 @@ tags:
 manufacturer: Minolta
 model: SR-7
 relatedFiles:
-  - minolta/minolta-sr-1-sr-7-parts-list
 relatedLinks:
+relatedArchives:
+  - minolta-sr-1-sr-7-parts-list
 ---

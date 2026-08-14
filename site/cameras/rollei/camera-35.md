@@ -5,6 +5,7 @@ tags:
 manufacturer: Rollei
 model: camera 35
 relatedFiles:
-  - rollei/rollei-camera-35-repair-manual
 relatedLinks:
+relatedArchives:
+  - rollei-camera-35-repair-manual
 ---

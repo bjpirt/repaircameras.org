@@ -5,10 +5,10 @@ tags:
 manufacturer: Leica
 model: iiig
 relatedFiles:
-  - leica/leica-shutter-national-camera-manual
   - articles/leica-barnack-shutter-curtains
 relatedLinks:
 relatedArchives:
+  - leica-shutter-national-camera-manual
   - leica-iiig-service-manual
   - leica-iiig-rangefinder-adjustments
 ---

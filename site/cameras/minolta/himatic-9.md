@@ -5,6 +5,7 @@ tags:
 manufacturer: Minolta
 model: Himatic 9
 relatedFiles:
-  - minolta/minolta-himatic-9-service-manual
 relatedLinks:
+relatedArchives:
+  - minolta-himatic-9-service-manual
 ---

@@ -5,6 +5,7 @@ tags:
 manufacturer: Pentax
 model: Spotmatic
 relatedFiles:
-  - pentax/pentax-spotmatic-national-camera-service-manual
 relatedLinks:
+relatedArchives:
+  - pentax-spotmatic-national-camera-service-manual
 ---

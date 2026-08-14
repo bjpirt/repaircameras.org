@@ -5,6 +5,7 @@ tags:
 manufacturer: Nord
 model: Automatic SLR
 relatedFiles:
-  - nord/nord-automatic-slr-service-manual
 relatedLinks:
+relatedArchives:
+  - nord-automatic-slr-service-manual
 ---

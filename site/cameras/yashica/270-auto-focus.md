@@ -5,6 +5,7 @@ tags:
 manufacturer: Yashica
 model: 270 Auto Focus
 relatedFiles:
-  - yashica/yashica-270-auto-focus-repair-manual
 relatedLinks:
+relatedArchives:
+  - yashica-270-auto-focus-repair-manual
 ---

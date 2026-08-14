@@ -5,6 +5,7 @@ tags:
 manufacturer: Zeiss Ikon
 model: Contessa
 relatedFiles:
-  - zeiss-ikon/zeiss-ikon-contessa-matic-service-manual
 relatedLinks:
+relatedArchives:
+  - zeiss-ikon-contessa-matic-service-manual
 ---

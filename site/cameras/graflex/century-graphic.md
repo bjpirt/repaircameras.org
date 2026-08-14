@@ -5,6 +5,7 @@ tags:
 manufacturer: Graflex
 model: Century Graphic
 relatedFiles:
-  - graflex/graflex-century-graphic-service-manual
 relatedLinks:
+relatedArchives:
+  - graflex-century-graphic-service-manual
 ---

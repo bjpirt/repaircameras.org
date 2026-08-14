@@ -5,6 +5,7 @@ tags:
 manufacturer: Yashica
 model: 300 Auto Focus
 relatedFiles:
-  - yashica/yashica-300-auto-focus-repair-manual
 relatedLinks:
+relatedArchives:
+  - yashica-300-auto-focus-repair-manual
 ---

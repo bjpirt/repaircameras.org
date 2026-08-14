@@ -5,6 +5,7 @@ tags:
 manufacturer: Kiev
 model: 6C TTL
 relatedFiles:
-  - kiev/kiev-6c-ttl-repair-manual-russian
 relatedLinks:
+relatedArchives:
+  - kiev-6c-ttl-repair-manual-russian
 ---

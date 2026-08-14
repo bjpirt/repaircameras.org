@@ -5,6 +5,7 @@ tags:
 manufacturer: Ihagee
 model: Exakta
 relatedFiles:
-  - ihagee/ihagee-exakta-repair-guide
 relatedLinks:
+relatedArchives:
+  - ihagee-exakta-repair-guide
 ---

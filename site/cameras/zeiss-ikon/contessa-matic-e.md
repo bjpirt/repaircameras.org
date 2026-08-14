@@ -5,6 +5,7 @@ tags:
 manufacturer: Zeiss Ikon
 model: Contessa Matic E
 relatedFiles:
-  - zeiss-ikon/zeiss-ikon-contessa-matic-e-service-manual
 relatedLinks:
+relatedArchives:
+  - zeiss-ikon-contessa-matic-e-service-manual
 ---
