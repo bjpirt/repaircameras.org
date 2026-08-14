@@ -5,6 +5,7 @@ tags:
 manufacturer: Copal
 model: SVE Shutter
 relatedFiles:
-  - copal/copal-sve-shutter-spt-article
 relatedLinks:
+relatedArchives:
+  - copal-sve-shutter-spt-article
 ---
