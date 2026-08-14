@@ -5,9 +5,9 @@ tags:
 manufacturer: Nikon
 model: FM3A
 relatedFiles:
-  - nikon/nikon-fm3a-service-manual
 relatedLinks:
 relatedArchives:
+  - nikon-fm3a-service-manual
   - nikon-fm3a-parts-list
 ---
 

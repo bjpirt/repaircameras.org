@@ -5,8 +5,9 @@ tags:
 manufacturer: Canon
 model: EOS 500N
 relatedFiles:
-  - canon/canon-eos-500n-service-manual
 relatedLinks:
+relatedArchives:
+  - canon-eos-500n-service-manual
 aliases:
   - EOS Rebel G
   - New EOS Kiss

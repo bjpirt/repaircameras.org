@@ -5,6 +5,7 @@ tags:
 manufacturer: Canon
 model: EOS 1V
 relatedFiles:
-  - canon/canon-eos-1v-service-manual
 relatedLinks:
+relatedArchives:
+  - canon-eos-1v-service-manual
 ---

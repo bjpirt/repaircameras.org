@@ -5,6 +5,7 @@ tags:
 manufacturer: Fuji
 model: Gw690ii
 relatedFiles:
-  - fuji/fuji-gw690ii-repair-manual
 relatedLinks:
+relatedArchives:
+  - fuji-gw690ii-repair-manual
 ---

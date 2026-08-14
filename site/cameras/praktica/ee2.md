@@ -5,6 +5,7 @@ tags:
 manufacturer: Praktica
 model: EE2
 relatedFiles:
-  - praktica/praktica-ee2-article-german
 relatedLinks:
+relatedArchives:
+  - praktica-ee2-article-german
 ---

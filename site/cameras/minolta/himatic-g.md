@@ -5,6 +5,7 @@ tags:
 manufacturer: Minolta
 model: Himatic G
 relatedFiles:
-  - minolta/minolta-himatic-g-service-manual
 relatedLinks:
+relatedArchives:
+  - minolta-himatic-g-service-manual
 ---

@@ -5,7 +5,8 @@ tags:
 manufacturer: Yashica
 model: TL Electro X
 relatedFiles:
-  - yashica/yashica-tl-electro-x-exploded-diagram
   - yashica/yashica-tl-electro-x-service-manual
 relatedLinks:
+relatedArchives:
+  - yashica-tl-electro-x-exploded-diagram
 ---

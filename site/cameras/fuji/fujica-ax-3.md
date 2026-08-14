@@ -5,9 +5,9 @@ tags:
 manufacturer: Fuji
 model: Fujica AX-3
 relatedFiles:
-  - fuji/fuji-fujica-ax-3-repair-manual
 relatedLinks:
 relatedArchives:
+  - fuji-fujica-ax-3-repair-manual
   - spt-journal-spt-fujica-ax5
 ---
 

@@ -5,6 +5,7 @@ tags:
 manufacturer: Miranda
 model: Sensorex
 relatedFiles:
-  - miranda/miranda-sensorex-service-manual
 relatedLinks:
+relatedArchives:
+  - miranda-sensorex-service-manual
 ---

@@ -5,6 +5,7 @@ tags:
 manufacturer: Agfa
 model: Karat
 relatedFiles:
-  - agfa/agfa-karat-repair-guide
 relatedLinks:
+relatedArchives:
+  - agfa-karat-repair-guide
 ---

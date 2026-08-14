@@ -5,8 +5,8 @@ tags:
 manufacturer: Fuji
 model: Fujica AZ-1
 relatedFiles:
-  - articles/fuji-fujica-st-topcoverremoval
 relatedLinks:
 relatedArchives:
+  - fuji-fujica-st-topcoverremoval
   - fuji-fujica-az-1-repair-manual
 ---

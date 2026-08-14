@@ -5,6 +5,7 @@ tags:
 manufacturer: Topcon
 model: Super DM
 relatedFiles:
-  - topcon/topcon-super-dm-repair-manual
 relatedLinks:
+relatedArchives:
+  - topcon-super-dm-repair-manual
 ---

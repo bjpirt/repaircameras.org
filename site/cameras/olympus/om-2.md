@@ -5,11 +5,11 @@ tags:
 manufacturer: Olympus
 model: OM-2
 relatedFiles:
-  - olympus/olympus-om-2-exploded-diagram
-  - olympus/olympus-om-2-om-2n-repair-manual
   - olympus/olympus-om-2-spt-article
 relatedLinks:
 relatedArchives:
+  - olympus-om-2-om-2n-repair-manual
+  - olympus-om-2-exploded-diagram
   - olympus-om-2-service-manual
 ---
 

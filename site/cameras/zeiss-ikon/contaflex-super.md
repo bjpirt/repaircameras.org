@@ -5,10 +5,10 @@ tags:
 manufacturer: Zeiss Ikon
 model: Contaflex Super
 relatedFiles:
-  - zeiss-ikon/zeiss-ikon-contaflex-super-rapid-prima-service-manual
-  - zeiss-ikon/zeiss-ikon-contaflex-super-b-service-manual
 relatedLinks:
 relatedArchives:
+  - zeiss-ikon-contaflex-super-b-service-manual
+  - zeiss-ikon-contaflex-super-rapid-prima-service-manual
   - zeiss-ikon-contaflex-rapid-super-prima-parts-list
   - zeiss-ikon-contaflex-super-repair-manual-german
 ---

@@ -5,6 +5,7 @@ tags:
 manufacturer: Fuji
 model: Fujica G690
 relatedFiles:
-  - fuji/fuji-fujica-g690-repair-manual
 relatedLinks:
+relatedArchives:
+  - fuji-fujica-g690-repair-manual
 ---

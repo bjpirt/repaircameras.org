@@ -5,6 +5,7 @@ tags:
 manufacturer: Canon
 model: Rangefinder IVS2
 relatedFiles:
-  - canon/canon-ivs2-service-manual
 relatedLinks:
+relatedArchives:
+  - canon-ivs2-service-manual
 ---

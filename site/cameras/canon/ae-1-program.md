@@ -5,10 +5,10 @@ tags:
 manufacturer: Canon
 model: AE-1 Program
 relatedFiles:
-  - canon/canon-ae-1-program-national-camera-service-manual
   - canon/canon-ae-1-program-article
 relatedLinks:
 relatedArchives:
+  - canon-ae-1-program-national-camera-service-manual
   - canon-ae-1-program-spt-article
   - canon-ae-1-program-service-manual
 ---

@@ -5,6 +5,7 @@ tags:
 manufacturer: Agfa
 model: Silette Pronto
 relatedFiles:
-  - agfa/agfa-silette-pronto-cla-instructions
 relatedLinks:
+relatedArchives:
+  - agfa-silette-pronto-cla-instructions
 ---

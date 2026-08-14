@@ -5,6 +5,7 @@ tags:
 manufacturer: Mamiya
 model: ZM Quartz
 relatedFiles:
-  - mamiya/mamiya-zm-quartz-repair-manual
 relatedLinks:
+relatedArchives:
+  - mamiya-zm-quartz-repair-manual
 ---

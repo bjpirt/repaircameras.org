@@ -5,9 +5,9 @@ tags:
 manufacturer: Canon
 model: FTb
 relatedFiles:
-  - canon/canon-ftb-national-camera-repair-guide
 relatedLinks:
 relatedArchives:
+  - canon-ftb-national-camera-repair-guide
   - canon-ftb-service-manual
   - canon-ftb-spt-article
 ---
