@@ -5,6 +5,7 @@ tags:
 manufacturer: Leica
 model: iii
 relatedFiles:
-  - articles/leica-barnack-shutter-curtains
 relatedLinks:
+relatedArchives:
+  - leica-barnack-shutter-curtains
 ---

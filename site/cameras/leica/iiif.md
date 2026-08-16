@@ -5,9 +5,9 @@ tags:
 manufacturer: Leica
 model: iiif
 relatedFiles:
-  - articles/leica-barnack-shutter-curtains
 relatedLinks:
 relatedArchives:
+  - leica-barnack-shutter-curtains
   - leica-shutter-national-camera-manual
   - leica-iiif-national-camera-manual
   - leica-iiif-service-manual

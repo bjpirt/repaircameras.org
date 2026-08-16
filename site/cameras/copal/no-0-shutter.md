@@ -5,10 +5,10 @@ tags:
 manufacturer: Copal
 model: No 0. Shutter
 relatedFiles:
-  - copal/copal-no-0-parts-list
-  - copal/copal-no-0-shutter-national-camera-service-manual
 relatedLinks:
 relatedArchives:
+  - copal-no-0-parts-list
+  - copal-no-0-shutter-national-camera-service-manual
   - copal-no-0-shutter-cycle-of-operations
 ---
 

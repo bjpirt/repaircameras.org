@@ -5,9 +5,9 @@ tags:
 manufacturer: Copal
 model: No. 1 Shutter
 relatedFiles:
-  - copal/copal-no-1-parts-list
 relatedLinks:
 relatedArchives:
+  - copal-no-1-parts-list
   - copal-no-1-shutter-service-manual
 ---
 
