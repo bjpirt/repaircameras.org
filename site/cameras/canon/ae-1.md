@@ -5,9 +5,9 @@ tags:
 manufacturer: Canon
 model: AE-1
 relatedFiles:
-  - canon/canon-ae-1-spt-article
 relatedLinks:
 relatedArchives:
+  - canon-ae-1-spt-article
   - canon-ae-1-article
   - canon-ae-1-ccm-article
   - canon-ae-1-national-camera-article
