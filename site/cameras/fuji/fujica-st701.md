@@ -5,6 +5,7 @@ tags:
 manufacturer: Fuji
 model: Fujica ST701
 relatedFiles:
-  - fuji/fuji-fujica-st701-repair-manual
 relatedLinks:
+relatedArchives:
+  - fuji-fujica-st701-repair-manual
 ---

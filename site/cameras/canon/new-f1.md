@@ -5,9 +5,9 @@ tags:
 manufacturer: Canon
 model: New F1
 relatedFiles:
-  - canon/canon-ae-finder-fn-spt-article
 relatedLinks:
 relatedArchives:
+  - canon-ae-finder-fn-spt-article
   - canon-new-f1-parts-catalog
   - canon-new-f1-service-manual
 ---

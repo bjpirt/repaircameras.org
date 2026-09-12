@@ -5,7 +5,6 @@ tags:
 manufacturer: Pentax
 model: Spotmatic SP 1000
 relatedFiles:
-  - pentax/pentax-spotmatic-exploded-diagram
 relatedLinks:
 relatedArchives:
   - pentax-spotmatic-sp1000-parts-list

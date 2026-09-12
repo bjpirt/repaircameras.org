@@ -5,6 +5,7 @@ tags:
 manufacturer: Zeiss Ikon
 model: Contax IIIa
 relatedFiles:
-  - zeiss-ikon/zeiss-ikon-contax-iia-iiia-service-manual-german
 relatedLinks:
+relatedArchives:
+  - zeiss-ikon-contax-iia-iiia-service-manual-german
 ---

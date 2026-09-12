@@ -5,9 +5,9 @@ tags:
 manufacturer: Graflex
 model: Super Graphic
 relatedFiles:
-  - graflex/graflex-speed-graphic-45-service-manual
 relatedLinks:
 relatedArchives:
+  - graflex-speed-graphic-45-service-manual
   - graflex-pacemaker-speed-crown-graphic-34-parts-list
   - graflex-pacemaker-speed-crown-graphic-23-parts-list
   - graflex-speed-graphic-45-service-instructions
