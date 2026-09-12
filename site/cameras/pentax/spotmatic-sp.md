@@ -5,7 +5,6 @@ tags:
 manufacturer: Pentax
 model: Spotmatic SP
 relatedFiles:
-  - pentax/pentax-spotmatic-exploded-diagram
 relatedLinks:
 relatedArchives:
   - pentax-spotmatic-sp-exploded-diagram-2

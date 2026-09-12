@@ -5,7 +5,8 @@ tags:
 manufacturer: Kodak
 model: Retina Reflex IV
 relatedFiles:
-  - kodak/kodak-retina-reflex-iv-parts-list
-  - kodak/kodak-retina-reflex-iv-service-manual
 relatedLinks:
+relatedArchives:
+  - kodak-retina-reflex-iv-parts-list
+  - kodak-retina-reflex-iv-service-manual
 ---
