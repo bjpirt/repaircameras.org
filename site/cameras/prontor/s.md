@@ -5,9 +5,9 @@ tags:
 manufacturer: Prontor
 model: S
 relatedFiles:
-  - prontor/prontor-s-sv-svs1-repair-manual-part2
 relatedLinks:
 relatedArchives:
+  - prontor-s-sv-svs1-repair-manual-part2
   - prontor-s-sv-svs1-repair-manual
 ---
 
