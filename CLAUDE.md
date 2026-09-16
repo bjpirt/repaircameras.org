@@ -168,7 +168,7 @@ admin/src/
 
 ### Adding a publication issue
 
-Publications (e.g. SPT Journal) are runs of issues hosted on the Internet Archive, rendered at `/publications/{id}/` by `site/publications.11ty.tsx` and grouped by year.
+Publications (e.g. SPT Journal) are runs of issues hosted on the Internet Archive. `site/publications/index.md` lists them all at `/publications/`, and `site/publications/publications.11ty.tsx` renders each one at `/publications/{id}/` with its issues grouped by year.
 
 1. Add the issue as an Internet Archive file in `site/_data/ia/` as usual, with these extra fields:
    ```json
