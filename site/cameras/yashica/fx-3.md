@@ -9,4 +9,5 @@ relatedLinks:
 relatedArchives:
   - yashica-fx-3-fx-7-repair-manual
   - yashica-fx-3-fx-7-exploded-diagram
+  - 1984-11-spt-journal-november-december-1984
 ---
