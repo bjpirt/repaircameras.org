@@ -1,14 +1,14 @@
 import { MainTemplate } from "@components/MainTemplate";
 import { ResourceLink } from "@components/ResourceLink";
-import PageMetadata, { Page } from "../lib/types/PageMetadata";
-import IaFile from "../lib/types/IaFile";
-import Publication from "../lib/types/Publication";
+import PageMetadata, { Page } from "../../lib/types/PageMetadata";
+import IaFile from "../../lib/types/IaFile";
+import Publication from "../../lib/types/Publication";
 import {
   groupIssuesByYear,
   issueLabel,
   issuesForPublication,
   PublicationIssue,
-} from "../lib/publications";
+} from "../../lib/publications";
 
 type ViewProps = {
   publication: Publication;

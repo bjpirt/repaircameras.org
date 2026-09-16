@@ -3,8 +3,7 @@ import PageMetadata, { Page } from "../lib/types/PageMetadata";
 import Link from "../lib/types/Link";
 import IaFile from "../lib/types/IaFile";
 import Publication from "../lib/types/Publication";
-import { ResourceLink } from "@components/ResourceLink";
-import { coverIssue, issuesForPublication } from "../lib/publications";
+import { PublicationLink } from "@components/PublicationLink";
 
 type ViewProps = {
   collections: {
@@ -17,33 +16,6 @@ type ViewProps = {
   links: Record<string, Link>;
   ia: Record<string, IaFile>;
   publications: Record<string, Publication>;
-};
-
-// A publication is represented by the cover of one of its issues
-const publicationLink = (
-  publication: Publication,
-  ia: Record<string, IaFile>,
-) => {
-  const cover = coverIssue(
-    publication,
-    issuesForPublication(ia, publication.id),
-  );
-  if (!cover) {
-    return undefined;
-  }
-
-  return (
-    <ResourceLink
-      id={publication.id}
-      url={publication.url}
-      file={{
-        title: publication.title,
-        description: publication.description,
-        thumbnail: cover.thumbnail,
-      }}
-      newTab={false}
-    />
-  );
 };
 
 export function index({
@@ -88,11 +60,13 @@ export function index({
 
       {Object.keys(publications).length > 0 ? (
         <div class="files publications">
-          <h3>Publications</h3>
+          <h3>
+            <a href="/publications/">Publications</a>
+          </h3>
           <div class="fileList">
-            {Object.values(publications).map((publication) =>
-              publicationLink(publication, ia),
-            )}
+            {Object.values(publications).map((publication) => (
+              <PublicationLink publication={publication} ia={ia} />
+            ))}
           </div>
         </div>
       ) : undefined}
