@@ -1,4 +1,5 @@
 # repaircameras.org
+
 A site to hold knowledge on camera repair
 
 ## Prerequisites
@@ -12,7 +13,7 @@ A site to hold knowledge on camera repair
 npm install
 
 # Start development server with live reload
-npm start
+npm run serve
 
 # Build for production
 npm run build
