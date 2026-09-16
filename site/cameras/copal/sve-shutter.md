@@ -8,4 +8,5 @@ relatedFiles:
 relatedLinks:
 relatedArchives:
   - copal-sve-shutter-spt-article
+  - 1972-05-spt-journal-may-june-1972
 ---
