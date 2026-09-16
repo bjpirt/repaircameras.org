@@ -202,6 +202,21 @@ main #content {
   color: #666;
 }
 
+/* Publications */
+.publications {
+  margin-top: 30px;
+}
+
+.publicationYear {
+  margin-top: 20px;
+}
+.publicationYear h3 {
+  font-size: 130%;
+  max-width: 1000px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+}
+
 /* Internet Archive hosted files */
 .iaReader {
   margin: 20px 0;
