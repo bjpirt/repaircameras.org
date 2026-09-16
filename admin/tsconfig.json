@@ -12,7 +12,9 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "paths": {
-      "@shared/*": ["../lib/*"]
+      "@shared/*": ["../lib/*"],
+      // lib/ sits outside this app, so its tests can't walk up to admin's vitest
+      "vitest": ["./node_modules/vitest"]
     }
   },
   "include": ["src", "../lib"]

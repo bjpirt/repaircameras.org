@@ -83,6 +83,7 @@ The site uses Eleventy's global data system (`site/_data/`) to process PDFs and 
 
 - **`files.js`**: Recursively scans `site/files/{manufacturer}/` subdirectories, extracts metadata (title, description) from PDF properties, generates thumbnails at build time, stores in `_site/img/thumbnails/`
 - **`links.js`**: Reads JSON files from `site/_data/links/`, pairs with corresponding JPG thumbnails, processes images for display
+- **`publications.js`**: Reads JSON files from `site/_data/publications/`, one per publication (e.g. a journal). Issues are not listed here — they are `site/_data/ia/` entries tagged with `publication` and `date`, joined at render time by `lib/publications.ts`
 
 These data files are available globally in all templates as `files` and `links` objects. Files are keyed by `{manufacturer}/{filename}` (e.g., `pentax/pentax-mx-service-manual`). Links are keyed by filename without extension.
 
@@ -164,6 +165,21 @@ admin/src/
    - Generates a thumbnail from the first page
    - Creates responsive thumbnail images
    - Makes the file available in templates via the global `files` object
+
+### Adding a publication issue
+
+Publications (e.g. SPT Journal) are runs of issues hosted on the Internet Archive, rendered at `/publications/{id}/` by `site/publications.11ty.tsx` and grouped by year.
+
+1. Add the issue as an Internet Archive file in `site/_data/ia/` as usual, with these extra fields:
+   ```json
+   {
+     "publication": "spt-journal",
+     "date": "1972-05",
+     "issue": "May-June"
+   }
+   ```
+   `date` (`YYYY-MM`) sets the year group and the sort order; `issue` is the label shown under the year heading
+2. To start a new publication, add `site/_data/publications/{id}.json` with `title`, `description` and optionally `cover` (the id of the issue whose thumbnail represents it). It appears in the home page Publications section automatically
 
 ### Adding external resources
 
